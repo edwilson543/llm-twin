@@ -47,3 +47,13 @@ check:
 .PHONY:lint_imports
 lint_imports:
 	uv run lint-imports
+
+# Local infrastructure
+
+.PHONY:docker_up
+docker_up:
+	docker-compose up -d
+
+.PHONY:docker_down
+docker_down:
+	docker-compose stop
