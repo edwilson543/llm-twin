@@ -49,6 +49,8 @@ lint_imports:
 	uv run lint-imports
 
 # Local infrastructure
+local_infra_up: docker_up zenml_up
+local_infra_down: docker_down zenml_down
 
 .PHONY:docker_up
 docker_up:
@@ -57,3 +59,11 @@ docker_up:
 .PHONY:docker_down
 docker_down:
 	docker-compose stop
+
+.PHONY:zenml_up
+zenml_up:
+	zenml login --local
+
+.PHONY:zenml_down
+zenml_down:
+	zenml logout --local

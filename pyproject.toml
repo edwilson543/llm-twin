@@ -16,7 +16,9 @@ requires-python = ">=3.13"
 
 # Dependencies
 
-dependencies = []
+dependencies = [
+    "zenml[server]>=0.75.0",
+]
 
 [dependency-groups]
 ci = [
