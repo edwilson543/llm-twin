@@ -18,6 +18,7 @@ requires-python = ">=3.13"
 
 dependencies = [
     "loguru>=0.7.3",
+    "pydantic-settings>=2.8.1",
     "zenml[server]>=0.75.0",
 ]
 

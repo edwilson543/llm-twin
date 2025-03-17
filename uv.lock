@@ -602,6 +602,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "loguru" },
+    { name = "pydantic-settings" },
     { name = "zenml", extra = ["server"] },
 ]
 
@@ -616,6 +617,7 @@ ci = [
 [package.metadata]
 requires-dist = [
     { name = "loguru", specifier = ">=0.7.3" },
+    { name = "pydantic-settings", specifier = ">=2.8.1" },
     { name = "zenml", extras = ["server"], specifier = ">=0.75.0" },
 ]
 
