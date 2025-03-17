@@ -54,6 +54,10 @@ type = "layers"
 containers = "llm_twin"
 layers = [
     "main",
+    "application",
+    "data",
+    "settings",
+    "domain",
 ]
 exhaustive = true
 

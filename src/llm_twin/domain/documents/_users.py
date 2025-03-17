@@ -3,7 +3,7 @@ from __future__ import annotations
 from . import _base
 
 
-class UserDocument(_base.NoSQLBaseDocument):
+class UserDocument(_base.NoSQLDocument):
     first_name: str
     last_name: str
 
