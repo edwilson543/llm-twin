@@ -1,7 +1,7 @@
 import pytest
 
-from llm_twin.data.documents import _in_memory
 from llm_twin.domain import documents
+from llm_twin.infrastructure.documents import _in_memory
 
 
 class TestFindOne:

@@ -2,7 +2,7 @@ from unittest import mock
 
 import pytest
 
-from llm_twin.data.documents import _config, _in_memory, _mongodb
+from llm_twin.infrastructure.documents import _config, _in_memory, _mongodb
 from testing import settings
 
 

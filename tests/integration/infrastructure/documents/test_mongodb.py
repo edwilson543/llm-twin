@@ -2,8 +2,8 @@ import uuid
 
 import pytest
 
-from llm_twin.data.documents import _mongodb
 from llm_twin.domain import documents
+from llm_twin.infrastructure.documents import _mongodb
 from testing import settings
 
 

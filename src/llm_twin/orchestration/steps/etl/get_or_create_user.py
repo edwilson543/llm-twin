@@ -4,8 +4,8 @@ import loguru
 import zenml
 
 from llm_twin.application import utils
-from llm_twin.data import documents as documents_backend
 from llm_twin.domain import documents
+from llm_twin.infrastructure import documents as documents_backend
 
 
 @zenml.step
