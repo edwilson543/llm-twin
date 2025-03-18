@@ -18,7 +18,7 @@ def get_nosql_database(
 
     if backend == "MONGODB":
         connector = _mongodb.MongoDatabaseConnector(settings=settings)
-        return _mongodb.MongoDatabase(_db=connector)
+        return _mongodb.MongoDatabase(_connector=connector)
     elif backend == "IN_MEMORY":
         return _in_memory.InMemoryNoSQLDatabase()
     else:

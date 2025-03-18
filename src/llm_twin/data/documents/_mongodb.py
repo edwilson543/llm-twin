@@ -3,6 +3,7 @@ from __future__ import annotations
 import dataclasses
 
 import loguru
+from pymongo import collection as pymongo_collection
 from pymongo import database as pymongo_database
 from pymongo import errors as pymongo_errors
 from pymongo import mongo_client
@@ -20,7 +21,7 @@ class MongoDatabaseConnector:
         settings: settings.Settings = settings.settings,
         *args: object,
         **kwargs: object,
-    ) -> pymongo_database.Database:
+    ) -> MongoDatabaseConnector:
         if cls._client is None:
             try:
                 cls._client = mongo_client.MongoClient(settings.MONGO_DATABASE_HOST)
@@ -35,25 +36,30 @@ class MongoDatabaseConnector:
             f"Connection to MongoDB with URI successful: {settings.MONGO_DATABASE_HOST}"
         )
 
-        return cls._database
+        return super().__new__(cls)
+
+    def get_collection(self, collection: str) -> pymongo_collection.Collection:
+        assert self._database is not None  # For mypy.
+        return self._database[collection]
 
 
 @dataclasses.dataclass
 class MongoDatabase(documents.NoSQLDatabase):
-    _db: pymongo_database.Database = dataclasses.field(
+    _connector: MongoDatabaseConnector = dataclasses.field(
         default_factory=MongoDatabaseConnector
     )
 
     def find_one(
         self, *, collection: str, **filter_options: object
     ) -> documents.RawDocument:
-        mongo_collection = self._db[collection]
+        mongo_collection = self._connector.get_collection(collection)
+
         if (result := mongo_collection.find_one(filter_options)) is None:
             raise documents.DocumentDoesNotExist
         return result
 
     def insert_one(self, *, collection: str, document: documents.RawDocument) -> None:
-        mongo_collection = self._db[collection]
+        mongo_collection = self._connector.get_collection(collection)
 
         try:
             mongo_collection.insert_one(document)

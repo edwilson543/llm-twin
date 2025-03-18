@@ -10,15 +10,12 @@ import pydantic
 from . import _db
 
 
-DocumentType = typing.TypeVar("DocumentType", bound="NoSQLDocument")
-
-
 @dataclasses.dataclass(frozen=True)
 class DocumentIsEmpty(Exception):
     pass
 
 
-class NoSQLDocument(pydantic.BaseModel, typing.Generic[DocumentType], abc.ABC):
+class NoSQLDocument(pydantic.BaseModel, abc.ABC):
     id: pydantic.UUID4 = pydantic.Field(default_factory=uuid.uuid4)
 
     def __eq__(self, other: object) -> bool:
@@ -34,8 +31,8 @@ class NoSQLDocument(pydantic.BaseModel, typing.Generic[DocumentType], abc.ABC):
 
     @classmethod
     def get_or_create(
-        cls, *, db: _db.NoSQLDatabase, **filter_options: object
-    ) -> DocumentType:
+        cls, *, db: _db.NoSQLDatabase, **filter_options: typing.Any
+    ) -> typing.Self:
         """
         Get or create a document from the database.
 
@@ -66,7 +63,7 @@ class NoSQLDocument(pydantic.BaseModel, typing.Generic[DocumentType], abc.ABC):
     # Serialization.
 
     @classmethod
-    def deserialize(cls, raw_document: dict) -> DocumentType:
+    def deserialize(cls, raw_document: dict) -> typing.Self:
         """
         Deserialize a document using the raw data retrieved from the database.
         """

@@ -1,7 +1,6 @@
 import uuid
 
 import pytest
-from pymongo import database as pymongo_database
 
 from llm_twin.data.documents import _mongodb
 from llm_twin.domain import documents
@@ -9,13 +8,13 @@ from testing import settings
 
 
 @pytest.fixture(scope="session")
-def connector() -> pymongo_database.Database:
+def connector() -> _mongodb.MongoDatabaseConnector:
     return _mongodb.MongoDatabaseConnector(settings=settings.IntegrationTestSettings())
 
 
 @pytest.fixture(scope="function")
 def db(connector) -> _mongodb.MongoDatabase:
-    return _mongodb.MongoDatabase(_db=connector)
+    return _mongodb.MongoDatabase(_connector=connector)
 
 
 class TestInsertOneFindOne:
