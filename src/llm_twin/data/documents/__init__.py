@@ -1,2 +1,1 @@
-from ._in_memory import InMemoryNoSQLDatabase
-from ._mongodb import MongoDatabase
+from ._config import get_nosql_database

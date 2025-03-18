@@ -11,7 +11,7 @@ from llm_twin import settings
 from llm_twin.domain import documents
 
 
-class _MongoDatabaseConnector:
+class MongoDatabaseConnector:
     _client: mongo_client.MongoClient | None = None
     _database: pymongo_database.Database | None = None
 
@@ -41,7 +41,7 @@ class _MongoDatabaseConnector:
 @dataclasses.dataclass
 class MongoDatabase(documents.NoSQLDatabase):
     _db: pymongo_database.Database = dataclasses.field(
-        default_factory=_MongoDatabaseConnector
+        default_factory=MongoDatabaseConnector
     )
 
     def find_one(

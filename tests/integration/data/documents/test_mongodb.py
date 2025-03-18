@@ -10,7 +10,7 @@ from testing import settings
 
 @pytest.fixture(scope="session")
 def connector() -> pymongo_database.Database:
-    return _mongodb._MongoDatabaseConnector(settings=settings.TestSettings())
+    return _mongodb.MongoDatabaseConnector(settings=settings.IntegrationTestSettings())
 
 
 @pytest.fixture(scope="function")

@@ -4,7 +4,8 @@ import loguru
 import zenml
 
 from llm_twin.application import utils
-from llm_twin.data import documents
+from llm_twin.data import documents as documents_backend
+from llm_twin.domain import documents
 
 
 @zenml.step
@@ -12,10 +13,11 @@ def get_or_create_user(
     user_full_name: str,
 ) -> typing.Annotated[documents.UserDocument, "user"]:
     loguru.logger.info(f"Getting or creating user: {user_full_name}")
+    db = documents_backend.get_nosql_database()
 
     name = utils.split_user_full_name(user_full_name)
     user_document = documents.UserDocument.get_or_create(
-        first_name=name.first_name, last_name=name.last_name
+        db=db, first_name=name.first_name, last_name=name.last_name
     )
 
     step_context = zenml.get_step_context()
