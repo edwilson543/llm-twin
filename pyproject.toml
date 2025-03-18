@@ -53,7 +53,7 @@ name = "Top level layers"
 type = "layers"
 containers = "llm_twin"
 layers = [
-    "main",
+    "orchestration",
     "application",
     "data",
     "settings",
