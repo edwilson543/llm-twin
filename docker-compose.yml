@@ -6,8 +6,9 @@ services:
       options:
         max-size: 1g
     environment:
-      MONGO_INITDB_ROOT_USERNAME: "llm-twin"
-      MONGO_INITDB_ROOT_PASSWORD: "llm-twin"
+      MONGO_INITDB_ROOT_USERNAME: "mongo_user"
+      MONGO_INITDB_ROOT_PASSWORD: "mongo_password"
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     ports:
       - 27017:27017
     volumes:

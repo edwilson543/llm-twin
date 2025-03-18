@@ -1,20 +1,26 @@
 from __future__ import annotations
 
+import dataclasses
+
 import loguru
-from pymongo import collection as pymongo_collection
 from pymongo import database as pymongo_database
 from pymongo import errors as pymongo_errors
 from pymongo import mongo_client
 
+from llm_twin import settings
 from llm_twin.domain import documents
-from llm_twin.settings import settings
 
 
 class _MongoDatabaseConnector:
     _client: mongo_client.MongoClient | None = None
     _database: pymongo_database.Database | None = None
 
-    def __new__(cls, *args: object, **kwargs: object) -> _MongoDatabaseConnector:
+    def __new__(
+        cls,
+        settings: settings.Settings = settings.settings,
+        *args: object,
+        **kwargs: object,
+    ) -> pymongo_database.Database:
         if cls._client is None:
             try:
                 cls._client = mongo_client.MongoClient(settings.MONGO_DATABASE_HOST)
@@ -29,25 +35,25 @@ class _MongoDatabaseConnector:
             f"Connection to MongoDB with URI successful: {settings.MONGO_DATABASE_HOST}"
         )
 
-        return cls(*args, **kwargs)
-
-    def get_collection(self, collection: str) -> pymongo_collection.Collection:
-        assert self._database is not None  # For mypy.
-        return self._database[collection]
+        return cls._database
 
 
-_mongo_database = _MongoDatabaseConnector()
-
-
+@dataclasses.dataclass
 class MongoDatabase(documents.NoSQLDatabase):
+    _db: pymongo_database.Database = dataclasses.field(
+        default_factory=_MongoDatabaseConnector
+    )
+
     def find_one(
         self, *, collection: str, **filter_options: object
-    ) -> documents.RawDocument | None:
-        mongo_collection = _mongo_database.get_collection(collection)
-        return mongo_collection.find_one(filter_options)
+    ) -> documents.RawDocument:
+        mongo_collection = self._db[collection]
+        if (result := mongo_collection.find_one(filter_options)) is None:
+            raise documents.DocumentDoesNotExist
+        return result
 
     def insert_one(self, *, collection: str, document: documents.RawDocument) -> None:
-        mongo_collection = _mongo_database.get_collection(collection)
+        mongo_collection = self._db[collection]
 
         try:
             mongo_collection.insert_one(document)

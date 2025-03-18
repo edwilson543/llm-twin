@@ -1,3 +1,2 @@
 from ._in_memory import InMemoryNoSQLDatabase
-# from ._mongodb import MongoDatabase
-
+from ._mongodb import MongoDatabase
