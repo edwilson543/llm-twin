@@ -35,6 +35,9 @@ ci = [
 
 [tool.pytest.ini_options]
 pythonpath = "./src/llm_twin"
+filterwarnings = [
+    "ignore:pkg_resources:DeprecationWarning:zenml",
+]
 
 
 [tool.mypy]
