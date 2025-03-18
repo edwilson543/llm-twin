@@ -61,6 +61,16 @@ layers = [
 ]
 exhaustive = true
 
+[[tool.importlinter.contracts]]
+name = "Orchestration layer"
+type = "layers"
+containers = "llm_twin.orchestration"
+layers = [
+    "pipelines",
+    "steps",
+]
+exhaustive = true
+
 [tool.ruff]
 
 line-length = 88
