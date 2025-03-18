@@ -1,11 +1,11 @@
 import zenml
-from llm_twin.orchestration import steps
+
+from llm_twin.orchestration.steps import etl as etl_steps
 
 
 @zenml.pipeline
 def some_pipeline() -> None:
-    username = steps.get_user()
-    steps.do_something_with_user(username=username)
+    etl_steps.get_or_create_user(user_full_name="Ed Wilson")
 
 
 if __name__ == "__main__":

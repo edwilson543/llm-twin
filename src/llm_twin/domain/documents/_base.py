@@ -41,13 +41,15 @@ class NoSQLDocument(pydantic.BaseModel, abc.ABC):
         """
         collection = cls._get_collection_name()
 
-        if raw_document := db.find_one(
-            collection=collection, filter_options=filter_options
-        ):
+        try:
+            raw_document = db.find_one(
+                collection=collection, filter_options=filter_options
+            )
             instance = cls.deserialize(raw_document=raw_document)
-        else:
+        except _db.DocumentDoesNotExist:
             instance = cls(**filter_options)
             instance.save(db=db)
+
         return instance
 
     def save(self, *, db: _db.NoSQLDatabase) -> None:
