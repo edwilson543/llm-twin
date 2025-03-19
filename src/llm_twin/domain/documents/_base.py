@@ -30,6 +30,17 @@ class NoSQLDocument(pydantic.BaseModel, abc.ABC):
     # Database operations.
 
     @classmethod
+    def get(cls, *, db: _db.NoSQLDatabase, **filter_options: typing.Any) -> typing.Self:
+        """
+        Find a document from the database.
+
+        :raises DocumentDoesNotExist: If no such document was found.
+        """
+        collection = cls._get_collection_name()
+        raw_document = db.find_one(collection=collection, **filter_options)
+        return cls.deserialize(raw_document)
+
+    @classmethod
     def get_or_create(
         cls, *, db: _db.NoSQLDatabase, **filter_options: typing.Any
     ) -> typing.Self:
@@ -39,13 +50,8 @@ class NoSQLDocument(pydantic.BaseModel, abc.ABC):
         :raises UnableToSaveDocument if the document had to be created but could
             not be saved in the database.
         """
-        collection = cls._get_collection_name()
-
         try:
-            raw_document = db.find_one(
-                collection=collection, filter_options=filter_options
-            )
-            instance = cls.deserialize(raw_document=raw_document)
+            instance = cls.get(db=db, filter_options=filter_options)
         except _db.DocumentDoesNotExist:
             instance = cls(**filter_options)
             instance.save(db=db)
@@ -102,6 +108,7 @@ class ExtractedDocument(NoSQLDocument, abc.ABC):
     """
     A document that was extracted from some webpage, by a crawler.
     """
+
     content: dict
     platform: str
     author_id: pydantic.UUID4
