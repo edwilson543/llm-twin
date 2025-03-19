@@ -9,15 +9,9 @@ class MediumCrawler(_base.SeleniumCrawler):
     def _set_extra_driver_options(self, options) -> None:
         options.add_argument(r"--profile-directory=Profile 2")
 
-    def extract(
+    def _extract(
         self, *, db: documents.NoSQLDatabase, link: str, user: documents.UserDocument
     ) -> None:
-        try:
-            documents.ArticleDocument.get(db=db, link=link)
-            return
-        except documents.DocumentDoesNotExist:
-            pass
-
         self.driver.get(link)
         self.scroll_page()
 

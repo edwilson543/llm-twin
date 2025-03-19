@@ -13,18 +13,12 @@ class GithubCrawler(_base.Crawler):
         super().__init__()
         self._ignore = ignore
 
-    def extract(
+    def _extract(
         self, *, db: documents.NoSQLDatabase, link: str, user: documents.UserDocument
     ) -> None:
         """
         Extract the content from a GitHub repo and save it in the db.
         """
-        try:
-            documents.RepositoryDocument.get(db=db, link=link)
-            return
-        except documents.DocumentDoesNotExist:
-            pass
-
         repo_name = link.rstrip("/").split("/")[-1]
         local_temp_dir = tempfile.mktemp()
 

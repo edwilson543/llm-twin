@@ -19,8 +19,20 @@ class Crawler(abc.ABC):
     Base class for crawling a webpage and extracting relevant information.
     """
 
-    @abc.abstractmethod
     def extract(
+        self, *, db: documents.NoSQLDatabase, link: str, user: documents.UserDocument
+    ) -> None:
+        try:
+            documents.RepositoryDocument.get(db=db, link=link)
+            loguru.logger.info(
+                f"Skipping crawling {link} since document already extracted"
+            )
+        except documents.DocumentDoesNotExist:
+            loguru.logger.info(f"Attempting to extract document(s) from {link}")
+            self._extract(db=db, link=link, user=user)
+
+    @abc.abstractmethod
+    def _extract(
         self, *, db: documents.NoSQLDatabase, link: str, user: documents.UserDocument
     ) -> None:
         raise NotImplementedError
