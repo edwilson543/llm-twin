@@ -17,6 +17,7 @@ class CrawlerDispatcher:
     ) -> None:
         self._crawler_registry = crawler_registry or {
             "fake.com": _crawlers.FakeCrawler(),
+            "github.com": _crawlers.GithubCrawler(),
         }
 
     def get_crawler(self, *, link: str) -> _crawlers.Crawler:

@@ -6,4 +6,5 @@ from ._db import (
     RawDocument,
     UnableToSaveDocument,
 )
+from ._repository import RepositoryDocument
 from ._users import UserDocument

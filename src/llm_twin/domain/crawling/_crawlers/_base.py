@@ -20,7 +20,9 @@ class Crawler(abc.ABC):
     """
 
     @abc.abstractmethod
-    def extract(self, *, link: str, user: documents.UserDocument) -> None:
+    def extract(
+        self, *, db: documents.NoSQLDatabase, link: str, user: documents.UserDocument
+    ) -> None:
         raise NotImplementedError
 
 
