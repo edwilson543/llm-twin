@@ -40,6 +40,11 @@ zenml_up:
 zenml_down:
 	zenml logout --local
 
+
+.PHONY:mongosh
+mongosh:
+	docker exec -it llm-twin-mongo mongosh "mongodb://mongo_user:mongo_password@127.0.0.1:27017" --username mongo_user --authenticationDatabase admin
+
 # CI checks
 
 local_ci: test lint
