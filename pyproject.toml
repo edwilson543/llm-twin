@@ -17,6 +17,7 @@ requires-python = ">=3.13"
 # Dependencies
 
 dependencies = [
+    "bs4>=0.0.2",
     "chromedriver-autoinstaller>=0.6.4",
     "loguru>=0.7.3",
     "pydantic-settings>=2.8.1",
