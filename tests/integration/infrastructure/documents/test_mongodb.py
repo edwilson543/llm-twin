@@ -4,17 +4,6 @@ import pytest
 
 from llm_twin.domain import documents
 from llm_twin.infrastructure.documents import _mongodb
-from testing import settings
-
-
-@pytest.fixture(scope="session")
-def connector() -> _mongodb.MongoDatabaseConnector:
-    return _mongodb.MongoDatabaseConnector(settings=settings.IntegrationTestSettings())
-
-
-@pytest.fixture(scope="function")
-def db(connector) -> _mongodb.MongoDatabase:
-    return _mongodb.MongoDatabase(_connector=connector)
 
 
 class TestInsertOneFindOne:
