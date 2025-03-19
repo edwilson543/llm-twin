@@ -16,11 +16,14 @@ def crawl_links(
     user: documents.UserDocument,
     links: list[str],
     context: context.StepContext | None = None,
+    db: documents.NoSQLDatabase | None = None,
 ) -> typing.Annotated[list[str], "crawled_links"]:
-    dispatcher = crawling.CrawlerDispatcher()
     loguru.logger.info(f"Crawling links {links}")
 
-    metadata = defaultdict(lambda: defaultdict(int))
+    db = db or documents_backend.get_nosql_database()
+    dispatcher = crawling.CrawlerDispatcher()
+
+    metadata: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
     successful_crawls = 0
 
     for link in tqdm.tqdm(links):
@@ -28,7 +31,7 @@ def crawl_links(
         crawler = dispatcher.get_crawler(link=link)
 
         try:
-            crawler.extract(link=link, user=user)
+            crawler.extract(db=db, link=link, user=user)
             metadata[domain]["successful"] += 1
             successful_crawls += 1
         except crawling.UnableToCrawlLink:
