@@ -1,3 +1,4 @@
+from ._article import ArticleDocument
 from ._base import NoSQLDocument
 from ._db import (
     Collection,
