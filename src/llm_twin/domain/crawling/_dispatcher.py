@@ -16,6 +16,7 @@ class CrawlerDispatcher:
         self, *, crawler_registry: dict[str, _crawlers.Crawler] | None = None
     ) -> None:
         self._crawler_registry = crawler_registry or {
+            "broken.com": _crawlers.BrokenCrawler(),
             "fake.com": _crawlers.FakeCrawler(),
             "github.com": _crawlers.GithubCrawler(),
         }
