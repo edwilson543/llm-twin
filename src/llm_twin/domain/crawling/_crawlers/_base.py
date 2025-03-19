@@ -3,6 +3,7 @@ import dataclasses
 import tempfile
 import time
 
+import loguru
 from selenium import webdriver
 from selenium.webdriver.chrome import options as chrome_options
 

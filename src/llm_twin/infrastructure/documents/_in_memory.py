@@ -11,6 +11,10 @@ class InMemoryNoSQLDatabase(documents.NoSQLDatabase):
         default_factory=lambda: collections.defaultdict(list)
     )
 
+    @property
+    def data(self) -> dict[documents.Collection, list[documents.RawDocument]]:
+        return dict(self._data)
+
     def find_one(
         self, *, collection: documents.Collection, **filter_options: object
     ) -> documents.RawDocument:

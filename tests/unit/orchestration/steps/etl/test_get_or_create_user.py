@@ -43,4 +43,4 @@ def test_gets_user_when_user_already_exists():
     assert added_metadata["retrieved"]["first_name"] == "Ed"
     assert added_metadata["retrieved"]["last_name"] == "Wilson"
 
-    assert db._data == data
+    assert db.data == data
