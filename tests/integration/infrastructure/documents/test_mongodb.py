@@ -19,21 +19,23 @@ def db(connector) -> _mongodb.MongoDatabase:
 
 class TestInsertOneFindOne:
     def test_finds_document_that_was_inserted(self, db: _mongodb.MongoDatabase):
+        collection = documents.Collection.USERS
         document = {"id": str(uuid.uuid4()), "foo": "bar"}
         other_document = {"id": str(uuid.uuid4()), "baz": "qux"}
 
-        db.insert_one(collection="some-collection", document=document)
-        db.insert_one(collection="some-collection", document=other_document)
+        db.insert_one(collection=collection, document=document)
+        db.insert_one(collection=collection, document=other_document)
 
-        result = db.find_one(collection="some-collection", id=document["id"])
+        result = db.find_one(collection=collection, id=document["id"])
 
         assert result == document
 
     def test_raises_when_document_does_not_exist_for_collection(
         self, db: _mongodb.MongoDatabase
     ):
+        collection = documents.Collection.USERS
         document = {"id": str(uuid.uuid4()), "foo": "bar"}
-        db.insert_one(collection="some-collection", document=document)
+        db.insert_one(collection=collection, document=document)
 
         with pytest.raises(documents.DocumentDoesNotExist):
-            db.find_one(collection="some-other-collection", id=document["id"])
+            db.find_one(collection=documents.Collection.POSTS, id=document["id"])

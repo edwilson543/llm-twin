@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import abc
 import dataclasses
+import enum
 import typing
 
 
@@ -18,9 +19,18 @@ class UnableToSaveDocument(Exception):
     pass
 
 
+class Collection(enum.Enum):
+    ARTICLES = "articles"
+    POSTS = "posts"
+    REPOSITORIES = "repositories"
+    USERS = "users"
+
+
 class NoSQLDatabase(abc.ABC):
     @abc.abstractmethod
-    def find_one(self, *, collection: str, **filter_options: object) -> RawDocument:
+    def find_one(
+        self, *, collection: Collection, **filter_options: object
+    ) -> RawDocument:
         """
         Find a document in a collection, using some filters.
 
@@ -29,7 +39,7 @@ class NoSQLDatabase(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def insert_one(self, *, collection: str, document: RawDocument) -> None:
+    def insert_one(self, *, collection: Collection, document: RawDocument) -> None:
         """
         Save a document in a collection.
 

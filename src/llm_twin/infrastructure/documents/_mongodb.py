@@ -38,9 +38,11 @@ class MongoDatabaseConnector:
 
         return super().__new__(cls)
 
-    def get_collection(self, collection: str) -> pymongo_collection.Collection:
+    def get_collection(
+        self, collection: documents.Collection
+    ) -> pymongo_collection.Collection:
         assert self._database is not None  # For mypy.
-        return self._database[collection]
+        return self._database[collection.value]
 
 
 @dataclasses.dataclass
@@ -50,7 +52,7 @@ class MongoDatabase(documents.NoSQLDatabase):
     )
 
     def find_one(
-        self, *, collection: str, **filter_options: object
+        self, *, collection: documents.Collection, **filter_options: object
     ) -> documents.RawDocument:
         mongo_collection = self._connector.get_collection(collection)
 
@@ -58,7 +60,9 @@ class MongoDatabase(documents.NoSQLDatabase):
             raise documents.DocumentDoesNotExist
         return result
 
-    def insert_one(self, *, collection: str, document: documents.RawDocument) -> None:
+    def insert_one(
+        self, *, collection: documents.Collection, document: documents.RawDocument
+    ) -> None:
         mongo_collection = self._connector.get_collection(collection)
 
         try:

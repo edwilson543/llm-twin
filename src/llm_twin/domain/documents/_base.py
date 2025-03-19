@@ -91,7 +91,7 @@ class NoSQLDocument(pydantic.BaseModel, abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    def _get_collection_name(cls) -> str:
+    def _get_collection_name(cls) -> _db.Collection:
         """
         Get the name of the collection used to store this document type in the database.
         """

@@ -7,12 +7,12 @@ from llm_twin.domain.documents import RawDocument
 
 @dataclasses.dataclass(frozen=True)
 class InMemoryNoSQLDatabase(documents.NoSQLDatabase):
-    _data: dict[str, list[documents.RawDocument]] = dataclasses.field(
+    _data: dict[documents.Collection, list[documents.RawDocument]] = dataclasses.field(
         default_factory=lambda: collections.defaultdict(list)
     )
 
     def find_one(
-        self, *, collection: str, **filter_options: object
+        self, *, collection: documents.Collection, **filter_options: object
     ) -> documents.RawDocument:
         collection_documents = self._data.get(collection, [])
         for raw_document in collection_documents:
@@ -23,5 +23,7 @@ class InMemoryNoSQLDatabase(documents.NoSQLDatabase):
                 return raw_document
         raise documents.DocumentDoesNotExist()
 
-    def insert_one(self, *, collection: str, document: RawDocument) -> None:
+    def insert_one(
+        self, *, collection: documents.Collection, document: RawDocument
+    ) -> None:
         self._data[collection].append(document)

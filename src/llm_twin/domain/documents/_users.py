@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from . import _base
+from . import _base, _db
 
 
 class UserDocument(_base.NoSQLDocument):
@@ -8,8 +8,8 @@ class UserDocument(_base.NoSQLDocument):
     last_name: str
 
     @classmethod
-    def _get_collection_name(cls) -> str:
-        return "users"
+    def _get_collection_name(cls) -> _db.Collection:
+        return _db.Collection.USERS
 
     @property
     def full_name(self) -> str:

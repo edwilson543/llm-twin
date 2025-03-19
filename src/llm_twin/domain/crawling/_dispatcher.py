@@ -15,7 +15,9 @@ class CrawlerDispatcher:
     def __init__(
         self, *, crawler_registry: dict[str, _crawlers.Crawler] | None = None
     ) -> None:
-        self._crawler_registry = crawler_registry or {"fake.com": _crawlers.FakeCrawler}
+        self._crawler_registry = crawler_registry or {
+            "fake.com": _crawlers.FakeCrawler(),
+        }
 
     def get_crawler(self, *, link: str) -> _crawlers.Crawler:
         domain = urlparse(link).netloc
