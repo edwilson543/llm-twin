@@ -96,3 +96,13 @@ class NoSQLDocument(pydantic.BaseModel, abc.ABC):
         Get the name of the collection used to store this document type in the database.
         """
         raise NotImplementedError
+
+
+class ExtractedDocument(NoSQLDocument, abc.ABC):
+    """
+    A document that was extracted from some webpage, by a crawler.
+    """
+    content: dict
+    platform: str
+    author_id: pydantic.UUID4
+    author_full_name: str
