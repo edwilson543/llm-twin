@@ -44,7 +44,11 @@ zenml_down:
 
 local_ci: test lint
 
-test: test_unit test_integration
+test: test_unit docker_up_test test_integration
+
+.PHONY:docker_up_test
+docker_up_test:
+	  MONGO_INITDB_DATABASE=llm-twin-test docker-compose up -d
 
 .PHONY:test_unit
 test_unit:
@@ -52,7 +56,6 @@ test_unit:
 
 .PHONY:test_integration
 test_integration:
-	MONGO_INITDB_DATABASE=llm-twin-test docker-compose up -d
 	uv run pytest tests/integration
 
 lint: mypy check lint_imports
