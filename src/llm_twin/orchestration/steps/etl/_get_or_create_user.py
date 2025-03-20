@@ -13,10 +13,9 @@ from llm_twin.orchestration.steps import context
 def get_or_create_user(
     user_full_name: str,
     context: context.StepContext | None = None,
-    db: documents.NoSQLDatabase | None = None,
 ) -> typing.Annotated[documents.UserDocument, "user"]:
     loguru.logger.info(f"Getting or creating user: {user_full_name}")
-    db = db or documents_backend.get_nosql_database()
+    db = documents_backend.get_nosql_database()
 
     name = utils.split_user_full_name(user_full_name)
     user_document = documents.UserDocument.get_or_create(

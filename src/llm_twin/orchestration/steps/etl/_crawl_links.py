@@ -1,3 +1,4 @@
+import json
 import typing
 from collections import defaultdict
 from urllib.parse import urlparse
@@ -16,11 +17,10 @@ def crawl_links(
     user: documents.UserDocument,
     links: list[str],
     context: context.StepContext | None = None,
-    db: documents.NoSQLDatabase | None = None,
 ) -> typing.Annotated[list[str], "crawled_links"]:
     loguru.logger.info(f"Crawling links {links}")
 
-    db = db or documents_backend.get_nosql_database()
+    db = documents_backend.get_nosql_database()
     dispatcher = crawling.CrawlerDispatcher()
 
     metadata: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
@@ -41,7 +41,7 @@ def crawl_links(
 
     step_context = context or zenml.get_step_context()
     step_context.add_output_metadata(
-        output_name="crawled_links", metadata=dict(metadata)
+        output_name="crawled_links", metadata=json.loads(json.dumps(metadata))
     )
 
     loguru.logger.info(

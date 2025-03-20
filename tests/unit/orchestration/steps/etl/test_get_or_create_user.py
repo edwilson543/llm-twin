@@ -5,15 +5,17 @@ from llm_twin.domain import documents
 from llm_twin.infrastructure.documents import _in_memory as _in_memory_nosql_database
 from llm_twin.orchestration.steps.etl import _get_or_create_user
 from testing.helpers import context as context_helpers
+from testing.helpers import infrastructure as infrastructure_helpers
 
 
 def test_creates_user_when_user_does_not_exist():
     db = _in_memory_nosql_database.InMemoryNoSQLDatabase()
     context = context_helpers.FakeContext()
 
-    _get_or_create_user.get_or_create_user.entrypoint(
-        user_full_name="Ed Wilson", context=context, db=db
-    )
+    with infrastructure_helpers.install_nosql_db(db=db):
+        _get_or_create_user.get_or_create_user.entrypoint(
+            user_full_name="Ed Wilson", context=context
+        )
 
     added_metadata = context.output_metadata["user"]
     assert added_metadata["retrieved"]["first_name"] == "Ed"
@@ -35,9 +37,10 @@ def test_gets_user_when_user_already_exists():
     db = _in_memory_nosql_database.InMemoryNoSQLDatabase(_data=data)
     context = context_helpers.FakeContext()
 
-    _get_or_create_user.get_or_create_user.entrypoint(
-        user_full_name="Ed Wilson", context=context, db=db
-    )
+    with infrastructure_helpers.install_nosql_db(db=db):
+        _get_or_create_user.get_or_create_user.entrypoint(
+            user_full_name="Ed Wilson", context=context
+        )
 
     added_metadata = context.output_metadata["user"]
     assert added_metadata["retrieved"]["first_name"] == "Ed"

@@ -2,6 +2,7 @@ import uuid
 
 from llm_twin.domain import documents
 from llm_twin.orchestration.pipelines import _etl_user_data
+from testing.helpers import infrastructure as infrastructure_helpers
 
 
 def test_extracts_transforms_and_loads_data_for_user(db: documents.NoSQLDatabase):
@@ -12,9 +13,11 @@ def test_extracts_transforms_and_loads_data_for_user(db: documents.NoSQLDatabase
 
     first_name = str(uuid.uuid4())
     last_name = str(uuid.uuid4())
-    _etl_user_data.etl_user_data.entrypoint(
-        user_full_name=f"{first_name} {last_name}", links=links, db=db
-    )
+
+    with infrastructure_helpers.install_nosql_db(db=db):
+        _etl_user_data.etl_user_data.entrypoint(
+            user_full_name=f"{first_name} {last_name}", links=links
+        )
 
     author = documents.UserDocument.get(
         db=db, first_name=first_name, last_name=last_name
