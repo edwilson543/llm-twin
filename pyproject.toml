@@ -43,6 +43,7 @@ ci = [
 pythonpath = "./src/llm_twin"
 filterwarnings = [
     "ignore:pkg_resources:DeprecationWarning:zenml",
+    "ignore:The `schema` method is deprecated; use `model_json_schema` instead:pydantic.PydanticDeprecatedSince20:pydantic.main"
 ]
 
 
@@ -64,10 +65,10 @@ containers = "llm_twin"
 layers = [
     "interfaces",
     "orchestration",
-    "application",
     "infrastructure",
     "settings",
     "domain",
+    "utils",
 ]
 exhaustive = true
 
