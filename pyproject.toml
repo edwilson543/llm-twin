@@ -24,6 +24,7 @@ dependencies = [
     "loguru>=0.7.3",
     "pydantic-settings>=2.8.1",
     "pymongo>=4.11.2",
+    "pytest-env>=1.1.5",
     "selenium>=4.29.0",
     "tqdm>=4.67.1",
     "zenml[server]>=0.75.0",
