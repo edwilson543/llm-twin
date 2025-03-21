@@ -47,6 +47,9 @@ filterwarnings = [
     "ignore:The `schema` method is deprecated; use `model_json_schema` instead:pydantic.PydanticDeprecatedSince20:pydantic.main"
 ]
 
+[tool.pytest_env]
+MONGO_DATABASE_HOST = "mongodb://test_user:test_password@127.0.0.1:27018"
+MONGO_DATABASE_NAME = "llm-twin-test"
 
 [tool.mypy]
 ignore_missing_imports = true

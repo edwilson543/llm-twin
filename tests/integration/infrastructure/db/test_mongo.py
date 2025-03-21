@@ -4,13 +4,14 @@ import pytest
 
 from llm_twin.domain import documents
 from llm_twin.infrastructure.db import mongo
+from llm_twin.settings import settings
 
 
 @pytest.fixture(scope="module")
-def _connector(integration_test_settings) -> mongo.MongoDatabaseConnector:
+def _connector() -> mongo.MongoDatabaseConnector:
     return mongo.MongoDatabaseConnector(
-        database_host=integration_test_settings.MONGO_DATABASE_HOST,
-        database_name=integration_test_settings.MONGO_DATABASE_NAME,
+        database_host=settings.MONGO_DATABASE_HOST,
+        database_name=settings.MONGO_DATABASE_NAME,
     )
 
 
