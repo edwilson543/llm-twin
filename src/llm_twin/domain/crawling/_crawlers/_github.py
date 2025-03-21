@@ -20,7 +20,7 @@ class GithubCrawler(_base.Crawler):
         Extract the content from a GitHub repo and save it in the db.
         """
         repo_name = link.rstrip("/").split("/")[-1]
-        local_temp_dir = tempfile.mktemp()
+        local_temp_dir = tempfile.mkdtemp()
 
         try:
             os.chdir(local_temp_dir)

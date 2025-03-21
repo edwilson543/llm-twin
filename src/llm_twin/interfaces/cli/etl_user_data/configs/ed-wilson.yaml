@@ -1,0 +1,15 @@
+parameters:
+  user_full_name: Ed Wilson
+  links:
+    # GitHub
+    - https://github.com/edwilson543/llm-twin
+    - https://github.com/edwilson543/llm-cli
+    - https://github.com/edwilson543/rusty-chess
+    - https://github.com/edwilson543/sudoku
+    - https://github.com/edwilson543/nutrimise
+    - https://github.com/edwilson543/timetable-solutions
+    - https://github.com/edwilson543/noughts-and-crosses
+    - https://github.com/edwilson543/reciply-backend
+    - https://github.com/edwilson543/reciply-mobile
+    - https://github.com/edwilson543/casino
+    - https://github.com/edwilson543/today-i-learnt

@@ -34,6 +34,7 @@ def crawl_links(
             crawler.extract(db=db, link=link, user=user)
             metadata[domain]["successful"] += 1
             successful_crawls += 1
+            loguru.logger.info(f"Successfully crawled {link}.")
         except crawling.UnableToCrawlLink:
             loguru.logger.error(f"Unable to crawl link: {link}")
 

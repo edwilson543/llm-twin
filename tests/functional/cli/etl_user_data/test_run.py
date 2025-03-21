@@ -1,14 +1,16 @@
+import pytest
 from click import testing as click_testing
 from zenml import client as zenml_client
 
 from llm_twin import settings
 from llm_twin.domain import documents
+from llm_twin.interfaces.cli import exceptions as cli_exceptions
 from llm_twin.interfaces.cli.etl_user_data.run import run
 
 
-def test_runs_etl_pipeline():
-    args = ["--config-filename", "jackof-alltrades.yaml", "--disable-cache"]
 def test_runs_etl_pipeline_and_persists_outcome():
+    args = ["--config-filename", "jackof-alltrades.yaml", "--disable-cache"]
+    command_runner = click_testing.CliRunner()
 
     result = command_runner.invoke(run, args)
 
