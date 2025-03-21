@@ -1,7 +1,6 @@
 from unittest import mock
 
 from llm_twin.domain import documents
-from llm_twin.infrastructure.documents import _in_memory as _in_memory_nosql_database
 from llm_twin.orchestration.steps.etl import _crawl_links
 from testing.factories import documents as document_factories
 from testing.helpers import context as context_helpers
@@ -10,7 +9,6 @@ from testing.helpers import infrastructure as infrastructure_helpers
 
 def test_crawls_links_for_fake_domain_successfully():
     user = document_factories.UserDocument()
-    db = _in_memory_nosql_database.InMemoryNoSQLDatabase()
     context = context_helpers.FakeContext()
 
     links = [
@@ -18,7 +16,7 @@ def test_crawls_links_for_fake_domain_successfully():
         "https://fake.com/edwilson543/post-2/",
     ]
 
-    with infrastructure_helpers.install_nosql_db(db=db):
+    with infrastructure_helpers.install_in_memory_db() as db:
         _crawl_links.crawl_links.entrypoint(user=user, links=links, context=context)
 
     assert db.data == {
@@ -45,7 +43,6 @@ def test_crawls_links_for_fake_domain_successfully():
 
 def test_continues_after_failing_to_crawl_broken_link():
     user = document_factories.UserDocument()
-    db = _in_memory_nosql_database.InMemoryNoSQLDatabase()
     context = context_helpers.FakeContext()
 
     links = [
@@ -53,7 +50,7 @@ def test_continues_after_failing_to_crawl_broken_link():
         "https://fake.com/edwilson543/post-2/",
     ]
 
-    with infrastructure_helpers.install_nosql_db(db=db):
+    with infrastructure_helpers.install_in_memory_db() as db:
         _crawl_links.crawl_links.entrypoint(user=user, links=links, context=context)
 
     assert db.data == {

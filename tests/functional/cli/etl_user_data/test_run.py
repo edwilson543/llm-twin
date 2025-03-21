@@ -4,15 +4,13 @@ from zenml import client as zenml_client
 from llm_twin.domain import documents
 from llm_twin.infrastructure import documents as documents_backend
 from llm_twin.interfaces.cli.etl_user_data.run import run
-from testing.helpers import infrastructure as infrastructure_helpers
 
 
-def test_runs_etl_pipeline(db):
+def test_runs_etl_pipeline():
     args = ["--config-filename", "jackof-alltrades.yaml", "--disable-cache"]
-    command_runner = click_testing.CliRunner()
+def test_runs_etl_pipeline_and_persists_outcome():
 
-    with infrastructure_helpers.install_nosql_db(db=db):
-        result = command_runner.invoke(run, args)
+    result = command_runner.invoke(run, args)
 
     assert result.exit_code == 0
 

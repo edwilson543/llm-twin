@@ -6,6 +6,16 @@ from llm_twin.domain import documents
 from llm_twin.infrastructure.documents import _mongodb
 
 
+@pytest.fixture(scope="module")
+def _connector(integration_test_settings) -> _mongodb.MongoDatabaseConnector:
+    return _mongodb.MongoDatabaseConnector(settings=integration_test_settings)
+
+
+@pytest.fixture(scope="function")
+def db(_connector) -> _mongodb.MongoDatabase:
+    return _mongodb.MongoDatabase(_connector=_connector)
+
+
 class TestInsertOneFindOne:
     def test_finds_document_that_was_inserted(self, db: _mongodb.MongoDatabase):
         collection = documents.Collection.USERS

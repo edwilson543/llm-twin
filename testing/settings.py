@@ -11,3 +11,7 @@ class IntegrationTestSettings(settings.Settings):
     NOSQL_BACKEND: str = "MONGODB"
     MONGO_DATABASE_HOST: str = "mongodb://test_user:test_password@127.0.0.1:27018"
     MONGO_DATABASE_NAME: str = "llm-twin-test"
+
+
+class FunctionalTestSettings(settings.Settings):
+    pass
