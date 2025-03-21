@@ -8,7 +8,10 @@ from llm_twin.infrastructure.documents import _mongodb
 
 @pytest.fixture(scope="module")
 def _connector(integration_test_settings) -> _mongodb.MongoDatabaseConnector:
-    return _mongodb.MongoDatabaseConnector(settings=integration_test_settings)
+    return _mongodb.MongoDatabaseConnector(
+        database_host=integration_test_settings.MONGO_DATABASE_HOST,
+        database_name=integration_test_settings.MONGO_DATABASE_NAME,
+    )
 
 
 @pytest.fixture(scope="function")

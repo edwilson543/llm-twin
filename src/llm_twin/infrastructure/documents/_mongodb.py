@@ -8,7 +8,6 @@ from pymongo import database as pymongo_database
 from pymongo import errors as pymongo_errors
 from pymongo import mongo_client
 
-from llm_twin import settings
 from llm_twin.domain import documents
 
 
@@ -18,22 +17,23 @@ class MongoDatabaseConnector:
 
     def __new__(
         cls,
-        settings: settings.Settings = settings.settings,
+        database_host: str,
+        database_name: str,
         *args: object,
         **kwargs: object,
     ) -> MongoDatabaseConnector:
         if not hasattr(cls, "_client"):
             try:
-                cls._client = mongo_client.MongoClient(settings.MONGO_DATABASE_HOST)
+                cls._client = mongo_client.MongoClient(database_host)
             except pymongo_errors.ConnectionFailure as exc:
                 loguru.logger.error(f"Couldn't connect to the database: {str(exc)}")
                 raise
 
         if not hasattr(cls, "_database"):
-            cls._database = cls._client.get_database(settings.MONGO_DATABASE_NAME)
+            cls._database = cls._client.get_database(database_name)
 
         loguru.logger.info(
-            f"Connection to MongoDB with URI successful: {settings.MONGO_DATABASE_HOST}"
+            f"Connection to MongoDB with URI successful: {database_host}"
         )
 
         return super().__new__(cls)
@@ -47,9 +47,7 @@ class MongoDatabaseConnector:
 
 @dataclasses.dataclass
 class MongoDatabase(documents.NoSQLDatabase):
-    _connector: MongoDatabaseConnector = dataclasses.field(
-        default_factory=MongoDatabaseConnector
-    )
+    _connector: MongoDatabaseConnector
 
     def find_one(
         self, *, collection: documents.Collection, **filter_options: object

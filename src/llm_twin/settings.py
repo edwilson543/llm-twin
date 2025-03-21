@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import pydantic_settings
 
+from llm_twin.domain import documents
+from llm_twin.infrastructure.documents import _mongodb
+
 
 class Settings(pydantic_settings.BaseSettings):
     # NoSQL.
-    NOSQL_BACKEND: str = "MONGODB"
     MONGO_DATABASE_HOST: str = "mongodb://mongo_user:mongo_password@127.0.0.1:27017"
     MONGO_DATABASE_NAME: str = "llm-twin"
 
@@ -15,3 +17,11 @@ class Settings(pydantic_settings.BaseSettings):
 
 
 settings = Settings.load_settings()
+
+
+def get_nosql_database(settings: Settings = settings) -> documents.NoSQLDatabase:
+    connector = _mongodb.MongoDatabaseConnector(
+        database_host=settings.MONGO_DATABASE_HOST,
+        database_name=settings.MONGO_DATABASE_NAME,
+    )
+    return _mongodb.MongoDatabase(_connector=connector)

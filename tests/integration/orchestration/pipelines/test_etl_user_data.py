@@ -1,7 +1,7 @@
 import uuid
 
+from llm_twin import settings
 from llm_twin.domain import documents
-from llm_twin.infrastructure import documents as documents_backend
 from llm_twin.orchestration.pipelines import _etl_user_data
 
 
@@ -18,7 +18,7 @@ def test_extracts_transforms_and_loads_data_for_user():
         user_full_name=f"{first_name} {last_name}", links=links
     )
 
-    db = documents_backend.get_nosql_database()
+    db = settings.get_nosql_database()
     author = documents.UserDocument.get(
         db=db, first_name=first_name, last_name=last_name
     )

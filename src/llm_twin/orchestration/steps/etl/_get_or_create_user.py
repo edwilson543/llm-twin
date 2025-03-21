@@ -3,9 +3,8 @@ import typing
 import loguru
 import zenml
 
-from llm_twin import utils
+from llm_twin import settings, utils
 from llm_twin.domain import documents
-from llm_twin.infrastructure import documents as documents_backend
 from llm_twin.orchestration.steps import context
 
 
@@ -15,7 +14,7 @@ def get_or_create_user(
     context: context.StepContext | None = None,
 ) -> typing.Annotated[documents.UserDocument, "user"]:
     loguru.logger.info(f"Getting or creating user: {user_full_name}")
-    db = documents_backend.get_nosql_database()
+    db = settings.get_nosql_database()
 
     name = utils.split_user_full_name(user_full_name)
     user_document = documents.UserDocument.get_or_create(

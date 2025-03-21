@@ -65,8 +65,8 @@ containers = "llm_twin"
 layers = [
     "interfaces",
     "orchestration",
-    "infrastructure",
     "settings",
+    "infrastructure",
     "domain",
     "utils",
 ]

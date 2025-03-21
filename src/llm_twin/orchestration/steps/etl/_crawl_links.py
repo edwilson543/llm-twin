@@ -7,8 +7,8 @@ import loguru
 import tqdm
 import zenml
 
+from llm_twin import settings
 from llm_twin.domain import crawling, documents
-from llm_twin.infrastructure import documents as documents_backend
 from llm_twin.orchestration.steps import context
 
 
@@ -20,7 +20,7 @@ def crawl_links(
 ) -> typing.Annotated[list[str], "crawled_links"]:
     loguru.logger.info(f"Crawling links {links}")
 
-    db = documents_backend.get_nosql_database()
+    db = settings.get_nosql_database()
     dispatcher = crawling.CrawlerDispatcher()
 
     metadata: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))

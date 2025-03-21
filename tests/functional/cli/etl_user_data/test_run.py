@@ -1,8 +1,8 @@
 from click import testing as click_testing
 from zenml import client as zenml_client
 
+from llm_twin import settings
 from llm_twin.domain import documents
-from llm_twin.infrastructure import documents as documents_backend
 from llm_twin.interfaces.cli.etl_user_data.run import run
 
 
@@ -15,7 +15,7 @@ def test_runs_etl_pipeline_and_persists_outcome():
     assert result.exit_code == 0
 
     # Ensure the relevant articles were extracted.
-    db = documents_backend.get_nosql_database()
+    db = settings.get_nosql_database()
     author = documents.UserDocument.get(
         db=db, first_name="Jackof", last_name="Alltrades"
     )
