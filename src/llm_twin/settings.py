@@ -3,7 +3,7 @@ from __future__ import annotations
 import pydantic_settings
 
 from llm_twin.domain import documents
-from llm_twin.infrastructure.documents import _mongodb
+from llm_twin.infrastructure.db import mongo
 
 
 class Settings(pydantic_settings.BaseSettings):
@@ -20,8 +20,8 @@ settings = Settings.load_settings()
 
 
 def get_nosql_database(settings: Settings = settings) -> documents.NoSQLDatabase:
-    connector = _mongodb.MongoDatabaseConnector(
+    connector = mongo.MongoDatabaseConnector(
         database_host=settings.MONGO_DATABASE_HOST,
         database_name=settings.MONGO_DATABASE_NAME,
     )
-    return _mongodb.MongoDatabase(_connector=connector)
+    return mongo.MongoDatabase(_connector=connector)
