@@ -49,3 +49,6 @@ jobs:
 
       - name: Run integration tests
         run: make test_integration
+
+      - name: Run functional tests
+        run: make test_functional
