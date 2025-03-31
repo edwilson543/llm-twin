@@ -6,6 +6,8 @@ from . import _base
 
 
 class MediumCrawler(_base.SeleniumCrawler):
+    _document_class = documents.ArticleDocument
+
     def _set_extra_driver_options(self, options) -> None:
         options.add_argument(r"--profile-directory=Profile 2")
 

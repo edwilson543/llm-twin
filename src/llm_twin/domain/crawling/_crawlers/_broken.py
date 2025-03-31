@@ -4,6 +4,8 @@ from . import _base
 
 
 class BrokenCrawler(_base.Crawler):
+    _document_class = documents.ArticleDocument
+
     def _extract(
         self, *, db: documents.NoSQLDatabase, link: str, user: documents.UserDocument
     ) -> None:

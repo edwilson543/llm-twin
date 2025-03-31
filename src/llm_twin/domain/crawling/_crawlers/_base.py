@@ -20,11 +20,13 @@ class Crawler(abc.ABC):
     Base class for crawling a webpage and extracting relevant information.
     """
 
+    _document_class: type[documents.NoSQLDocument]
+
     def extract(
         self, *, db: documents.NoSQLDatabase, link: str, user: documents.UserDocument
     ) -> None:
         try:
-            documents.RepositoryDocument.get(db=db, link=link)
+            self._document_class.get(db=db, link=link)
             loguru.logger.info(
                 f"Skipping crawling {link} since document already extracted"
             )

@@ -9,6 +9,8 @@ from . import _base
 
 
 class GithubCrawler(_base.Crawler):
+    _document_class = documents.RepositoryDocument
+
     def __init__(self, ignore=(".git", ".toml", ".lock", ".png")) -> None:
         super().__init__()
         self._ignore = ignore
