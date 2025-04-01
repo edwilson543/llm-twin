@@ -2,7 +2,7 @@ import uuid
 
 from llm_twin import settings
 from llm_twin.domain import documents
-from llm_twin.orchestration.pipelines import _etl_user_data
+from llm_twin.orchestration.pipelines import _etl
 
 
 def test_extracts_transforms_and_loads_data_for_user():
@@ -14,7 +14,7 @@ def test_extracts_transforms_and_loads_data_for_user():
     first_name = str(uuid.uuid4())
     last_name = str(uuid.uuid4())
 
-    _etl_user_data.etl_user_data.entrypoint(
+    _etl.etl_user_data.entrypoint(
         user_full_name=f"{first_name} {last_name}", links=links
     )
 

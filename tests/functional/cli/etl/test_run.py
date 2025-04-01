@@ -5,7 +5,7 @@ from zenml import client as zenml_client
 from llm_twin import settings
 from llm_twin.domain import documents
 from llm_twin.interfaces.cli import exceptions as cli_exceptions
-from llm_twin.interfaces.cli.etl_user_data.run import run
+from llm_twin.interfaces.cli.etl.run import run
 
 
 def test_runs_etl_pipeline_and_persists_outcome():
