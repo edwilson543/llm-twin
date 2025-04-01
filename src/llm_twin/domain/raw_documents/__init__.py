@@ -1,5 +1,5 @@
 from ._article import ArticleDocument
-from ._base import RawDocument
+from ._base import ExtractedDocument, RawDocument
 from ._db import (
     Collection,
     DocumentDoesNotExist,

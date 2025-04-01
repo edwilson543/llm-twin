@@ -38,7 +38,7 @@ class RawDocument(pydantic.BaseModel, abc.ABC):
 
         :raises DocumentDoesNotExist: If no such document was found.
         """
-        collection = cls._get_collection_name()
+        collection = cls.get_collection_name()
         raw_document = db.find_one(collection=collection, **filter_options)
         return cls.deserialize(raw_document)
 
@@ -66,7 +66,7 @@ class RawDocument(pydantic.BaseModel, abc.ABC):
 
         :raises UnableToSaveDocument: If the operation fails for some reason.
         """
-        collection = self._get_collection_name()
+        collection = self.get_collection_name()
         serialized = self.serialize()
         db.insert_one(collection=collection, document=serialized)
 
@@ -99,7 +99,7 @@ class RawDocument(pydantic.BaseModel, abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    def _get_collection_name(cls) -> _db.Collection:
+    def get_collection_name(cls) -> _db.Collection:
         """
         Get the name of the collection used to store this document type in the database.
         """

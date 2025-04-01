@@ -8,7 +8,7 @@ class UserDocument(_base.RawDocument):
     last_name: str
 
     @classmethod
-    def _get_collection_name(cls) -> _db.Collection:
+    def get_collection_name(cls) -> _db.Collection:
         return _db.Collection.USERS
 
     @property
