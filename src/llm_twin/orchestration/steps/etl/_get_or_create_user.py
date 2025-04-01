@@ -14,7 +14,7 @@ def get_or_create_user(
     context: context.StepContext | None = None,
 ) -> typing.Annotated[raw_documents.UserDocument, "user"]:
     loguru.logger.info(f"Getting or creating user: {user_full_name}")
-    db = settings.get_nosql_database()
+    db = settings.get_raw_document_database()
 
     name = utils.split_user_full_name(user_full_name)
     user_document = raw_documents.UserDocument.get_or_create(

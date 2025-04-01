@@ -30,7 +30,9 @@ class RawDocument(pydantic.BaseModel, abc.ABC):
     # Database operations.
 
     @classmethod
-    def get(cls, *, db: _db.NoSQLDatabase, **filter_options: typing.Any) -> typing.Self:
+    def get(
+        cls, *, db: _db.RawDocumentDatabase, **filter_options: typing.Any
+    ) -> typing.Self:
         """
         Find a document from the database.
 
@@ -42,7 +44,7 @@ class RawDocument(pydantic.BaseModel, abc.ABC):
 
     @classmethod
     def get_or_create(
-        cls, *, db: _db.NoSQLDatabase, **filter_options: typing.Any
+        cls, *, db: _db.RawDocumentDatabase, **filter_options: typing.Any
     ) -> typing.Self:
         """
         Get or create a document from the database.
@@ -58,7 +60,7 @@ class RawDocument(pydantic.BaseModel, abc.ABC):
 
         return instance
 
-    def save(self, *, db: _db.NoSQLDatabase) -> None:
+    def save(self, *, db: _db.RawDocumentDatabase) -> None:
         """
         Insert this document into the relevant MongoDB collection.
 

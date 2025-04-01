@@ -46,12 +46,12 @@ class MongoDatabaseConnector:
 
 
 @dataclasses.dataclass
-class MongoDatabase(raw_documents.NoSQLDatabase):
+class MongoDatabase(raw_documents.RawDocumentDatabase):
     _connector: MongoDatabaseConnector
 
     def find_one(
         self, *, collection: raw_documents.Collection, **filter_options: object
-    ) -> raw_documents.RawDocument:
+    ) -> raw_documents.SerializedRawDocument:
         mongo_collection = self._connector.get_collection(collection)
 
         if (result := mongo_collection.find_one(filter_options)) is None:
@@ -62,7 +62,7 @@ class MongoDatabase(raw_documents.NoSQLDatabase):
         self,
         *,
         collection: raw_documents.Collection,
-        document: raw_documents.RawDocument,
+        document: raw_documents.SerializedRawDocument,
     ) -> None:
         mongo_collection = self._connector.get_collection(collection)
 

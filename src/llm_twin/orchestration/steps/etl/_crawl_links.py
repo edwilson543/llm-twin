@@ -20,7 +20,7 @@ def crawl_links(
 ) -> typing.Annotated[list[str], "crawled_links"]:
     loguru.logger.info(f"Crawling links {links}")
 
-    db = settings.get_nosql_database()
+    db = settings.get_raw_document_database()
     dispatcher = crawling.CrawlerDispatcher()
 
     metadata: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))

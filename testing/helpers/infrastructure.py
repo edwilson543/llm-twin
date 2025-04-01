@@ -6,22 +6,24 @@ from unittest import mock
 
 from llm_twin import settings
 from llm_twin.domain import raw_documents
-from llm_twin.domain.raw_documents import RawDocument
+from llm_twin.domain.raw_documents import SerializedRawDocument
 
 
 @dataclasses.dataclass(frozen=True)
-class InMemoryNoSQLDatabase(raw_documents.NoSQLDatabase):
-    _data: dict[raw_documents.Collection, list[raw_documents.RawDocument]] = (
+class InMemoryRawDocumentDatabase(raw_documents.RawDocumentDatabase):
+    _data: dict[raw_documents.Collection, list[raw_documents.SerializedRawDocument]] = (
         dataclasses.field(default_factory=lambda: collections.defaultdict(list))
     )
 
     @property
-    def data(self) -> dict[raw_documents.Collection, list[raw_documents.RawDocument]]:
+    def data(
+        self,
+    ) -> dict[raw_documents.Collection, list[raw_documents.SerializedRawDocument]]:
         return dict(self._data)
 
     def find_one(
         self, *, collection: raw_documents.Collection, **filter_options: object
-    ) -> raw_documents.RawDocument:
+    ) -> raw_documents.SerializedRawDocument:
         collection_documents = self._data.get(collection, [])
         for raw_document in collection_documents:
             if all(
@@ -32,18 +34,18 @@ class InMemoryNoSQLDatabase(raw_documents.NoSQLDatabase):
         raise raw_documents.DocumentDoesNotExist()
 
     def insert_one(
-        self, *, collection: raw_documents.Collection, document: RawDocument
+        self, *, collection: raw_documents.Collection, document: SerializedRawDocument
     ) -> None:
         self._data[collection].append(document)
 
 
 @contextlib.contextmanager
-def install_in_memory_db(
-    db: InMemoryNoSQLDatabase | None = None,
-) -> typing.Generator[InMemoryNoSQLDatabase, None, None]:
+def install_in_memory_raw_document_db(
+    db: InMemoryRawDocumentDatabase | None = None,
+) -> typing.Generator[InMemoryRawDocumentDatabase, None, None]:
     """
     Helper to install an in memory database for unit tests.
     """
-    db = db or InMemoryNoSQLDatabase()
-    with mock.patch.object(settings, "get_nosql_database", return_value=db):
+    db = db or InMemoryRawDocumentDatabase()
+    with mock.patch.object(settings, "get_raw_document_database", return_value=db):
         yield db

@@ -25,7 +25,7 @@ class Crawler(abc.ABC):
     def extract(
         self,
         *,
-        db: raw_documents.NoSQLDatabase,
+        db: raw_documents.RawDocumentDatabase,
         link: str,
         user: raw_documents.UserDocument,
     ) -> None:
@@ -42,7 +42,7 @@ class Crawler(abc.ABC):
     def _extract(
         self,
         *,
-        db: raw_documents.NoSQLDatabase,
+        db: raw_documents.RawDocumentDatabase,
         link: str,
         user: raw_documents.UserDocument,
     ) -> None:

@@ -6,7 +6,7 @@ import enum
 import typing
 
 
-RawDocument = dict[str, typing.Any]
+SerializedRawDocument = dict[str, typing.Any]
 
 
 @dataclasses.dataclass(frozen=True)
@@ -26,11 +26,11 @@ class Collection(enum.Enum):
     USERS = "users"
 
 
-class NoSQLDatabase(abc.ABC):
+class RawDocumentDatabase(abc.ABC):
     @abc.abstractmethod
     def find_one(
         self, *, collection: Collection, **filter_options: object
-    ) -> RawDocument:
+    ) -> SerializedRawDocument:
         """
         Find a document in a collection, using some filters.
 
@@ -39,7 +39,9 @@ class NoSQLDatabase(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def insert_one(self, *, collection: Collection, document: RawDocument) -> None:
+    def insert_one(
+        self, *, collection: Collection, document: SerializedRawDocument
+    ) -> None:
         """
         Save a document in a collection.
 

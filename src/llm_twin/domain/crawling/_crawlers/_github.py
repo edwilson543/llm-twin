@@ -18,7 +18,7 @@ class GithubCrawler(_base.Crawler):
     def _extract(
         self,
         *,
-        db: raw_documents.NoSQLDatabase,
+        db: raw_documents.RawDocumentDatabase,
         link: str,
         user: raw_documents.UserDocument,
     ) -> None:

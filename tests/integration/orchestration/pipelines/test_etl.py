@@ -18,7 +18,7 @@ def test_extracts_transforms_and_loads_data_for_user():
         user_full_name=f"{first_name} {last_name}", links=links
     )
 
-    db = settings.get_nosql_database()
+    db = settings.get_raw_document_database()
     author = raw_documents.UserDocument.get(
         db=db, first_name=first_name, last_name=last_name
     )

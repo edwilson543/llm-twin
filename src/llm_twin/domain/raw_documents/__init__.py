@@ -3,8 +3,8 @@ from ._base import RawDocument
 from ._db import (
     Collection,
     DocumentDoesNotExist,
-    NoSQLDatabase,
-    RawDocument,
+    RawDocumentDatabase,
+    SerializedRawDocument,
     UnableToSaveDocument,
 )
 from ._repository import RepositoryDocument

@@ -16,7 +16,7 @@ def test_crawls_links_for_fake_domain_successfully():
         "https://fake.com/edwilson543/post-2/",
     ]
 
-    with infrastructure_helpers.install_in_memory_db() as db:
+    with infrastructure_helpers.install_in_memory_raw_document_db() as db:
         _crawl_links.crawl_links.entrypoint(user=user, links=links, context=context)
 
     assert db.data == {
@@ -50,7 +50,7 @@ def test_continues_after_failing_to_crawl_broken_link():
         "https://fake.com/edwilson543/post-2/",
     ]
 
-    with infrastructure_helpers.install_in_memory_db() as db:
+    with infrastructure_helpers.install_in_memory_raw_document_db() as db:
         _crawl_links.crawl_links.entrypoint(user=user, links=links, context=context)
 
     assert db.data == {
