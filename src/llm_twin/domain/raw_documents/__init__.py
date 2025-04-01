@@ -1,4 +1,4 @@
-from ._article import ArticleDocument
+from ._article import Article
 from ._authors import Author
 from ._base import ExtractedDocument, RawDocument
 from ._db import (
@@ -8,4 +8,4 @@ from ._db import (
     SerializedRawDocument,
     UnableToSaveDocument,
 )
-from ._repository import RepositoryDocument
+from ._repository import Repository

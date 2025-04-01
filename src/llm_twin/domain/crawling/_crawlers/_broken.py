@@ -4,7 +4,7 @@ from . import _base
 
 
 class BrokenCrawler(_base.Crawler):
-    _document_class = raw_documents.ArticleDocument
+    _document_class = raw_documents.Article
 
     def _extract(
         self,

@@ -20,13 +20,13 @@ def test_runs_etl_pipeline_and_persists_outcome():
     db = settings.get_raw_document_database()
     author = raw_documents.Author.get(db=db, first_name="Jackof", last_name="Alltrades")
 
-    first_post = raw_documents.ArticleDocument.get(
+    first_post = raw_documents.Article.get(
         db=db, link="https://fake.com/blog/ten-things-to-be-average-at.html"
     )
     assert first_post.platform == "fake"
     assert first_post.author_id == author.id
 
-    second_post = raw_documents.ArticleDocument.get(
+    second_post = raw_documents.Article.get(
         db=db, link="https://fake.com/blog/top-tips-for-mediocracy.html"
     )
     assert second_post.platform == "fake"

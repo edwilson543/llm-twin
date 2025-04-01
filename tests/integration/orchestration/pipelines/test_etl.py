@@ -21,10 +21,10 @@ def test_extracts_transforms_and_loads_data_for_author():
     db = settings.get_raw_document_database()
     author = raw_documents.Author.get(db=db, first_name=first_name, last_name=last_name)
 
-    first_post = raw_documents.ArticleDocument.get(db=db, link=links[0])
+    first_post = raw_documents.Article.get(db=db, link=links[0])
     assert first_post.platform == "fake"
     assert first_post.author_id == author.id
 
-    second_post = raw_documents.ArticleDocument.get(db=db, link=links[1])
+    second_post = raw_documents.Article.get(db=db, link=links[1])
     assert second_post.platform == "fake"
     assert second_post.author_id == author.id

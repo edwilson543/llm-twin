@@ -4,7 +4,7 @@ from . import _base
 
 
 class FakeCrawler(_base.Crawler):
-    _document_class = raw_documents.ArticleDocument
+    _document_class = raw_documents.Article
 
     def _extract(
         self,
@@ -13,7 +13,7 @@ class FakeCrawler(_base.Crawler):
         link: str,
         author: raw_documents.Author,
     ) -> None:
-        document = raw_documents.ArticleDocument(
+        document = raw_documents.Article(
             platform="fake",
             content={"foo": "bar"},
             link=link,

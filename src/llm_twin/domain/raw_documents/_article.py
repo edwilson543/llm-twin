@@ -1,7 +1,7 @@
 from . import _base, _db
 
 
-class ArticleDocument(_base.ExtractedDocument):
+class Article(_base.ExtractedDocument):
     link: str
 
     @classmethod

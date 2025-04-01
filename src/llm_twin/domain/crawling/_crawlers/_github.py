@@ -9,7 +9,7 @@ from . import _base
 
 
 class GithubCrawler(_base.Crawler):
-    _document_class = raw_documents.RepositoryDocument
+    _document_class = raw_documents.Repository
 
     def __init__(self, ignore=(".git", ".toml", ".lock", ".png")) -> None:
         super().__init__()
@@ -49,7 +49,7 @@ class GithubCrawler(_base.Crawler):
         finally:
             shutil.rmtree(local_temp_dir)
 
-        instance = raw_documents.RepositoryDocument(
+        instance = raw_documents.Repository(
             content=tree,
             name=repo_name,
             link=link,

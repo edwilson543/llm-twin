@@ -1,7 +1,7 @@
 from . import _base, _db
 
 
-class RepositoryDocument(_base.ExtractedDocument):
+class Repository(_base.ExtractedDocument):
     name: str
     link: str
 

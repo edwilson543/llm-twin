@@ -6,7 +6,7 @@ from . import _base
 
 
 class MediumCrawler(_base.SeleniumCrawler):
-    _document_class = raw_documents.ArticleDocument
+    _document_class = raw_documents.Article
 
     def _set_extra_driver_options(self, options) -> None:
         options.add_argument(r"--profile-directory=Profile 2")
@@ -33,7 +33,7 @@ class MediumCrawler(_base.SeleniumCrawler):
 
         self.driver.close()
 
-        document = raw_documents.ArticleDocument(
+        document = raw_documents.Article(
             platform="medium",
             content=data,
             link=link,
