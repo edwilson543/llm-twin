@@ -2,7 +2,7 @@ import uuid
 
 import factory
 
-from llm_twin.domain import documents
+from llm_twin.domain import raw_documents
 
 
 class _Document(factory.Factory):
@@ -14,4 +14,4 @@ class UserDocument(_Document):
     last_name = factory.Sequence(lambda n: f"last-name-{n}")
 
     class Meta:
-        model = documents.UserDocument
+        model = raw_documents.UserDocument

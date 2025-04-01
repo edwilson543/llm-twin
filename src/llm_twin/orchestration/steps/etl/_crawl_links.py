@@ -8,13 +8,13 @@ import tqdm
 import zenml
 
 from llm_twin import settings
-from llm_twin.domain import crawling, documents
+from llm_twin.domain import crawling, raw_documents
 from llm_twin.orchestration.steps import context
 
 
 @zenml.step
 def crawl_links(
-    user: documents.UserDocument,
+    user: raw_documents.UserDocument,
     links: list[str],
     context: context.StepContext | None = None,
 ) -> typing.Annotated[list[str], "crawled_links"]:

@@ -1,6 +1,6 @@
 from unittest import mock
 
-from llm_twin.domain import documents
+from llm_twin.domain import raw_documents
 from llm_twin.orchestration.steps.etl import _crawl_links
 from testing.factories import documents as document_factories
 from testing.helpers import context as context_helpers
@@ -20,7 +20,7 @@ def test_crawls_links_for_fake_domain_successfully():
         _crawl_links.crawl_links.entrypoint(user=user, links=links, context=context)
 
     assert db.data == {
-        documents.Collection.ARTICLES: [
+        raw_documents.Collection.ARTICLES: [
             {
                 "_id": mock.ANY,
                 "author_full_name": user.full_name,
@@ -54,7 +54,7 @@ def test_continues_after_failing_to_crawl_broken_link():
         _crawl_links.crawl_links.entrypoint(user=user, links=links, context=context)
 
     assert db.data == {
-        documents.Collection.ARTICLES: [
+        raw_documents.Collection.ARTICLES: [
             {
                 "_id": mock.ANY,
                 "author_full_name": user.full_name,

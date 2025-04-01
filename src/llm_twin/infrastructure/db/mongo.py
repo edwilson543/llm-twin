@@ -8,7 +8,7 @@ from pymongo import database as pymongo_database
 from pymongo import errors as pymongo_errors
 from pymongo import mongo_client
 
-from llm_twin.domain import documents
+from llm_twin.domain import raw_documents
 
 
 class MongoDatabaseConnector:
@@ -39,31 +39,34 @@ class MongoDatabaseConnector:
         return super().__new__(cls)
 
     def get_collection(
-        self, collection: documents.Collection
+        self, collection: raw_documents.Collection
     ) -> pymongo_collection.Collection:
         assert self._database is not None  # For mypy.
         return self._database[collection.value]
 
 
 @dataclasses.dataclass
-class MongoDatabase(documents.NoSQLDatabase):
+class MongoDatabase(raw_documents.NoSQLDatabase):
     _connector: MongoDatabaseConnector
 
     def find_one(
-        self, *, collection: documents.Collection, **filter_options: object
-    ) -> documents.RawDocument:
+        self, *, collection: raw_documents.Collection, **filter_options: object
+    ) -> raw_documents.RawDocument:
         mongo_collection = self._connector.get_collection(collection)
 
         if (result := mongo_collection.find_one(filter_options)) is None:
-            raise documents.DocumentDoesNotExist
+            raise raw_documents.DocumentDoesNotExist
         return result
 
     def insert_one(
-        self, *, collection: documents.Collection, document: documents.RawDocument
+        self,
+        *,
+        collection: raw_documents.Collection,
+        document: raw_documents.RawDocument,
     ) -> None:
         mongo_collection = self._connector.get_collection(collection)
 
         try:
             mongo_collection.insert_one(document)
         except pymongo_errors.WriteError as exc:
-            raise documents.UnableToSaveDocument from exc
+            raise raw_documents.UnableToSaveDocument from exc

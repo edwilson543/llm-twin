@@ -1,15 +1,19 @@
-from llm_twin.domain import documents
+from llm_twin.domain import raw_documents
 
 from . import _base
 
 
 class FakeCrawler(_base.Crawler):
-    _document_class = documents.ArticleDocument
+    _document_class = raw_documents.ArticleDocument
 
     def _extract(
-        self, *, db: documents.NoSQLDatabase, link: str, user: documents.UserDocument
+        self,
+        *,
+        db: raw_documents.NoSQLDatabase,
+        link: str,
+        user: raw_documents.UserDocument,
     ) -> None:
-        document = documents.ArticleDocument(
+        document = raw_documents.ArticleDocument(
             platform="fake",
             content={"foo": "bar"},
             link=link,

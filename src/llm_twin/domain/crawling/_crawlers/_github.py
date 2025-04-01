@@ -3,20 +3,24 @@ import shutil
 import subprocess
 import tempfile
 
-from llm_twin.domain import documents
+from llm_twin.domain import raw_documents
 
 from . import _base
 
 
 class GithubCrawler(_base.Crawler):
-    _document_class = documents.RepositoryDocument
+    _document_class = raw_documents.RepositoryDocument
 
     def __init__(self, ignore=(".git", ".toml", ".lock", ".png")) -> None:
         super().__init__()
         self._ignore = ignore
 
     def _extract(
-        self, *, db: documents.NoSQLDatabase, link: str, user: documents.UserDocument
+        self,
+        *,
+        db: raw_documents.NoSQLDatabase,
+        link: str,
+        user: raw_documents.UserDocument,
     ) -> None:
         """
         Extract the content from a GitHub repo and save it in the db.
@@ -45,7 +49,7 @@ class GithubCrawler(_base.Crawler):
         finally:
             shutil.rmtree(local_temp_dir)
 
-        instance = documents.RepositoryDocument(
+        instance = raw_documents.RepositoryDocument(
             content=tree,
             name=repo_name,
             link=link,

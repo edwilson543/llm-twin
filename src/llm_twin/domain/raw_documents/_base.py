@@ -15,7 +15,7 @@ class DocumentIsEmpty(Exception):
     pass
 
 
-class NoSQLDocument(pydantic.BaseModel, abc.ABC):
+class RawDocument(pydantic.BaseModel, abc.ABC):
     id: pydantic.UUID4 = pydantic.Field(default_factory=uuid.uuid4)
 
     def __eq__(self, other: object) -> bool:
@@ -104,7 +104,7 @@ class NoSQLDocument(pydantic.BaseModel, abc.ABC):
         raise NotImplementedError
 
 
-class ExtractedDocument(NoSQLDocument, abc.ABC):
+class ExtractedDocument(RawDocument, abc.ABC):
     """
     A document that was extracted from some webpage, by a crawler.
     """

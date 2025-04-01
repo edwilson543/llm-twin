@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from llm_twin.domain import documents
+from llm_twin.domain import raw_documents
 from llm_twin.infrastructure.db import mongo
 from llm_twin.settings import settings
 
@@ -22,7 +22,7 @@ def db(_connector) -> mongo.MongoDatabase:
 
 class TestInsertOneFindOne:
     def test_finds_document_that_was_inserted(self, db: mongo.MongoDatabase):
-        collection = documents.Collection.USERS
+        collection = raw_documents.Collection.USERS
         document = {"id": str(uuid.uuid4()), "foo": "bar"}
         other_document = {"id": str(uuid.uuid4()), "baz": "qux"}
 
@@ -36,9 +36,9 @@ class TestInsertOneFindOne:
     def test_raises_when_document_does_not_exist_for_collection(
         self, db: mongo.MongoDatabase
     ):
-        collection = documents.Collection.USERS
+        collection = raw_documents.Collection.USERS
         document = {"id": str(uuid.uuid4()), "foo": "bar"}
         db.insert_one(collection=collection, document=document)
 
-        with pytest.raises(documents.DocumentDoesNotExist):
-            db.find_one(collection=documents.Collection.POSTS, id=document["id"])
+        with pytest.raises(raw_documents.DocumentDoesNotExist):
+            db.find_one(collection=raw_documents.Collection.POSTS, id=document["id"])

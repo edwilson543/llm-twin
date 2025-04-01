@@ -1,18 +1,22 @@
 from bs4 import BeautifulSoup
 
-from llm_twin.domain import documents
+from llm_twin.domain import raw_documents
 
 from . import _base
 
 
 class MediumCrawler(_base.SeleniumCrawler):
-    _document_class = documents.ArticleDocument
+    _document_class = raw_documents.ArticleDocument
 
     def _set_extra_driver_options(self, options) -> None:
         options.add_argument(r"--profile-directory=Profile 2")
 
     def _extract(
-        self, *, db: documents.NoSQLDatabase, link: str, user: documents.UserDocument
+        self,
+        *,
+        db: raw_documents.NoSQLDatabase,
+        link: str,
+        user: raw_documents.UserDocument,
     ) -> None:
         self.driver.get(link)
         self.scroll_page()
@@ -29,7 +33,7 @@ class MediumCrawler(_base.SeleniumCrawler):
 
         self.driver.close()
 
-        document = documents.ArticleDocument(
+        document = raw_documents.ArticleDocument(
             platform="medium",
             content=data,
             link=link,

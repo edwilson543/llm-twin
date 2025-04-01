@@ -7,7 +7,7 @@ import loguru
 from selenium import webdriver
 from selenium.webdriver.chrome import options as chrome_options
 
-from llm_twin.domain import documents
+from llm_twin.domain import raw_documents
 
 
 @dataclasses.dataclass(frozen=True)
@@ -20,23 +20,31 @@ class Crawler(abc.ABC):
     Base class for crawling a webpage and extracting relevant information.
     """
 
-    _document_class: type[documents.NoSQLDocument]
+    _document_class: type[raw_documents.RawDocument]
 
     def extract(
-        self, *, db: documents.NoSQLDatabase, link: str, user: documents.UserDocument
+        self,
+        *,
+        db: raw_documents.NoSQLDatabase,
+        link: str,
+        user: raw_documents.UserDocument,
     ) -> None:
         try:
             self._document_class.get(db=db, link=link)
             loguru.logger.info(
                 f"Skipping crawling {link} since document already extracted"
             )
-        except documents.DocumentDoesNotExist:
+        except raw_documents.DocumentDoesNotExist:
             loguru.logger.info(f"Attempting to extract document(s) from {link}")
             self._extract(db=db, link=link, user=user)
 
     @abc.abstractmethod
     def _extract(
-        self, *, db: documents.NoSQLDatabase, link: str, user: documents.UserDocument
+        self,
+        *,
+        db: raw_documents.NoSQLDatabase,
+        link: str,
+        user: raw_documents.UserDocument,
     ) -> None:
         raise NotImplementedError
 

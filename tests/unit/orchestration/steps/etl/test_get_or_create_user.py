@@ -1,7 +1,7 @@
 import uuid
 from unittest import mock
 
-from llm_twin.domain import documents
+from llm_twin.domain import raw_documents
 from llm_twin.orchestration.steps.etl import _get_or_create_user
 from testing.helpers import context as context_helpers
 from testing.helpers import infrastructure as infrastructure_helpers
@@ -20,7 +20,7 @@ def test_creates_user_when_user_does_not_exist():
     assert added_metadata["retrieved"]["last_name"] == "Wilson"
 
     assert db.data == {
-        documents.Collection.USERS: [
+        raw_documents.Collection.USERS: [
             {"_id": mock.ANY, "first_name": "Ed", "last_name": "Wilson"}
         ]
     }
@@ -28,7 +28,7 @@ def test_creates_user_when_user_does_not_exist():
 
 def test_gets_user_when_user_already_exists():
     data = {
-        documents.Collection.USERS: [
+        raw_documents.Collection.USERS: [
             {"_id": uuid.uuid4(), "first_name": "Ed", "last_name": "Wilson"}
         ]
     }
