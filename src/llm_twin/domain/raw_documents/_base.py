@@ -66,7 +66,7 @@ class RawDocument(pydantic.BaseModel, abc.ABC):
             not be saved in the database.
         """
         try:
-            instance = cls.get(db=db, filter_options=filter_options)
+            instance = cls.get(db=db, **filter_options)
         except _db.DocumentDoesNotExist:
             instance = cls(**filter_options)
             instance.save(db=db)

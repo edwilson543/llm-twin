@@ -34,14 +34,14 @@ def _fetch_raw_documents_for_author(
 ) -> list[raw_documents.ExtractedDocument]:
     loguru.logger.info(f"Fetching raw documents for '{author_full_name}'.")
     name = utils.Name.from_full_name(author_full_name)
-    raw_documents.Author.get_or_create(
+    author = raw_documents.Author.get_or_create(
         db=db, first_name=name.first_name, last_name=name.last_name
     )
 
-    # articles = []
-    # repositories = []
+    articles = raw_documents.Article.filter(db=db, author_id=str(author.id))
+    repositories = raw_documents.Repository.filter(db=db, author_id=str(author.id))
 
-    return []
+    return [*articles, *repositories]
 
 
 def _get_metadata(*, documents: list[raw_documents.ExtractedDocument]) -> dict:
