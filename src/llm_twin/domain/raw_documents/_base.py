@@ -39,8 +39,21 @@ class RawDocument(pydantic.BaseModel, abc.ABC):
         :raises DocumentDoesNotExist: If no such document was found.
         """
         collection = cls.get_collection_name()
-        raw_document = db.find_one(collection=collection, **filter_options)
-        return cls.deserialize(raw_document)
+        serialized_document = db.find_one(collection=collection, **filter_options)
+        return cls.deserialize(serialized_document)
+
+    @classmethod
+    def filter(
+        cls, *, db: _db.RawDocumentDatabase, **filter_options: typing.Any
+    ) -> list[typing.Self]:
+        """
+        Find all matching documents from the database.
+
+        :raises DocumentDoesNotExist: If no such document was found.
+        """
+        collection = cls.get_collection_name()
+        serialized_documents = db.find_many(collection=collection, **filter_options)
+        return [cls.deserialize(document) for document in serialized_documents]
 
     @classmethod
     def get_or_create(
