@@ -31,6 +31,36 @@ class TestFindOne:
             assert result is None
 
 
+class TestFindMany:
+    def test_finds_multiple_documents_matching_filter_options(self):
+        collection = raw_documents.Collection.AUTHORS
+        data = {
+            collection: [
+                {"id": 123, "foo": "bar"},
+                {"id": 456, "foo": "bar"},
+                {"id": 789, "foo": "baz"},
+                {"id": 101, "baz": "qux"},
+            ]
+        }
+        db = infrastructure_helpers.InMemoryRawDocumentDatabase(_data=data)
+
+        result = db.find_many(collection=collection, foo="bar")
+
+        assert result == [
+            {"id": 123, "foo": "bar"},
+            {"id": 456, "foo": "bar"},
+        ]
+
+    def test_returns_empty_list_when_no_document_matches_filter_options(self):
+        collection = raw_documents.Collection.AUTHORS
+        data = {collection: [{"id": 123, "foo": "bar"}]}
+        db = infrastructure_helpers.InMemoryRawDocumentDatabase(_data=data)
+
+        result = db.find_many(collection=collection, foo="qux")
+
+        assert result == []
+
+
 class TestInsertOne:
     def test_inserts_one_to_specified_collection(self):
         collection = raw_documents.Collection.AUTHORS

@@ -39,6 +39,15 @@ class RawDocumentDatabase(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
+    def find_many(
+        self, *, collection: Collection, **filter_options: object
+    ) -> list[SerializedRawDocument]:
+        """
+        Find all matching documents in a collection, using some filters.
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def insert_one(
         self, *, collection: Collection, document: SerializedRawDocument
     ) -> None:

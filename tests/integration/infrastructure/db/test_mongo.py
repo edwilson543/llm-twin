@@ -42,3 +42,34 @@ class TestInsertOneFindOne:
 
         with pytest.raises(raw_documents.DocumentDoesNotExist):
             db.find_one(collection=raw_documents.Collection.POSTS, id=document["id"])
+
+
+class TestFindMany:
+    def test_finds_multiple_documents_matching_filter_options(
+        self, db: mongo.MongoDatabase
+    ):
+        filter_options = {str(uuid.uuid4()): str(uuid.uuid4())}
+        matching_document = {"id": str(uuid.uuid4()), **filter_options}
+        other_matching_document = {"id": str(uuid.uuid4()), **filter_options}
+        non_matching_document = {"id": str(uuid.uuid4())}
+
+        collection = raw_documents.Collection.AUTHORS
+        db.insert_one(collection=collection, document=matching_document)
+        db.insert_one(collection=collection, document=other_matching_document)
+        db.insert_one(collection=collection, document=non_matching_document)
+
+        result = db.find_many(collection=collection, **filter_options)
+
+        assert result == [matching_document, other_matching_document]
+
+    def test_returns_empty_list_when_no_document_matches_filter_options(
+        self, db: mongo.MongoDatabase
+    ):
+        collection = raw_documents.Collection.AUTHORS
+        document = {"id": str(uuid.uuid4())}
+        db.insert_one(collection=collection, document=document)
+
+        filter_options = {str(uuid.uuid4()): str(uuid.uuid4())}
+        result = db.find_many(collection=collection, **filter_options)
+
+        assert result == []

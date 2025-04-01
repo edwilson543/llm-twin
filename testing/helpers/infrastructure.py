@@ -6,7 +6,7 @@ from unittest import mock
 
 from llm_twin import settings
 from llm_twin.domain import raw_documents
-from llm_twin.domain.raw_documents import SerializedRawDocument
+from llm_twin.domain.raw_documents import Collection, SerializedRawDocument
 
 
 @dataclasses.dataclass(frozen=True)
@@ -26,17 +26,33 @@ class InMemoryRawDocumentDatabase(raw_documents.RawDocumentDatabase):
     ) -> raw_documents.SerializedRawDocument:
         collection_documents = self._data.get(collection, [])
         for raw_document in collection_documents:
-            if all(
-                raw_document.get(filter_key) == filter_value
-                for filter_key, filter_value in filter_options.items()
-            ):
+            if self._document_matches_filter_options(raw_document, **filter_options):
                 return raw_document
         raise raw_documents.DocumentDoesNotExist()
+
+    def find_many(
+        self, *, collection: Collection, **filter_options: object
+    ) -> list[SerializedRawDocument]:
+        collection_documents = self._data.get(collection, [])
+        return [
+            raw_document
+            for raw_document in collection_documents
+            if self._document_matches_filter_options(raw_document, **filter_options)
+        ]
 
     def insert_one(
         self, *, collection: raw_documents.Collection, document: SerializedRawDocument
     ) -> None:
         self._data[collection].append(document)
+
+    @staticmethod
+    def _document_matches_filter_options(
+        document: raw_documents.SerializedRawDocument, **filter_options: object
+    ) -> bool:
+        return all(
+            document.get(filter_key) == filter_value
+            for filter_key, filter_value in filter_options.items()
+        )
 
 
 @contextlib.contextmanager

@@ -9,6 +9,7 @@ from pymongo import errors as pymongo_errors
 from pymongo import mongo_client
 
 from llm_twin.domain import raw_documents
+from llm_twin.domain.raw_documents import Collection, SerializedRawDocument
 
 
 class MongoDatabaseConnector:
@@ -57,6 +58,12 @@ class MongoDatabase(raw_documents.RawDocumentDatabase):
         if (result := mongo_collection.find_one(filter_options)) is None:
             raise raw_documents.DocumentDoesNotExist
         return result
+
+    def find_many(
+        self, *, collection: Collection, **filter_options: object
+    ) -> list[SerializedRawDocument]:
+        mongo_collection = self._connector.get_collection(collection)
+        return list(mongo_collection.find(filter_options))
 
     def insert_one(
         self,
