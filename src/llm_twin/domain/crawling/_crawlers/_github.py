@@ -20,7 +20,7 @@ class GithubCrawler(_base.Crawler):
         *,
         db: raw_documents.RawDocumentDatabase,
         link: str,
-        user: raw_documents.UserDocument,
+        author: raw_documents.Author,
     ) -> None:
         """
         Extract the content from a GitHub repo and save it in the db.
@@ -54,7 +54,7 @@ class GithubCrawler(_base.Crawler):
             name=repo_name,
             link=link,
             platform="github",
-            author_id=user.id,
-            author_full_name=user.full_name,
+            author_id=author.id,
+            author_full_name=author.full_name,
         )
         instance.save(db=db)

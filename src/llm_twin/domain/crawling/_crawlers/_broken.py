@@ -11,6 +11,6 @@ class BrokenCrawler(_base.Crawler):
         *,
         db: raw_documents.RawDocumentDatabase,
         link: str,
-        user: raw_documents.UserDocument,
+        author: raw_documents.Author,
     ) -> None:
         raise _base.UnableToCrawlLink(link=link)

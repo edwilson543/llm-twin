@@ -16,7 +16,7 @@ class MediumCrawler(_base.SeleniumCrawler):
         *,
         db: raw_documents.RawDocumentDatabase,
         link: str,
-        user: raw_documents.UserDocument,
+        author: raw_documents.Author,
     ) -> None:
         self.driver.get(link)
         self.scroll_page()
@@ -37,7 +37,7 @@ class MediumCrawler(_base.SeleniumCrawler):
             platform="medium",
             content=data,
             link=link,
-            author_id=user.id,
-            author_full_name=user.full_name,
+            author_id=author.id,
+            author_full_name=author.full_name,
         )
         document.save(db=db)

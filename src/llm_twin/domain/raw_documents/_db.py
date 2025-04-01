@@ -23,7 +23,7 @@ class Collection(enum.Enum):
     ARTICLES = "articles"
     POSTS = "posts"
     REPOSITORIES = "repositories"
-    USERS = "users"
+    AUTHORS = "authors"
 
 
 class RawDocumentDatabase(abc.ABC):

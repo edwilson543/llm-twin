@@ -18,9 +18,7 @@ def test_runs_etl_pipeline_and_persists_outcome():
 
     # Ensure the relevant articles were extracted.
     db = settings.get_raw_document_database()
-    author = raw_documents.UserDocument.get(
-        db=db, first_name="Jackof", last_name="Alltrades"
-    )
+    author = raw_documents.Author.get(db=db, first_name="Jackof", last_name="Alltrades")
 
     first_post = raw_documents.ArticleDocument.get(
         db=db, link="https://fake.com/blog/ten-things-to-be-average-at.html"
@@ -36,7 +34,7 @@ def test_runs_etl_pipeline_and_persists_outcome():
 
     # Ensure the pipeline was run end-to-end and completed successfully.
     pipeline_run = zenml_client.Client().list_pipeline_runs(
-        pipeline="etl_user_data", sort_by="desc:created"
+        pipeline="etl_author_data", sort_by="desc:created"
     )[0]
     assert pipeline_run.status == "completed"
 

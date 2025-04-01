@@ -25,8 +25,8 @@ def run(config_filename: str, disable_cache: bool) -> None:
     if not config_path.is_file():
         raise cli_exceptions.ConfigFileDoesNotExist(filepath=config_path)
 
-    pipeline = pipelines.etl_user_data.with_options(
-        run_name=f"etl-user-data{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}",
+    pipeline = pipelines.etl_author_data.with_options(
+        run_name=f"etl-author-data{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}",
         config_path=str(config_path),
         enable_cache=not disable_cache,
     )

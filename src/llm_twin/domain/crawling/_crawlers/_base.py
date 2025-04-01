@@ -27,7 +27,7 @@ class Crawler(abc.ABC):
         *,
         db: raw_documents.RawDocumentDatabase,
         link: str,
-        user: raw_documents.UserDocument,
+        author: raw_documents.Author,
     ) -> None:
         try:
             self._document_class.get(db=db, link=link)
@@ -36,7 +36,7 @@ class Crawler(abc.ABC):
             )
         except raw_documents.DocumentDoesNotExist:
             loguru.logger.info(f"Attempting to extract document(s) from {link}")
-            self._extract(db=db, link=link, user=user)
+            self._extract(db=db, link=link, author=author)
 
     @abc.abstractmethod
     def _extract(
@@ -44,7 +44,7 @@ class Crawler(abc.ABC):
         *,
         db: raw_documents.RawDocumentDatabase,
         link: str,
-        user: raw_documents.UserDocument,
+        author: raw_documents.Author,
     ) -> None:
         raise NotImplementedError
 

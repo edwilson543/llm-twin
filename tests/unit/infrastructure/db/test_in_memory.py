@@ -6,7 +6,7 @@ from testing.helpers import infrastructure as infrastructure_helpers
 
 class TestFindOne:
     def test_finds_document_when_exists(self):
-        collection = raw_documents.Collection.USERS
+        collection = raw_documents.Collection.AUTHORS
         data = {collection: [{"id": 123, "foo": "bar"}]}
         db = infrastructure_helpers.InMemoryRawDocumentDatabase(_data=data)
 
@@ -15,14 +15,14 @@ class TestFindOne:
         assert result == {"id": 123, "foo": "bar"}
 
     def test_raises_when_collection_does_not_exist(self):
-        data = {raw_documents.Collection.USERS: [{"id": 123, "foo": "bar"}]}
+        data = {raw_documents.Collection.AUTHORS: [{"id": 123, "foo": "bar"}]}
         db = infrastructure_helpers.InMemoryRawDocumentDatabase(_data=data)
 
         with pytest.raises(raw_documents.DocumentDoesNotExist):
             db.find_one(collection=raw_documents.Collection.POSTS, id=123)
 
     def test_raises_when_document_does_not_exist(self):
-        collection = raw_documents.Collection.USERS
+        collection = raw_documents.Collection.AUTHORS
         data = {collection: [{"id": 123, "foo": "bar"}]}
         db = infrastructure_helpers.InMemoryRawDocumentDatabase(_data=data)
 
@@ -33,7 +33,7 @@ class TestFindOne:
 
 class TestInsertOne:
     def test_inserts_one_to_specified_collection(self):
-        collection = raw_documents.Collection.USERS
+        collection = raw_documents.Collection.AUTHORS
         document = {"id": 123, "foo": "bar"}
         db = infrastructure_helpers.InMemoryRawDocumentDatabase()
 

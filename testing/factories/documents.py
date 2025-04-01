@@ -9,9 +9,9 @@ class _Document(factory.Factory):
     id = factory.LazyFunction(uuid.uuid4)
 
 
-class UserDocument(_Document):
+class Author(_Document):
     first_name = factory.Sequence(lambda n: f"first-name-{n}")
     last_name = factory.Sequence(lambda n: f"last-name-{n}")
 
     class Meta:
-        model = raw_documents.UserDocument
+        model = raw_documents.Author

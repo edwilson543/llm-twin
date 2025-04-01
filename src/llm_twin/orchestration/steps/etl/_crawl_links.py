@@ -14,7 +14,7 @@ from llm_twin.orchestration.steps import context
 
 @zenml.step
 def crawl_links(
-    user: raw_documents.UserDocument,
+    author: raw_documents.Author,
     links: list[str],
     context: context.StepContext | None = None,
 ) -> typing.Annotated[list[str], "crawled_links"]:
@@ -31,7 +31,7 @@ def crawl_links(
         crawler = dispatcher.get_crawler(link=link)
 
         try:
-            crawler.extract(db=db, link=link, user=user)
+            crawler.extract(db=db, link=link, author=author)
             metadata[domain]["successful"] += 1
             successful_crawls += 1
             loguru.logger.info(f"Successfully crawled {link}.")

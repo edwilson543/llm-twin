@@ -8,10 +8,10 @@ from testing.helpers import infrastructure as infrastructure_helpers
 
 
 def test_gets_no_raw_documents_for_author_that_does_not_exist():
-    author = document_factories.UserDocument()
+    author = document_factories.Author()
     author_full_names = [author.full_name]
     data = {
-        raw_documents.Collection.USERS: [
+        raw_documents.Collection.AUTHORS: [
             {"_id": uuid.uuid4(), "first_name": "Ed", "last_name": "Wilson"}
         ]
     }
@@ -29,10 +29,10 @@ def test_gets_no_raw_documents_for_author_that_does_not_exist():
 
 
 def test_gets_all_raw_documents_for_existing_author():
-    author = document_factories.UserDocument()
+    author = document_factories.Author()
     author_full_names = [author.full_name]
     data = {
-        raw_documents.Collection.USERS: [
+        raw_documents.Collection.AUTHORS: [
             {"_id": uuid.uuid4(), "first_name": "Ed", "last_name": "Wilson"}
         ]
     }

@@ -8,7 +8,7 @@ from testing.helpers import infrastructure as infrastructure_helpers
 
 
 def test_crawls_links_for_fake_domain_successfully():
-    user = document_factories.UserDocument()
+    author = document_factories.Author()
     context = context_helpers.FakeContext()
 
     links = [
@@ -17,22 +17,22 @@ def test_crawls_links_for_fake_domain_successfully():
     ]
 
     with infrastructure_helpers.install_in_memory_raw_document_db() as db:
-        _crawl_links.crawl_links.entrypoint(user=user, links=links, context=context)
+        _crawl_links.crawl_links.entrypoint(author=author, links=links, context=context)
 
     assert db.data == {
         raw_documents.Collection.ARTICLES: [
             {
                 "_id": mock.ANY,
-                "author_full_name": user.full_name,
-                "author_id": str(user.id),
+                "author_full_name": author.full_name,
+                "author_id": str(author.id),
                 "content": {"foo": "bar"},
                 "link": links[0],
                 "platform": "fake",
             },
             {
                 "_id": mock.ANY,
-                "author_full_name": user.full_name,
-                "author_id": str(user.id),
+                "author_full_name": author.full_name,
+                "author_id": str(author.id),
                 "content": {"foo": "bar"},
                 "link": links[1],
                 "platform": "fake",
@@ -42,7 +42,7 @@ def test_crawls_links_for_fake_domain_successfully():
 
 
 def test_continues_after_failing_to_crawl_broken_link():
-    user = document_factories.UserDocument()
+    author = document_factories.Author()
     context = context_helpers.FakeContext()
 
     links = [
@@ -51,14 +51,14 @@ def test_continues_after_failing_to_crawl_broken_link():
     ]
 
     with infrastructure_helpers.install_in_memory_raw_document_db() as db:
-        _crawl_links.crawl_links.entrypoint(user=user, links=links, context=context)
+        _crawl_links.crawl_links.entrypoint(author=author, links=links, context=context)
 
     assert db.data == {
         raw_documents.Collection.ARTICLES: [
             {
                 "_id": mock.ANY,
-                "author_full_name": user.full_name,
-                "author_id": str(user.id),
+                "author_full_name": author.full_name,
+                "author_id": str(author.id),
                 "content": {"foo": "bar"},
                 "link": links[1],
                 "platform": "fake",

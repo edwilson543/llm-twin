@@ -1,4 +1,5 @@
 from ._article import ArticleDocument
+from ._authors import Author
 from ._base import ExtractedDocument, RawDocument
 from ._db import (
     Collection,
@@ -8,4 +9,3 @@ from ._db import (
     UnableToSaveDocument,
 )
 from ._repository import RepositoryDocument
-from ._users import UserDocument

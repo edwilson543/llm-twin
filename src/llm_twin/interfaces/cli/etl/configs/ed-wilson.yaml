@@ -1,5 +1,5 @@
 parameters:
-  user_full_name: Ed Wilson
+  author_full_name: Ed Wilson
   links:
     # GitHub
     - https://github.com/edwilson543/llm-twin

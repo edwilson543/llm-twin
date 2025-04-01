@@ -11,13 +11,13 @@ class FakeCrawler(_base.Crawler):
         *,
         db: raw_documents.RawDocumentDatabase,
         link: str,
-        user: raw_documents.UserDocument,
+        author: raw_documents.Author,
     ) -> None:
         document = raw_documents.ArticleDocument(
             platform="fake",
             content={"foo": "bar"},
             link=link,
-            author_id=user.id,
-            author_full_name=user.full_name,
+            author_id=author.id,
+            author_full_name=author.full_name,
         )
         document.save(db=db)
