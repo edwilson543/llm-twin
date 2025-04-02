@@ -3,6 +3,7 @@ from click import testing as click_testing
 from zenml import client as zenml_client
 
 from llm_twin import settings
+from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 from llm_twin.interfaces.cli import exceptions as cli_exceptions
 from llm_twin.interfaces.cli.etl.run import run
@@ -18,7 +19,7 @@ def test_runs_etl_pipeline_and_persists_outcome():
 
     # Ensure the relevant articles were extracted.
     db = settings.get_raw_document_database()
-    author = raw_documents.Author.get(db=db, first_name="Jackof", last_name="Alltrades")
+    author = authors.Author.get(db=db, first_name="Jackof", last_name="Alltrades")
 
     first_post = raw_documents.Article.get(
         db=db, link="https://fake.com/blog/ten-things-to-be-average-at.html"

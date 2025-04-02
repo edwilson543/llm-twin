@@ -1,9 +1,9 @@
 import uuid
 
 from llm_twin import settings
+from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 from llm_twin.orchestration.pipelines import _etl
-from llm_twin.domain import authors
 
 
 def test_extracts_transforms_and_loads_data_for_author():

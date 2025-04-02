@@ -4,6 +4,7 @@ import loguru
 import zenml
 
 from llm_twin import settings, utils
+from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 from llm_twin.domain.storage import document as document_storage
 from llm_twin.orchestration.steps import context
@@ -29,7 +30,7 @@ def fetch_raw_documents(
     step_context.add_output_metadata(output_name="raw_documents", metadata=metadata)
     return documents
 
-from llm_twin.domain import authors
+
 def _fetch_raw_documents_for_author(
     *, db: document_storage.DocumentDatabase, author_full_name: str
 ) -> list[raw_documents.ExtractedDocument]:
