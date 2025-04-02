@@ -1,1 +1,2 @@
 from ._document import InMemoryDocumentDatabase, install_in_memory_document_db
+from ._vector import InMemoryVectorDatabase
