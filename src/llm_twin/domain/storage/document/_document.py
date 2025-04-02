@@ -15,7 +15,7 @@ class DocumentIsEmpty(Exception):
     pass
 
 
-class RawDocument(pydantic.BaseModel, abc.ABC):
+class Document(pydantic.BaseModel, abc.ABC):
     id: pydantic.UUID4 = pydantic.Field(default_factory=uuid.uuid4)
 
     def __eq__(self, other: object) -> bool:
@@ -31,7 +31,7 @@ class RawDocument(pydantic.BaseModel, abc.ABC):
 
     @classmethod
     def get(
-        cls, *, db: _db.RawDocumentDatabase, **filter_options: typing.Any
+        cls, *, db: _db.DocumentDatabase, **filter_options: typing.Any
     ) -> typing.Self:
         """
         Find a document from the database.
@@ -44,7 +44,7 @@ class RawDocument(pydantic.BaseModel, abc.ABC):
 
     @classmethod
     def filter(
-        cls, *, db: _db.RawDocumentDatabase, **filter_options: typing.Any
+        cls, *, db: _db.DocumentDatabase, **filter_options: typing.Any
     ) -> list[typing.Self]:
         """
         Find all matching documents from the database.
@@ -57,7 +57,7 @@ class RawDocument(pydantic.BaseModel, abc.ABC):
 
     @classmethod
     def get_or_create(
-        cls, *, db: _db.RawDocumentDatabase, **filter_options: typing.Any
+        cls, *, db: _db.DocumentDatabase, **filter_options: typing.Any
     ) -> typing.Self:
         """
         Get or create a document from the database.
@@ -73,7 +73,7 @@ class RawDocument(pydantic.BaseModel, abc.ABC):
 
         return instance
 
-    def save(self, *, db: _db.RawDocumentDatabase) -> None:
+    def save(self, *, db: _db.DocumentDatabase) -> None:
         """
         Insert this document into the relevant MongoDB collection.
 
@@ -86,19 +86,19 @@ class RawDocument(pydantic.BaseModel, abc.ABC):
     # Serialization.
 
     @classmethod
-    def deserialize(cls, raw_document: dict) -> typing.Self:
+    def deserialize(cls, document: dict) -> typing.Self:
         """
-        Deserialize a document using the raw data retrieved from the database.
+        Deserialize a document from the database.
         """
-        if not raw_document:
+        if not document:
             raise DocumentIsEmpty()
 
-        id = raw_document.pop("_id")
-        return cls(id=id, **raw_document)
+        id = document.pop("_id")
+        return cls(id=id, **document)
 
     def serialize(self) -> dict[str, typing.Any]:
         """
-        Serialize a document into raw database for persistence in the database.
+        Serialize a document for persistence in the database.
         """
         parsed = self.model_dump()
         if "_id" not in parsed and "id" in parsed:

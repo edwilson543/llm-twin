@@ -6,7 +6,7 @@ import enum
 import typing
 
 
-SerializedRawDocument = dict[str, typing.Any]
+SerializedDocument = dict[str, typing.Any]
 
 
 @dataclasses.dataclass(frozen=True)
@@ -26,11 +26,11 @@ class Collection(enum.Enum):
     AUTHORS = "authors"
 
 
-class RawDocumentDatabase(abc.ABC):
+class DocumentDatabase(abc.ABC):
     @abc.abstractmethod
     def find_one(
         self, *, collection: Collection, **filter_options: object
-    ) -> SerializedRawDocument:
+    ) -> SerializedDocument:
         """
         Find a document in a collection, using some filters.
 
@@ -41,7 +41,7 @@ class RawDocumentDatabase(abc.ABC):
     @abc.abstractmethod
     def find_many(
         self, *, collection: Collection, **filter_options: object
-    ) -> list[SerializedRawDocument]:
+    ) -> list[SerializedDocument]:
         """
         Find all matching documents in a collection, using some filters.
         """
@@ -49,7 +49,7 @@ class RawDocumentDatabase(abc.ABC):
 
     @abc.abstractmethod
     def insert_one(
-        self, *, collection: Collection, document: SerializedRawDocument
+        self, *, collection: Collection, document: SerializedDocument
     ) -> None:
         """
         Save a document in a collection.

@@ -3,7 +3,7 @@ from __future__ import annotations
 from llm_twin.domain.storage import document as document_storage
 
 
-class Author(document_storage.RawDocument):
+class Author(document_storage.Document):
     first_name: str
     last_name: str
 

@@ -21,12 +21,12 @@ class Crawler(abc.ABC):
     Base class for crawling a webpage and extracting relevant information.
     """
 
-    _document_class: type[document_storage.RawDocument]
+    _document_class: type[document_storage.Document]
 
     def extract(
         self,
         *,
-        db: document_storage.RawDocumentDatabase,
+        db: document_storage.DocumentDatabase,
         link: str,
         author: raw_documents.Author,
     ) -> None:
@@ -43,7 +43,7 @@ class Crawler(abc.ABC):
     def _extract(
         self,
         *,
-        db: document_storage.RawDocumentDatabase,
+        db: document_storage.DocumentDatabase,
         link: str,
         author: raw_documents.Author,
     ) -> None:

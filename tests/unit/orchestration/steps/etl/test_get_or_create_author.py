@@ -32,7 +32,7 @@ def test_gets_author_when_author_already_exists():
             {"_id": uuid.uuid4(), "first_name": "Ed", "last_name": "Wilson"}
         ]
     }
-    db = infrastructure_helpers.InMemoryRawDocumentDatabase(_data=data)
+    db = infrastructure_helpers.InMemoryDocumentDatabase(_data=data)
     context = context_helpers.FakeContext()
 
     with infrastructure_helpers.install_in_memory_raw_document_db(db=db):

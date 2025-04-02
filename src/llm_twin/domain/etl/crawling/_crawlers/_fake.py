@@ -10,7 +10,7 @@ class FakeCrawler(_base.Crawler):
     def _extract(
         self,
         *,
-        db: document_storage.RawDocumentDatabase,
+        db: document_storage.DocumentDatabase,
         link: str,
         author: raw_documents.Author,
     ) -> None:

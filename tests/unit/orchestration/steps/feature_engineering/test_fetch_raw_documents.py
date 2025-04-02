@@ -35,7 +35,7 @@ def test_gets_all_raw_documents_for_specified_authors():
             random_author_repo.serialize(),
         ],
     }
-    db = infrastructure_helpers.InMemoryRawDocumentDatabase(_data=data)
+    db = infrastructure_helpers.InMemoryDocumentDatabase(_data=data)
 
     context = context_helpers.FakeContext()
 
@@ -66,7 +66,7 @@ def test_gets_no_raw_documents_for_author_that_does_not_exist():
         document_storage.Collection.AUTHORS: [author.serialize()],
         document_storage.Collection.ARTICLES: [other_author_article.serialize()],
     }
-    db = infrastructure_helpers.InMemoryRawDocumentDatabase(_data=data)
+    db = infrastructure_helpers.InMemoryDocumentDatabase(_data=data)
 
     context = context_helpers.FakeContext()
 

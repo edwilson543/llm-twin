@@ -19,7 +19,7 @@ class Settings(pydantic_settings.BaseSettings):
 settings = Settings.load_settings()
 
 
-def get_raw_document_database() -> document_storage.RawDocumentDatabase:
+def get_raw_document_database() -> document_storage.DocumentDatabase:
     connector = mongo.MongoDatabaseConnector(
         database_host=settings.MONGO_DATABASE_HOST,
         database_name=settings.MONGO_DATABASE_NAME,

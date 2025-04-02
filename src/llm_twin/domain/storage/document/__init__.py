@@ -1,8 +1,8 @@
 from ._db import (
     Collection,
+    DocumentDatabase,
     DocumentDoesNotExist,
-    RawDocumentDatabase,
-    SerializedRawDocument,
+    SerializedDocument,
     UnableToSaveDocument,
 )
-from ._document import RawDocument
+from ._document import Document
