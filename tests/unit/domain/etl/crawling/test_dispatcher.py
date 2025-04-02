@@ -1,6 +1,6 @@
 import pytest
 
-from llm_twin.domain.crawling import _crawlers, _dispatcher
+from llm_twin.domain.etl.crawling import _crawlers, _dispatcher
 
 
 class TestGetCrawler:

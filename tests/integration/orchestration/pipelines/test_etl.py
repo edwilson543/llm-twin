@@ -1,7 +1,7 @@
 import uuid
 
 from llm_twin import settings
-from llm_twin.domain import raw_documents
+from llm_twin.domain.etl import raw_documents
 from llm_twin.orchestration.pipelines import _etl
 
 

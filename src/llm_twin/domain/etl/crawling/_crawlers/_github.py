@@ -3,7 +3,7 @@ import shutil
 import subprocess
 import tempfile
 
-from llm_twin.domain import raw_documents
+from llm_twin.domain.etl import raw_documents
 
 from . import _base
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pydantic_settings
 
-from llm_twin.domain import raw_documents
+from llm_twin.domain.etl import raw_documents
 from llm_twin.infrastructure.db import mongo
 
 

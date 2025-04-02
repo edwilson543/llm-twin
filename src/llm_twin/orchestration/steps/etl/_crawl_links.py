@@ -8,7 +8,7 @@ import tqdm
 import zenml
 
 from llm_twin import settings
-from llm_twin.domain import crawling, raw_documents
+from llm_twin.domain.etl import crawling, raw_documents
 from llm_twin.orchestration.steps import context
 
 

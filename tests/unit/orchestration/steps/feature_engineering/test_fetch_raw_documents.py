@@ -1,4 +1,4 @@
-from llm_twin.domain import raw_documents
+from llm_twin.domain.etl import raw_documents
 from llm_twin.orchestration.steps.feature_engineering import _fetch_raw_documents
 from testing.factories import documents as document_factories
 from testing.helpers import context as context_helpers

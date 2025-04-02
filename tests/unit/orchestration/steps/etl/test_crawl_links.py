@@ -1,6 +1,6 @@
 from unittest import mock
 
-from llm_twin.domain import raw_documents
+from llm_twin.domain.etl import raw_documents
 from llm_twin.orchestration.steps.etl import _crawl_links
 from testing.factories import documents as document_factories
 from testing.helpers import context as context_helpers

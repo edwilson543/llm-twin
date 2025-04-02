@@ -2,7 +2,7 @@ import uuid
 
 import factory
 
-from llm_twin.domain import raw_documents
+from llm_twin.domain.etl import raw_documents
 
 
 class _Document(factory.Factory):

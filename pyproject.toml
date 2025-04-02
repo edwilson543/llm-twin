@@ -81,6 +81,17 @@ name = "Domain layer"
 type = "layers"
 containers = "llm_twin.domain"
 layers = [
+    "feature_engineering",
+    "etl",
+    "storage",
+]
+exhaustive = true
+
+[[tool.importlinter.contracts]]
+name = "ETL subdomain layer"
+type = "layers"
+containers = "llm_twin.domain.etl"
+layers = [
     "crawling",
     "raw_documents",
 ]

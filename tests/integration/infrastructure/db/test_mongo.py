@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from llm_twin.domain import raw_documents
+from llm_twin.domain.etl import raw_documents
 from llm_twin.infrastructure.db import mongo
 from llm_twin.settings import settings
 

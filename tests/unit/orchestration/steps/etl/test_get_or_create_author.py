@@ -1,7 +1,7 @@
 import uuid
 from unittest import mock
 
-from llm_twin.domain import raw_documents
+from llm_twin.domain.etl import raw_documents
 from llm_twin.orchestration.steps.etl import _get_or_create_author
 from testing.helpers import context as context_helpers
 from testing.helpers import infrastructure as infrastructure_helpers

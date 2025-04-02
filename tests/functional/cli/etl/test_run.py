@@ -3,7 +3,7 @@ from click import testing as click_testing
 from zenml import client as zenml_client
 
 from llm_twin import settings
-from llm_twin.domain import raw_documents
+from llm_twin.domain.etl import raw_documents
 from llm_twin.interfaces.cli import exceptions as cli_exceptions
 from llm_twin.interfaces.cli.etl.run import run
 

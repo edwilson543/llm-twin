@@ -5,8 +5,7 @@ import typing
 from unittest import mock
 
 from llm_twin import settings
-from llm_twin.domain import raw_documents
-from llm_twin.domain.raw_documents import Collection, SerializedRawDocument
+from llm_twin.domain.etl import raw_documents
 
 
 @dataclasses.dataclass(frozen=True)
@@ -31,8 +30,8 @@ class InMemoryRawDocumentDatabase(raw_documents.RawDocumentDatabase):
         raise raw_documents.DocumentDoesNotExist()
 
     def find_many(
-        self, *, collection: Collection, **filter_options: object
-    ) -> list[SerializedRawDocument]:
+        self, *, collection: raw_documents.Collection, **filter_options: object
+    ) -> list[raw_documents.SerializedRawDocument]:
         collection_documents = self._data.get(collection, [])
         return [
             raw_document
@@ -41,7 +40,10 @@ class InMemoryRawDocumentDatabase(raw_documents.RawDocumentDatabase):
         ]
 
     def insert_one(
-        self, *, collection: raw_documents.Collection, document: SerializedRawDocument
+        self,
+        *,
+        collection: raw_documents.Collection,
+        document: raw_documents.SerializedRawDocument,
     ) -> None:
         self._data[collection].append(document)
 

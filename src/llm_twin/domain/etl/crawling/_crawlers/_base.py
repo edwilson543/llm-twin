@@ -7,7 +7,7 @@ import loguru
 from selenium import webdriver
 from selenium.webdriver.chrome import options as chrome_options
 
-from llm_twin.domain import raw_documents
+from llm_twin.domain.etl import raw_documents
 
 
 @dataclasses.dataclass(frozen=True)

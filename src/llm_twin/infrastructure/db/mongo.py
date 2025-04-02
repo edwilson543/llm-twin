@@ -8,8 +8,7 @@ from pymongo import database as pymongo_database
 from pymongo import errors as pymongo_errors
 from pymongo import mongo_client
 
-from llm_twin.domain import raw_documents
-from llm_twin.domain.raw_documents import Collection, SerializedRawDocument
+from llm_twin.domain.etl import raw_documents
 
 
 class MongoDatabaseConnector:
@@ -60,8 +59,8 @@ class MongoDatabase(raw_documents.RawDocumentDatabase):
         return result
 
     def find_many(
-        self, *, collection: Collection, **filter_options: object
-    ) -> list[SerializedRawDocument]:
+        self, *, collection: raw_documents.Collection, **filter_options: object
+    ) -> list[raw_documents.SerializedRawDocument]:
         mongo_collection = self._connector.get_collection(collection)
         return list(mongo_collection.find(filter_options))
 

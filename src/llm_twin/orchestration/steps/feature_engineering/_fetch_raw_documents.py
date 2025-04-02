@@ -4,7 +4,7 @@ import loguru
 import zenml
 
 from llm_twin import settings, utils
-from llm_twin.domain import raw_documents
+from llm_twin.domain.etl import raw_documents
 from llm_twin.orchestration.steps import context
 
 
