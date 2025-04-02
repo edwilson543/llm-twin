@@ -77,6 +77,16 @@ layers = [
 exhaustive = true
 
 [[tool.importlinter.contracts]]
+name = "Domain layer"
+type = "layers"
+containers = "llm_twin.domain"
+layers = [
+    "crawling",
+    "raw_documents",
+]
+exhaustive = true
+
+[[tool.importlinter.contracts]]
 name = "Orchestration layer"
 type = "layers"
 containers = "llm_twin.orchestration"
@@ -85,6 +95,14 @@ layers = [
     "steps",
 ]
 exhaustive = true
+
+[[tool.importlinter.contracts]]
+name = "Orchestration steps"
+type = "independence"
+modules = [
+    "llm_twin.orchestration.steps.etl",
+    "llm_twin.orchestration.steps.feature_engineering",
+]
 
 [tool.ruff]
 
