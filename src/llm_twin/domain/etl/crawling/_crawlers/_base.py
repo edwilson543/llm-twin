@@ -7,7 +7,7 @@ import loguru
 from selenium import webdriver
 from selenium.webdriver.chrome import options as chrome_options
 
-from llm_twin.domain.etl import raw_documents
+from llm_twin.domain import authors
 from llm_twin.domain.storage import document as document_storage
 
 
@@ -28,7 +28,7 @@ class Crawler(abc.ABC):
         *,
         db: document_storage.DocumentDatabase,
         link: str,
-        author: raw_documents.Author,
+        author: authors.Author,
     ) -> None:
         try:
             self._document_class.get(db=db, link=link)
@@ -45,7 +45,7 @@ class Crawler(abc.ABC):
         *,
         db: document_storage.DocumentDatabase,
         link: str,
-        author: raw_documents.Author,
+        author: authors.Author,
     ) -> None:
         raise NotImplementedError
 

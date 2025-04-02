@@ -2,6 +2,7 @@ import uuid
 
 import factory
 
+from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 
 
@@ -14,7 +15,7 @@ class Author(_Document):
     last_name = factory.Sequence(lambda n: f"last-name-{n}")
 
     class Meta:
-        model = raw_documents.Author
+        model = authors.Author
 
 
 class _ExtractedDocument(_Document):

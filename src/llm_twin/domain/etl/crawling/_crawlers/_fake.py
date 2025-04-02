@@ -1,3 +1,4 @@
+from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 from llm_twin.domain.storage import document as document_storage
 
@@ -12,7 +13,7 @@ class FakeCrawler(_base.Crawler):
         *,
         db: document_storage.DocumentDatabase,
         link: str,
-        author: raw_documents.Author,
+        author: authors.Author,
     ) -> None:
         document = raw_documents.Article(
             platform="fake",

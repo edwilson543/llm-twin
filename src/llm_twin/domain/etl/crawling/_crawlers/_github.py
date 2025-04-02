@@ -3,6 +3,7 @@ import shutil
 import subprocess
 import tempfile
 
+from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 from llm_twin.domain.storage import document as document_storage
 
@@ -21,7 +22,7 @@ class GithubCrawler(_base.Crawler):
         *,
         db: document_storage.DocumentDatabase,
         link: str,
-        author: raw_documents.Author,
+        author: authors.Author,
     ) -> None:
         """
         Extract the content from a GitHub repo and save it in the db.

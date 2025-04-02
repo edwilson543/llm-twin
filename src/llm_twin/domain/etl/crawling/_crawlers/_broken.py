@@ -1,3 +1,4 @@
+from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 from llm_twin.domain.storage import document as document_storage
 
@@ -12,6 +13,6 @@ class BrokenCrawler(_base.Crawler):
         *,
         db: document_storage.DocumentDatabase,
         link: str,
-        author: raw_documents.Author,
+        author: authors.Author,
     ) -> None:
         raise _base.UnableToCrawlLink(link=link)

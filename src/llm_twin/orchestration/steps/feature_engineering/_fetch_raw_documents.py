@@ -29,13 +29,13 @@ def fetch_raw_documents(
     step_context.add_output_metadata(output_name="raw_documents", metadata=metadata)
     return documents
 
-
+from llm_twin.domain import authors
 def _fetch_raw_documents_for_author(
     *, db: document_storage.DocumentDatabase, author_full_name: str
 ) -> list[raw_documents.ExtractedDocument]:
     loguru.logger.info(f"Fetching raw documents for '{author_full_name}'.")
     name = utils.Name.from_full_name(author_full_name)
-    author = raw_documents.Author.get_or_create(
+    author = authors.Author.get_or_create(
         db=db, first_name=name.first_name, last_name=name.last_name
     )
 

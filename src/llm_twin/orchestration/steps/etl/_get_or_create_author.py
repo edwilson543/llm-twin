@@ -6,18 +6,18 @@ import zenml
 from llm_twin import settings, utils
 from llm_twin.domain.etl import raw_documents
 from llm_twin.orchestration.steps import context
-
+from llm_twin.domain import authors
 
 @zenml.step
 def get_or_create_author(
     full_name: str,
     context: context.StepContext | None = None,
-) -> typing.Annotated[raw_documents.Author, "author"]:
+) -> typing.Annotated[authors.Author, "author"]:
     loguru.logger.info(f"Getting or creating author: {full_name}")
     db = settings.get_raw_document_database()
 
     name = utils.Name.from_full_name(full_name)
-    author = raw_documents.Author.get_or_create(
+    author = authors.Author.get_or_create(
         db=db, first_name=name.first_name, last_name=name.last_name
     )
 
@@ -31,7 +31,7 @@ def get_or_create_author(
 
 
 def _get_metadata(
-    *, author_full_name: str, author: raw_documents.Author
+    *, author_full_name: str, author: authors.Author
 ) -> dict[str, typing.Any]:
     return {
         "query": {

@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 
+from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 from llm_twin.domain.storage import document as document_storage
 
@@ -17,7 +18,7 @@ class MediumCrawler(_base.SeleniumCrawler):
         *,
         db: document_storage.DocumentDatabase,
         link: str,
-        author: raw_documents.Author,
+        author: authors.Author,
     ) -> None:
         self.driver.get(link)
         self.scroll_page()

@@ -3,6 +3,7 @@ import uuid
 from llm_twin import settings
 from llm_twin.domain.etl import raw_documents
 from llm_twin.orchestration.pipelines import _etl
+from llm_twin.domain import authors
 
 
 def test_extracts_transforms_and_loads_data_for_author():
@@ -19,7 +20,7 @@ def test_extracts_transforms_and_loads_data_for_author():
     )
 
     db = settings.get_raw_document_database()
-    author = raw_documents.Author.get(db=db, first_name=first_name, last_name=last_name)
+    author = authors.Author.get(db=db, first_name=first_name, last_name=last_name)
 
     first_post = raw_documents.Article.get(db=db, link=links[0])
     assert first_post.platform == "fake"
