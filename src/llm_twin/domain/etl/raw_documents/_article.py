@@ -3,7 +3,7 @@ from llm_twin.domain.storage import document as document_storage
 from . import _base
 
 
-class Article(_base.ExtractedDocument):
+class Article(_base.RawDocument):
     link: str
 
     @classmethod

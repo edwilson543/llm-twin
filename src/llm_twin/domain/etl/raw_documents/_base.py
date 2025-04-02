@@ -7,9 +7,9 @@ import pydantic
 from llm_twin.domain.storage import document
 
 
-class ExtractedDocument(document.Document, abc.ABC):
+class RawDocument(document.Document, abc.ABC):
     """
-    A document that was extracted from some webpage, by a crawler.
+    A raw document that was extracted from some webpage by a crawler.
     """
 
     content: dict

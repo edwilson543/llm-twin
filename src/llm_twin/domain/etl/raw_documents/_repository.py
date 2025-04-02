@@ -3,7 +3,7 @@ from llm_twin.domain.storage import document as document_storage
 from . import _base
 
 
-class Repository(_base.ExtractedDocument):
+class Repository(_base.RawDocument):
     name: str
     link: str
 
