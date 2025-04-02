@@ -19,7 +19,7 @@ def test_extracts_transforms_and_loads_data_for_author():
         author_full_name=f"{first_name} {last_name}", links=links
     )
 
-    db = settings.get_raw_document_database()
+    db = settings.get_document_database()
     author = authors.Author.get(db=db, first_name=first_name, last_name=last_name)
 
     first_post = raw_documents.Article.get(db=db, link=links[0])

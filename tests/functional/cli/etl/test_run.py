@@ -18,7 +18,7 @@ def test_runs_etl_pipeline_and_persists_outcome():
     assert result.exit_code == 0
 
     # Ensure the relevant articles were extracted.
-    db = settings.get_raw_document_database()
+    db = settings.get_document_database()
     author = authors.Author.get(db=db, first_name="Jackof", last_name="Alltrades")
 
     first_post = raw_documents.Article.get(

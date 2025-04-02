@@ -65,5 +65,5 @@ def install_in_memory_raw_document_db(
     Helper to install an in memory database for unit tests.
     """
     db = db or InMemoryDocumentDatabase()
-    with mock.patch.object(settings, "get_raw_document_database", return_value=db):
+    with mock.patch.object(settings, "get_document_database", return_value=db):
         yield db

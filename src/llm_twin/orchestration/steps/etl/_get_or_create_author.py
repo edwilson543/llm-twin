@@ -14,7 +14,7 @@ def get_or_create_author(
     context: context.StepContext | None = None,
 ) -> typing.Annotated[authors.Author, "author"]:
     loguru.logger.info(f"Getting or creating author: {full_name}")
-    db = settings.get_raw_document_database()
+    db = settings.get_document_database()
 
     name = utils.Name.from_full_name(full_name)
     author = authors.Author.get_or_create(

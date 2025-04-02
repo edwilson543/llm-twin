@@ -15,7 +15,7 @@ def fetch_raw_documents(
     author_full_names: list[str],
     context: context.StepContext | None = None,
 ) -> typing.Annotated[list[raw_documents.RawDocument], "raw_documents"]:
-    db = settings.get_raw_document_database()
+    db = settings.get_document_database()
 
     documents: list[raw_documents.RawDocument] = []
 
