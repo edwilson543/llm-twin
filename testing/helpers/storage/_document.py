@@ -58,7 +58,7 @@ class InMemoryDocumentDatabase(document_storage.DocumentDatabase):
 
 
 @contextlib.contextmanager
-def install_in_memory_raw_document_db(
+def install_in_memory_document_db(
     db: InMemoryDocumentDatabase | None = None,
 ) -> typing.Generator[InMemoryDocumentDatabase, None, None]:
     """

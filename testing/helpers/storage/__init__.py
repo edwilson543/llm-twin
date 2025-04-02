@@ -1,0 +1,1 @@
+from ._document import InMemoryDocumentDatabase, install_in_memory_document_db

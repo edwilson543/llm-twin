@@ -2,7 +2,7 @@ from llm_twin.domain.storage import document as document_storage
 from llm_twin.orchestration.steps.feature_engineering import _fetch_raw_documents
 from testing.factories import documents as document_factories
 from testing.helpers import context as context_helpers
-from testing.helpers import infrastructure as infrastructure_helpers
+from testing.helpers import storage as storage_helpers
 
 
 def test_gets_all_raw_documents_for_specified_authors():
@@ -35,12 +35,12 @@ def test_gets_all_raw_documents_for_specified_authors():
             random_author_repo.serialize(),
         ],
     }
-    db = infrastructure_helpers.InMemoryDocumentDatabase(_data=data)
+    db = storage_helpers.InMemoryDocumentDatabase(_data=data)
 
     context = context_helpers.FakeContext()
 
     author_full_names = [author.full_name, other_author.full_name]
-    with infrastructure_helpers.install_in_memory_raw_document_db(db=db):
+    with storage_helpers.install_in_memory_document_db(db=db):
         documents = _fetch_raw_documents.fetch_raw_documents.entrypoint(
             author_full_names=author_full_names, context=context
         )
@@ -66,11 +66,11 @@ def test_gets_no_raw_documents_for_author_that_does_not_exist():
         document_storage.Collection.AUTHORS: [author.serialize()],
         document_storage.Collection.ARTICLES: [other_author_article.serialize()],
     }
-    db = infrastructure_helpers.InMemoryDocumentDatabase(_data=data)
+    db = storage_helpers.InMemoryDocumentDatabase(_data=data)
 
     context = context_helpers.FakeContext()
 
-    with infrastructure_helpers.install_in_memory_raw_document_db(db=db):
+    with storage_helpers.install_in_memory_document_db(db=db):
         documents = _fetch_raw_documents.fetch_raw_documents.entrypoint(
             author_full_names=[author.full_name], context=context
         )
