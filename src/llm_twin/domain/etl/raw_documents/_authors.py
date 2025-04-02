@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-from . import _base, _db
+from llm_twin.domain.storage import document as document_storage
 
 
-class Author(_base.RawDocument):
+class Author(document_storage.RawDocument):
     first_name: str
     last_name: str
 
     @classmethod
-    def get_collection_name(cls) -> _db.Collection:
-        return _db.Collection.AUTHORS
+    def get_collection_name(cls) -> document_storage.Collection:
+        return document_storage.Collection.AUTHORS
 
     @property
     def full_name(self) -> str:

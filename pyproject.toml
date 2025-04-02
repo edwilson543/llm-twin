@@ -88,7 +88,7 @@ layers = [
 exhaustive = true
 
 [[tool.importlinter.contracts]]
-name = "ETL subdomain layer"
+name = "ETL subdomain"
 type = "layers"
 containers = "llm_twin.domain.etl"
 layers = [
@@ -96,6 +96,14 @@ layers = [
     "raw_documents",
 ]
 exhaustive = true
+
+[[tool.importlinter.contracts]]
+name = "Storage subdomain"
+type = "independence"
+modules = [
+    "llm_twin.domain.storage.document",
+    "llm_twin.domain.storage.vector",
+]
 
 [[tool.importlinter.contracts]]
 name = "Orchestration layer"

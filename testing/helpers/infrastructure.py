@@ -5,33 +5,35 @@ import typing
 from unittest import mock
 
 from llm_twin import settings
-from llm_twin.domain.etl import raw_documents
+from llm_twin.domain.storage import document as document_storage
 
 
 @dataclasses.dataclass(frozen=True)
-class InMemoryRawDocumentDatabase(raw_documents.RawDocumentDatabase):
-    _data: dict[raw_documents.Collection, list[raw_documents.SerializedRawDocument]] = (
-        dataclasses.field(default_factory=lambda: collections.defaultdict(list))
-    )
+class InMemoryRawDocumentDatabase(document_storage.RawDocumentDatabase):
+    _data: dict[
+        document_storage.Collection, list[document_storage.SerializedRawDocument]
+    ] = dataclasses.field(default_factory=lambda: collections.defaultdict(list))
 
     @property
     def data(
         self,
-    ) -> dict[raw_documents.Collection, list[raw_documents.SerializedRawDocument]]:
+    ) -> dict[
+        document_storage.Collection, list[document_storage.SerializedRawDocument]
+    ]:
         return dict(self._data)
 
     def find_one(
-        self, *, collection: raw_documents.Collection, **filter_options: object
-    ) -> raw_documents.SerializedRawDocument:
+        self, *, collection: document_storage.Collection, **filter_options: object
+    ) -> document_storage.SerializedRawDocument:
         collection_documents = self._data.get(collection, [])
         for raw_document in collection_documents:
             if self._document_matches_filter_options(raw_document, **filter_options):
                 return raw_document
-        raise raw_documents.DocumentDoesNotExist()
+        raise document_storage.DocumentDoesNotExist()
 
     def find_many(
-        self, *, collection: raw_documents.Collection, **filter_options: object
-    ) -> list[raw_documents.SerializedRawDocument]:
+        self, *, collection: document_storage.Collection, **filter_options: object
+    ) -> list[document_storage.SerializedRawDocument]:
         collection_documents = self._data.get(collection, [])
         return [
             raw_document
@@ -42,14 +44,14 @@ class InMemoryRawDocumentDatabase(raw_documents.RawDocumentDatabase):
     def insert_one(
         self,
         *,
-        collection: raw_documents.Collection,
-        document: raw_documents.SerializedRawDocument,
+        collection: document_storage.Collection,
+        document: document_storage.SerializedRawDocument,
     ) -> None:
         self._data[collection].append(document)
 
     @staticmethod
     def _document_matches_filter_options(
-        document: raw_documents.SerializedRawDocument, **filter_options: object
+        document: document_storage.SerializedRawDocument, **filter_options: object
     ) -> bool:
         return all(
             document.get(filter_key) == filter_value

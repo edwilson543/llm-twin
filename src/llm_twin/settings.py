@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pydantic_settings
 
-from llm_twin.domain.etl import raw_documents
+from llm_twin.domain.storage import document as document_storage
 from llm_twin.infrastructure.db import mongo
 
 
@@ -19,7 +19,7 @@ class Settings(pydantic_settings.BaseSettings):
 settings = Settings.load_settings()
 
 
-def get_raw_document_database() -> raw_documents.RawDocumentDatabase:
+def get_raw_document_database() -> document_storage.RawDocumentDatabase:
     connector = mongo.MongoDatabaseConnector(
         database_host=settings.MONGO_DATABASE_HOST,
         database_name=settings.MONGO_DATABASE_NAME,

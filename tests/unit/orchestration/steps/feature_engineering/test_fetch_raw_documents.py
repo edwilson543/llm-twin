@@ -1,4 +1,4 @@
-from llm_twin.domain.etl import raw_documents
+from llm_twin.domain.storage import document as document_storage
 from llm_twin.orchestration.steps.feature_engineering import _fetch_raw_documents
 from testing.factories import documents as document_factories
 from testing.helpers import context as context_helpers
@@ -19,17 +19,17 @@ def test_gets_all_raw_documents_for_specified_authors():
     random_author_repo = document_factories.Repository()
 
     data = {
-        raw_documents.Collection.AUTHORS: [
+        document_storage.Collection.AUTHORS: [
             author.serialize(),
             other_author.serialize(),
         ],
-        raw_documents.Collection.ARTICLES: [
+        document_storage.Collection.ARTICLES: [
             author_article.serialize(),
             author_other_article.serialize(),
             other_author_article.serialize(),
             random_author_article.serialize(),
         ],
-        raw_documents.Collection.REPOSITORIES: [
+        document_storage.Collection.REPOSITORIES: [
             author_repo.serialize(),
             other_author_repo.serialize(),
             random_author_repo.serialize(),
@@ -63,8 +63,8 @@ def test_gets_no_raw_documents_for_author_that_does_not_exist():
     author = document_factories.Author()
     other_author_article = document_factories.Article()
     data = {
-        raw_documents.Collection.AUTHORS: [author.serialize()],
-        raw_documents.Collection.ARTICLES: [other_author_article.serialize()],
+        document_storage.Collection.AUTHORS: [author.serialize()],
+        document_storage.Collection.ARTICLES: [other_author_article.serialize()],
     }
     db = infrastructure_helpers.InMemoryRawDocumentDatabase(_data=data)
 

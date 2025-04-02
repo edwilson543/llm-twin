@@ -1,9 +1,11 @@
-from . import _base, _db
+from llm_twin.domain.storage import document as document_storage
+
+from . import _base
 
 
 class Article(_base.ExtractedDocument):
     link: str
 
     @classmethod
-    def get_collection_name(cls) -> _db.Collection:
-        return _db.Collection.ARTICLES
+    def get_collection_name(cls) -> document_storage.Collection:
+        return document_storage.Collection.ARTICLES

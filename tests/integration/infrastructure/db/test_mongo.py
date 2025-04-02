@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 
-from llm_twin.domain.etl import raw_documents
+from llm_twin.domain.storage import document as document_storage
 from llm_twin.infrastructure.db import mongo
 from llm_twin.settings import settings
 
@@ -22,7 +22,7 @@ def db(_connector) -> mongo.MongoDatabase:
 
 class TestInsertOneFindOne:
     def test_finds_document_that_was_inserted(self, db: mongo.MongoDatabase):
-        collection = raw_documents.Collection.AUTHORS
+        collection = document_storage.Collection.AUTHORS
         document = {"id": str(uuid.uuid4()), "foo": "bar"}
         other_document = {"id": str(uuid.uuid4()), "baz": "qux"}
 
@@ -36,12 +36,12 @@ class TestInsertOneFindOne:
     def test_raises_when_document_does_not_exist_for_collection(
         self, db: mongo.MongoDatabase
     ):
-        collection = raw_documents.Collection.AUTHORS
+        collection = document_storage.Collection.AUTHORS
         document = {"id": str(uuid.uuid4()), "foo": "bar"}
         db.insert_one(collection=collection, document=document)
 
-        with pytest.raises(raw_documents.DocumentDoesNotExist):
-            db.find_one(collection=raw_documents.Collection.POSTS, id=document["id"])
+        with pytest.raises(document_storage.DocumentDoesNotExist):
+            db.find_one(collection=document_storage.Collection.POSTS, id=document["id"])
 
 
 class TestFindMany:
@@ -53,7 +53,7 @@ class TestFindMany:
         other_matching_document = {"id": str(uuid.uuid4()), **filter_options}
         non_matching_document = {"id": str(uuid.uuid4())}
 
-        collection = raw_documents.Collection.AUTHORS
+        collection = document_storage.Collection.AUTHORS
         db.insert_one(collection=collection, document=matching_document)
         db.insert_one(collection=collection, document=other_matching_document)
         db.insert_one(collection=collection, document=non_matching_document)
@@ -65,7 +65,7 @@ class TestFindMany:
     def test_returns_empty_list_when_no_document_matches_filter_options(
         self, db: mongo.MongoDatabase
     ):
-        collection = raw_documents.Collection.AUTHORS
+        collection = document_storage.Collection.AUTHORS
         document = {"id": str(uuid.uuid4())}
         db.insert_one(collection=collection, document=document)
 

@@ -8,6 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome import options as chrome_options
 
 from llm_twin.domain.etl import raw_documents
+from llm_twin.domain.storage import document as document_storage
 
 
 @dataclasses.dataclass(frozen=True)
@@ -20,12 +21,12 @@ class Crawler(abc.ABC):
     Base class for crawling a webpage and extracting relevant information.
     """
 
-    _document_class: type[raw_documents.RawDocument]
+    _document_class: type[document_storage.RawDocument]
 
     def extract(
         self,
         *,
-        db: raw_documents.RawDocumentDatabase,
+        db: document_storage.RawDocumentDatabase,
         link: str,
         author: raw_documents.Author,
     ) -> None:
@@ -34,7 +35,7 @@ class Crawler(abc.ABC):
             loguru.logger.info(
                 f"Skipping crawling {link} since document already extracted"
             )
-        except raw_documents.DocumentDoesNotExist:
+        except document_storage.DocumentDoesNotExist:
             loguru.logger.info(f"Attempting to extract document(s) from {link}")
             self._extract(db=db, link=link, author=author)
 
@@ -42,7 +43,7 @@ class Crawler(abc.ABC):
     def _extract(
         self,
         *,
-        db: raw_documents.RawDocumentDatabase,
+        db: document_storage.RawDocumentDatabase,
         link: str,
         author: raw_documents.Author,
     ) -> None:

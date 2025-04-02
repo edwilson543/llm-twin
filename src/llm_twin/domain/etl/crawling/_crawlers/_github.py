@@ -4,6 +4,7 @@ import subprocess
 import tempfile
 
 from llm_twin.domain.etl import raw_documents
+from llm_twin.domain.storage import document as document_storage
 
 from . import _base
 
@@ -18,7 +19,7 @@ class GithubCrawler(_base.Crawler):
     def _extract(
         self,
         *,
-        db: raw_documents.RawDocumentDatabase,
+        db: document_storage.RawDocumentDatabase,
         link: str,
         author: raw_documents.Author,
     ) -> None:

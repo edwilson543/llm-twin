@@ -8,7 +8,7 @@ from pymongo import database as pymongo_database
 from pymongo import errors as pymongo_errors
 from pymongo import mongo_client
 
-from llm_twin.domain.etl import raw_documents
+from llm_twin.domain.storage import document as document_storage
 
 
 class MongoDatabaseConnector:
@@ -39,40 +39,40 @@ class MongoDatabaseConnector:
         return super().__new__(cls)
 
     def get_collection(
-        self, collection: raw_documents.Collection
+        self, collection: document_storage.Collection
     ) -> pymongo_collection.Collection:
         assert self._database is not None  # For mypy.
         return self._database[collection.value]
 
 
 @dataclasses.dataclass
-class MongoDatabase(raw_documents.RawDocumentDatabase):
+class MongoDatabase(document_storage.RawDocumentDatabase):
     _connector: MongoDatabaseConnector
 
     def find_one(
-        self, *, collection: raw_documents.Collection, **filter_options: object
-    ) -> raw_documents.SerializedRawDocument:
+        self, *, collection: document_storage.Collection, **filter_options: object
+    ) -> document_storage.SerializedRawDocument:
         mongo_collection = self._connector.get_collection(collection)
 
         if (result := mongo_collection.find_one(filter_options)) is None:
-            raise raw_documents.DocumentDoesNotExist
+            raise document_storage.DocumentDoesNotExist
         return result
 
     def find_many(
-        self, *, collection: raw_documents.Collection, **filter_options: object
-    ) -> list[raw_documents.SerializedRawDocument]:
+        self, *, collection: document_storage.Collection, **filter_options: object
+    ) -> list[document_storage.SerializedRawDocument]:
         mongo_collection = self._connector.get_collection(collection)
         return list(mongo_collection.find(filter_options))
 
     def insert_one(
         self,
         *,
-        collection: raw_documents.Collection,
-        document: raw_documents.SerializedRawDocument,
+        collection: document_storage.Collection,
+        document: document_storage.SerializedRawDocument,
     ) -> None:
         mongo_collection = self._connector.get_collection(collection)
 
         try:
             mongo_collection.insert_one(document)
         except pymongo_errors.WriteError as exc:
-            raise raw_documents.UnableToSaveDocument from exc
+            raise document_storage.UnableToSaveDocument from exc

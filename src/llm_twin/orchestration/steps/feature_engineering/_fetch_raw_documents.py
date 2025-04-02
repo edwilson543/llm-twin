@@ -5,6 +5,7 @@ import zenml
 
 from llm_twin import settings, utils
 from llm_twin.domain.etl import raw_documents
+from llm_twin.domain.storage import document as document_storage
 from llm_twin.orchestration.steps import context
 
 
@@ -30,7 +31,7 @@ def fetch_raw_documents(
 
 
 def _fetch_raw_documents_for_author(
-    *, db: raw_documents.RawDocumentDatabase, author_full_name: str
+    *, db: document_storage.RawDocumentDatabase, author_full_name: str
 ) -> list[raw_documents.ExtractedDocument]:
     loguru.logger.info(f"Fetching raw documents for '{author_full_name}'.")
     name = utils.Name.from_full_name(author_full_name)
