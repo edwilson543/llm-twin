@@ -100,7 +100,7 @@ class Document(pydantic.BaseModel, abc.ABC):
         """
         Serialize a document for persistence in the database.
         """
-        parsed = self.model_dump()
+        parsed = self.model_dump(by_alias=True)
         if "_id" not in parsed and "id" in parsed:
             parsed["_id"] = str(parsed.pop("id"))
 

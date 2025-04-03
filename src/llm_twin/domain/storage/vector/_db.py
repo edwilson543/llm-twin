@@ -1,24 +1,33 @@
 from __future__ import annotations
 
 import abc
+import dataclasses
 import typing
 
 from . import _vector
 
 
 VectorT = typing.TypeVar("VectorT", bound=_vector.Vector)
-_SerializedVectorT = typing.TypeVar("_SerializedVectorT")
 
 
-class VectorDatabase[SerializedVectorT](abc.ABC):
+@dataclasses.dataclass
+class UnableToInsertVectors(Exception):
+    collection: _vector.Collection
+
+
+class VectorDatabase(abc.ABC):
     # Read operations.
 
     @abc.abstractmethod
     def bulk_find(
-        self, *, collection: _vector.Collection, limit: int
-    ) -> list[_vector.Vector]:
+        self, *, vector_class: type[VectorT], limit: int, offset: str | None = None
+    ) -> tuple[list[VectorT], str | None]:
         """
         Find all vectors in the collection matching the filter options.
+
+        :return:
+            - The list of retrieved vectors
+            - The offset to scroll from to find the next batch of vectors.
         """
         raise NotImplementedError
 
@@ -29,17 +38,4 @@ class VectorDatabase[SerializedVectorT](abc.ABC):
         """
         Bulk insert some vectors into the database.
         """
-        raise NotImplementedError
-
-    # Serialization.
-
-    @classmethod
-    @abc.abstractmethod
-    def _deserialize(
-        cls, serialized_vector: SerializedVectorT, vector_class: type[VectorT]
-    ) -> VectorT:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def _serialize(self, vector: _vector.Vector) -> SerializedVectorT:
         raise NotImplementedError

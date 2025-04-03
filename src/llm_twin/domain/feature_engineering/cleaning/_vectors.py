@@ -17,4 +17,3 @@ class CleanedRepository(CleanedRawDocument):
     class _Config(vector_storage.Config):
         collection = vector_storage.Collection.CLEANED_REPOSITORIES
         category = vector_storage.DataCategory.REPOSITORIES
-        use_vector_index = False

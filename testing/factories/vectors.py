@@ -1,22 +1,34 @@
 import factory
 
-from llm_twin.domain.feature_engineering import cleaning
-
-from . import documents
+from llm_twin.domain.storage import vector as vector_storage
 
 
-class _CleanedRawDocument(factory.Factory):
-    content = factory.Sequence(lambda n: f"content-{n}")
-    platform = "some-platform"
+class _Vector(vector_storage.Vector):
+    name: str
 
-    author = factory.SubFactory(documents.Author)
-    author_id = factory.LazyAttribute(lambda o: str(o.author.id))
-    author_full_name = factory.LazyAttribute(lambda o: o.author.full_name)
+    class _Config(vector_storage.Config):
+        collection = vector_storage.Collection.TESTING_VECTORS
+        category = vector_storage.DataCategory.TESTING
 
 
-class CleanedRepository(_CleanedRawDocument):
-    name = factory.Sequence(lambda n: f"repo-{n}")
-    link = factory.Sequence(lambda n: f"https://github.com/edwilson543/repo-{n}/")
+class Vector(factory.Factory):
+    name = factory.Sequence(lambda n: f"vector-{n}")
 
     class Meta:
-        model = cleaning.CleanedRepository
+        model = _Vector
+
+
+class _VectorEmbedding(vector_storage.VectorEmbedding):
+    name: str
+
+    class _Config(vector_storage.Config):
+        collection = vector_storage.Collection.TESTING_VECTOR_EMBEDDINGS
+        category = vector_storage.DataCategory.TESTING
+
+
+class VectorEmbedding(factory.Factory):
+    name = factory.Sequence(lambda n: f"vector-{n}")
+    embedding = factory.LazyFunction(lambda: [1.0, 0.0, 0.0])
+
+    class Meta:
+        model = _VectorEmbedding

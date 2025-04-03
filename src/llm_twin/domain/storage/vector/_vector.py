@@ -14,17 +14,21 @@ class Collection(enum.Enum):
     CLEANED_ARTICLES = "articles"
     CLEANED_REPOSITORIES = "cleaned_repositories"
 
+    # Testing.
+    TESTING_VECTORS = "testing_vectors"
+    TESTING_VECTOR_EMBEDDINGS = "testing_vector_embeddings"
+
 
 class DataCategory(enum.Enum):
     POSTS = "posts"
     ARTICLES = "articles"
     REPOSITORIES = "repositories"
+    TESTING = "testing"
 
 
 class Config(pydantic.BaseModel):
     collection: typing.ClassVar[Collection]
     category: typing.ClassVar[DataCategory]
-    use_vector_index: typing.ClassVar[bool]
 
 
 class Vector(pydantic.BaseModel, abc.ABC):
@@ -32,6 +36,10 @@ class Vector(pydantic.BaseModel, abc.ABC):
 
     _Config: typing.ClassVar[type[Config]]
 
-    @property
-    def collection(self) -> Collection:
-        return self._Config.collection
+    @classmethod
+    def collection(cls) -> Collection:
+        return cls._Config.collection
+
+
+class VectorEmbedding(Vector, abc.ABC):
+    embedding: list[float]
