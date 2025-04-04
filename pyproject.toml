@@ -101,6 +101,15 @@ layers = [
 exhaustive = true
 
 [[tool.importlinter.contracts]]
+name = "Feature engineering subdomain"
+type = "layers"
+containers = "llm_twin.domain.feature_engineering"
+layers = [
+    "cleaning",
+]
+exhaustive = true
+
+[[tool.importlinter.contracts]]
 name = "Storage subdomain"
 type = "independence"
 modules = [
