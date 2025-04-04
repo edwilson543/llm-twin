@@ -37,16 +37,14 @@ class Crawler(abc.ABC):
             )
         except document_storage.DocumentDoesNotExist:
             loguru.logger.info(f"Attempting to extract document(s) from {link}")
-            self._extract(db=db, link=link, author=author)
+            document = self._extract(link=link, author=author)
+            db.insert_one(document=document)
+            loguru.logger.info(f"Successfully extracted document(s) from {link}")
 
     @abc.abstractmethod
     def _extract(
-        self,
-        *,
-        db: document_storage.DocumentDatabase,
-        link: str,
-        author: authors.Author,
-    ) -> None:
+        self, *, link: str, author: authors.Author
+    ) -> document_storage.Document:
         raise NotImplementedError
 
 

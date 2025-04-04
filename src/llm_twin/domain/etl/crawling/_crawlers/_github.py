@@ -5,7 +5,6 @@ import tempfile
 
 from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
-from llm_twin.domain.storage import document as document_storage
 
 from . import _base
 
@@ -18,12 +17,8 @@ class GithubCrawler(_base.Crawler):
         self._ignore = ignore
 
     def _extract(
-        self,
-        *,
-        db: document_storage.DocumentDatabase,
-        link: str,
-        author: authors.Author,
-    ) -> None:
+        self, *, link: str, author: authors.Author
+    ) -> raw_documents.Repository:
         """
         Extract the content from a GitHub repo and save it in the db.
         """
@@ -51,7 +46,7 @@ class GithubCrawler(_base.Crawler):
         finally:
             shutil.rmtree(local_temp_dir)
 
-        document = raw_documents.Repository(
+        return raw_documents.Repository(
             content=tree,
             name=repo_name,
             link=link,
@@ -59,4 +54,3 @@ class GithubCrawler(_base.Crawler):
             author_id=author.id,
             author_full_name=author.full_name,
         )
-        db.insert_one(document=document)

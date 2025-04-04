@@ -9,10 +9,6 @@ class BrokenCrawler(_base.Crawler):
     _document_class = raw_documents.Article
 
     def _extract(
-        self,
-        *,
-        db: document_storage.DocumentDatabase,
-        link: str,
-        author: authors.Author,
-    ) -> None:
+        self, *, link: str, author: authors.Author
+    ) -> document_storage.Document:
         raise _base.UnableToCrawlLink(link=link)
