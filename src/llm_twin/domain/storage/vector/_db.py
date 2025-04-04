@@ -34,7 +34,7 @@ class VectorDatabase(abc.ABC):
     # Write operations.
 
     @abc.abstractmethod
-    def bulk_insert(self, *, vectors: list[_vector.Vector]) -> None:
+    def bulk_insert(self, *, vectors: typing.Sequence[_vector.Vector]) -> None:
         """
         Bulk insert some vectors into the database.
         """

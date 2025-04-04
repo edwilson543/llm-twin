@@ -1,0 +1,30 @@
+from llm_twin.domain.feature_engineering import cleaning
+from llm_twin.orchestration.steps.feature_engineering import _clean_raw_documents
+from testing.factories import documents as document_factories
+from testing.helpers import context as context_helpers
+from testing.helpers import storage as storage_helpers
+
+
+def test_cleans_all_raw_documents_and_persists_in_database():
+    article = document_factories.Article(content={"some": "  con", "more": "tent.  "})
+    repository = document_factories.Repository(
+        content={"line 1:": "def   ", "line 2": "do_something"}
+    )
+
+    context = context_helpers.FakeContext()
+
+    with storage_helpers.install_in_memory_vector_db() as db:
+        cleaned_documents = _clean_raw_documents.clean_raw_documents.entrypoint(
+            raw_documents=[article, repository], context=context
+        )
+
+    assert db.vectors == cleaned_documents
+    assert len(db.vectors) == 2
+
+    cleaned_article = db.vectors_by_id[article.id]
+    assert isinstance(cleaned_article, cleaning.CleanedArticle)
+    assert cleaned_article.content == "con tent."
+
+    cleaned_repository = db.vectors_by_id[repository.id]
+    assert isinstance(cleaned_repository, cleaning.CleanedRepository)
+    assert cleaned_repository.content == "def do_something"

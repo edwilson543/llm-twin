@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import collections
 import dataclasses
+import typing
 
 import loguru
 import qdrant_client
@@ -66,7 +67,7 @@ class QdrantDatabase(vector_storage.VectorDatabase):
         next_offset = str(next_offset) if next_offset else None
         return documents, next_offset
 
-    def bulk_insert(self, *, vectors: list[vector_storage.Vector]) -> None:
+    def bulk_insert(self, *, vectors: typing.Sequence[vector_storage.Vector]) -> None:
         grouped_vectors: dict[
             type[vector_storage.Vector], list[qdrant_models.PointStruct]
         ] = collections.defaultdict(list)

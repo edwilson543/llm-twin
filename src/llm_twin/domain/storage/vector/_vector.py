@@ -37,6 +37,10 @@ class Vector(pydantic.BaseModel, abc.ABC):
     def collection(cls) -> Collection:
         return cls._Config.collection
 
+    @classmethod
+    def category(cls) -> DataCategory:
+        return cls._Config.category
+
 
 class VectorEmbedding(Vector, abc.ABC):
     embedding: list[float]
