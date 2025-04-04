@@ -18,6 +18,12 @@ jobs:
           MONGO_INITDB_ROOT_PASSWORD: "test_password"
           MONGO_INITDB_DATABASE: "llm-twin-test"
 
+      qdrant:
+        image: qdrant/qdrant:latest
+        ports:
+          - 6335:6333
+          - 6336:6334
+
     steps:
       - uses: actions/checkout@v3
 
