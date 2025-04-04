@@ -22,4 +22,4 @@ class FakeCrawler(_base.Crawler):
             author_id=author.id,
             author_full_name=author.full_name,
         )
-        document.save(db=db)
+        db.insert_one(document=document)

@@ -31,7 +31,7 @@ class Crawler(abc.ABC):
         author: authors.Author,
     ) -> None:
         try:
-            self._document_class.get(db=db, link=link)
+            db.find_one(document_class=self._document_class, link=link)
             loguru.logger.info(
                 f"Skipping crawling {link} since document already extracted"
             )

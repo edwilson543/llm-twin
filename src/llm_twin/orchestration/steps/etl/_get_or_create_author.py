@@ -17,8 +17,10 @@ def get_or_create_author(
     db = settings.get_document_database()
 
     name = utils.Name.from_full_name(full_name)
-    author = authors.Author.get_or_create(
-        db=db, first_name=name.first_name, last_name=name.last_name
+    author = db.get_or_create(
+        document_class=authors.Author,
+        first_name=name.first_name,
+        last_name=name.last_name,
     )
 
     step_context = context or zenml.get_step_context()
@@ -38,8 +40,8 @@ def _get_metadata(
             "author_full_name": author_full_name,
         },
         "retrieved": {
-            "author_id": str(author.id),
-            "first_name": str(author.first_name),
-            "last_name": str(author.last_name),
+            "author_id": author.id,
+            "first_name": author.first_name,
+            "last_name": author.last_name,
         },
     }

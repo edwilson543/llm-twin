@@ -1,8 +1,7 @@
-import uuid
 from unittest import mock
 
-from llm_twin.domain.storage import document as document_storage
 from llm_twin.orchestration.steps.etl import _get_or_create_author
+from testing.factories import documents as document_factories
 from testing.helpers import context as context_helpers
 from testing.helpers import storage as storage_helpers
 
@@ -19,20 +18,14 @@ def test_creates_author_when_author_does_not_exist():
     assert added_metadata["retrieved"]["first_name"] == "Ed"
     assert added_metadata["retrieved"]["last_name"] == "Wilson"
 
-    assert db.data == {
-        document_storage.Collection.AUTHORS: [
-            {"_id": mock.ANY, "first_name": "Ed", "last_name": "Wilson"}
-        ]
-    }
+    assert db.dumped_documents == [
+        {"id": mock.ANY, "first_name": "Ed", "last_name": "Wilson"}
+    ]
 
 
 def test_gets_author_when_author_already_exists():
-    data = {
-        document_storage.Collection.AUTHORS: [
-            {"_id": uuid.uuid4(), "first_name": "Ed", "last_name": "Wilson"}
-        ]
-    }
-    db = storage_helpers.InMemoryDocumentDatabase(_data=data)
+    documents = [document_factories.Author(first_name="Ed", last_name="Wilson")]
+    db = storage_helpers.InMemoryDocumentDatabase(documents=documents)
     context = context_helpers.FakeContext()
 
     with storage_helpers.install_in_memory_document_db(db=db):
@@ -44,4 +37,4 @@ def test_gets_author_when_author_already_exists():
     assert added_metadata["retrieved"]["first_name"] == "Ed"
     assert added_metadata["retrieved"]["last_name"] == "Wilson"
 
-    assert db.data == data
+    assert db.documents == documents

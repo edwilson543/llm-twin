@@ -36,12 +36,16 @@ def _fetch_raw_documents_for_author(
 ) -> list[raw_documents.RawDocument]:
     loguru.logger.info(f"Fetching raw documents for '{author_full_name}'.")
     name = utils.Name.from_full_name(author_full_name)
-    author = authors.Author.get_or_create(
-        db=db, first_name=name.first_name, last_name=name.last_name
+    author = db.get_or_create(
+        document_class=authors.Author,
+        first_name=name.first_name,
+        last_name=name.last_name,
     )
 
-    articles = raw_documents.Article.filter(db=db, author_id=str(author.id))
-    repositories = raw_documents.Repository.filter(db=db, author_id=str(author.id))
+    articles = db.find_many(document_class=raw_documents.Article, author_id=author.id)
+    repositories = db.find_many(
+        document_class=raw_documents.Repository, author_id=author.id
+    )
 
     return [*articles, *repositories]
 

@@ -1,5 +1,3 @@
-import uuid
-
 import factory
 
 from llm_twin.domain import authors
@@ -7,7 +5,7 @@ from llm_twin.domain.etl import raw_documents
 
 
 class _Document(factory.Factory):
-    id = factory.LazyFunction(uuid.uuid4)
+    pass
 
 
 class Author(_Document):

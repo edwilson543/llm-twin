@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import abc
 
-import pydantic
-
 from llm_twin.domain.storage import document
 
 
@@ -14,5 +12,5 @@ class RawDocument(document.Document, abc.ABC):
 
     content: dict
     platform: str
-    author_id: pydantic.UUID4
+    author_id: str
     author_full_name: str

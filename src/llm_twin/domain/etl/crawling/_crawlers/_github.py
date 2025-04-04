@@ -51,7 +51,7 @@ class GithubCrawler(_base.Crawler):
         finally:
             shutil.rmtree(local_temp_dir)
 
-        instance = raw_documents.Repository(
+        document = raw_documents.Repository(
             content=tree,
             name=repo_name,
             link=link,
@@ -59,4 +59,4 @@ class GithubCrawler(_base.Crawler):
             author_id=author.id,
             author_full_name=author.full_name,
         )
-        instance.save(db=db)
+        db.insert_one(document=document)

@@ -1,6 +1,5 @@
 from unittest import mock
 
-from llm_twin.domain.storage import document as document_storage
 from llm_twin.orchestration.steps.etl import _crawl_links
 from testing.factories import documents as document_factories
 from testing.helpers import context as context_helpers
@@ -19,26 +18,24 @@ def test_crawls_links_for_fake_domain_successfully():
     with storage_helpers.install_in_memory_document_db() as db:
         _crawl_links.crawl_links.entrypoint(author=author, links=links, context=context)
 
-    assert db.data == {
-        document_storage.Collection.ARTICLES: [
-            {
-                "_id": mock.ANY,
-                "author_full_name": author.full_name,
-                "author_id": str(author.id),
-                "content": {"foo": "bar"},
-                "link": links[0],
-                "platform": "fake",
-            },
-            {
-                "_id": mock.ANY,
-                "author_full_name": author.full_name,
-                "author_id": str(author.id),
-                "content": {"foo": "bar"},
-                "link": links[1],
-                "platform": "fake",
-            },
-        ],
-    }
+    assert db.dumped_documents == [
+        {
+            "id": mock.ANY,
+            "author_full_name": author.full_name,
+            "author_id": author.id,
+            "content": {"foo": "bar"},
+            "link": links[0],
+            "platform": "fake",
+        },
+        {
+            "id": mock.ANY,
+            "author_full_name": author.full_name,
+            "author_id": author.id,
+            "content": {"foo": "bar"},
+            "link": links[1],
+            "platform": "fake",
+        },
+    ]
 
 
 def test_continues_after_failing_to_crawl_broken_link():
@@ -53,15 +50,13 @@ def test_continues_after_failing_to_crawl_broken_link():
     with storage_helpers.install_in_memory_document_db() as db:
         _crawl_links.crawl_links.entrypoint(author=author, links=links, context=context)
 
-    assert db.data == {
-        document_storage.Collection.ARTICLES: [
-            {
-                "_id": mock.ANY,
-                "author_full_name": author.full_name,
-                "author_id": str(author.id),
-                "content": {"foo": "bar"},
-                "link": links[1],
-                "platform": "fake",
-            },
-        ],
-    }
+    assert db.dumped_documents == [
+        {
+            "id": mock.ANY,
+            "author_full_name": author.full_name,
+            "author_id": author.id,
+            "content": {"foo": "bar"},
+            "link": links[1],
+            "platform": "fake",
+        },
+    ]

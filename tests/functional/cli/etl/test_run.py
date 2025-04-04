@@ -19,16 +19,20 @@ def test_runs_etl_pipeline_and_persists_outcome():
 
     # Ensure the relevant articles were extracted.
     db = settings.get_document_database()
-    author = authors.Author.get(db=db, first_name="Jackof", last_name="Alltrades")
+    author = db.find_one(
+        document_class=authors.Author, first_name="Jackof", last_name="Alltrades"
+    )
 
-    first_post = raw_documents.Article.get(
-        db=db, link="https://fake.com/blog/ten-things-to-be-average-at.html"
+    first_post = db.find_one(
+        document_class=raw_documents.Article,
+        link="https://fake.com/blog/ten-things-to-be-average-at.html",
     )
     assert first_post.platform == "fake"
     assert first_post.author_id == author.id
 
-    second_post = raw_documents.Article.get(
-        db=db, link="https://fake.com/blog/top-tips-for-mediocracy.html"
+    second_post = db.find_one(
+        document_class=raw_documents.Article,
+        link="https://fake.com/blog/top-tips-for-mediocracy.html",
     )
     assert second_post.platform == "fake"
     assert second_post.author_id == author.id

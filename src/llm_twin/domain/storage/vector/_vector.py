@@ -1,13 +1,10 @@
 import abc
 import enum
 import typing
-import uuid
 
 import pydantic
 
-
-def generate_id() -> str:
-    return str(uuid.uuid4())
+from llm_twin.domain.storage import _ids
 
 
 class Collection(enum.Enum):
@@ -32,7 +29,7 @@ class Config(pydantic.BaseModel):
 
 
 class Vector(pydantic.BaseModel, abc.ABC):
-    id: str = pydantic.Field(default_factory=generate_id)
+    id: str = pydantic.Field(default_factory=_ids.generate_id)
 
     _Config: typing.ClassVar[type[Config]]
 

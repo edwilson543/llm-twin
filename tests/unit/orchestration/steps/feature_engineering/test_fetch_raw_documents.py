@@ -1,4 +1,3 @@
-from llm_twin.domain.storage import document as document_storage
 from llm_twin.orchestration.steps.feature_engineering import _fetch_raw_documents
 from testing.factories import documents as document_factories
 from testing.helpers import context as context_helpers
@@ -18,24 +17,18 @@ def test_gets_all_raw_documents_for_specified_authors():
     other_author_repo = document_factories.Repository(author=other_author)
     random_author_repo = document_factories.Repository()
 
-    data = {
-        document_storage.Collection.AUTHORS: [
-            author.serialize(),
-            other_author.serialize(),
-        ],
-        document_storage.Collection.ARTICLES: [
-            author_article.serialize(),
-            author_other_article.serialize(),
-            other_author_article.serialize(),
-            random_author_article.serialize(),
-        ],
-        document_storage.Collection.REPOSITORIES: [
-            author_repo.serialize(),
-            other_author_repo.serialize(),
-            random_author_repo.serialize(),
-        ],
-    }
-    db = storage_helpers.InMemoryDocumentDatabase(_data=data)
+    all_documents = [
+        author,
+        other_author,
+        author_article,
+        author_other_article,
+        other_author_article,
+        random_author_article,
+        author_repo,
+        other_author_repo,
+        random_author_repo,
+    ]
+    db = storage_helpers.InMemoryDocumentDatabase(documents=all_documents)
 
     context = context_helpers.FakeContext()
 
@@ -62,11 +55,9 @@ def test_gets_all_raw_documents_for_specified_authors():
 def test_gets_no_raw_documents_for_author_that_does_not_exist():
     author = document_factories.Author()
     other_author_article = document_factories.Article()
-    data = {
-        document_storage.Collection.AUTHORS: [author.serialize()],
-        document_storage.Collection.ARTICLES: [other_author_article.serialize()],
-    }
-    db = storage_helpers.InMemoryDocumentDatabase(_data=data)
+    db = storage_helpers.InMemoryDocumentDatabase(
+        documents=[author, other_author_article]
+    )
 
     context = context_helpers.FakeContext()
 
