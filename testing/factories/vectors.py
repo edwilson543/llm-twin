@@ -1,6 +1,12 @@
 import factory
 
+from llm_twin.domain.feature_engineering import cleaning
 from llm_twin.domain.storage import vector as vector_storage
+
+from . import documents
+
+
+# Dummy.
 
 
 class _Vector(vector_storage.Vector):
@@ -32,3 +38,30 @@ class VectorEmbedding(factory.Factory):
 
     class Meta:
         model = _VectorEmbedding
+
+
+# Cleaning.
+
+
+class _CleanedDocument(factory.Factory):
+    content = factory.Sequence(lambda n: f"content-{n}")
+    platform = "some-platform"
+
+    author = factory.SubFactory(documents.Author)
+    author_id = factory.LazyAttribute(lambda o: o.author.id)
+    author_full_name = factory.LazyAttribute(lambda o: o.author.full_name)
+
+
+class CleanedArticle(_CleanedDocument):
+    link = factory.Sequence(lambda n: f"https://fake.com/article-{n}/")
+
+    class Meta:
+        model = cleaning.CleanedArticle
+
+
+class CleanedRepository(_CleanedDocument):
+    name = factory.Sequence(lambda n: f"repo-{n}")
+    link = factory.Sequence(lambda n: f"https://github.com/edwilson543/repo-{n}/")
+
+    class Meta:
+        model = cleaning.CleanedRepository

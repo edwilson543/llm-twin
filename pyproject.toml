@@ -106,6 +106,7 @@ name = "Feature engineering subdomain"
 type = "layers"
 containers = "llm_twin.domain.feature_engineering"
 layers = [
+    "chunking",
     "cleaning",
 ]
 exhaustive = true

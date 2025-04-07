@@ -1,16 +1,20 @@
 import abc
 
+import pydantic
+
 from llm_twin.domain.storage import vector as vector_storage
 
 
-class CleanedDocument(vector_storage.Vector, abc.ABC):
+class Chunk(vector_storage.Vector, abc.ABC):
     content: str
     platform: str
     author_id: str
     author_full_name: str
+    cleaned_document_id: str
+    metadata: dict = pydantic.Field(default_factory=dict)
 
 
-class CleanedArticle(CleanedDocument):
+class ArticleChunk(Chunk):
     link: str
 
     class _Config(vector_storage.Config):
@@ -18,7 +22,7 @@ class CleanedArticle(CleanedDocument):
         category = vector_storage.DataCategory.ARTICLES
 
 
-class CleanedRepository(CleanedDocument):
+class RepositoryChunk(Chunk):
     name: str
     link: str
 
