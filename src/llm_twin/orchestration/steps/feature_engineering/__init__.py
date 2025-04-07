@@ -1,1 +1,2 @@
+from ._clean_raw_documents import clean_raw_documents
 from ._fetch_raw_documents import fetch_raw_documents
