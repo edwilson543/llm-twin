@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pydantic_settings
 
+from llm_twin.domain.feature_engineering import embedding
 from llm_twin.domain.storage import document as document_storage
 from llm_twin.domain.storage import vector as vector_storage
 from llm_twin.infrastructure.db import mongo, qdrant
@@ -16,12 +17,17 @@ class Settings(pydantic_settings.BaseSettings):
     QDRANT_DATABASE_HOST: str = "localhost"
     QDRANT_DATABASE_PORT: int = 6333
 
+    # Embeddings.
+    EMBEDDING_MODEL_NAME: str = "sentence-transformers/all-MiniLM-L6-v2"
+
     @classmethod
     def load_settings(cls) -> Settings:
         return cls()
 
 
 settings = Settings.load_settings()
+
+# Databases.
 
 
 def get_document_database() -> document_storage.DocumentDatabase:
@@ -38,3 +44,21 @@ def get_vector_database() -> vector_storage.VectorDatabase:
         database_port=settings.QDRANT_DATABASE_PORT,
     )
     return qdrant.QdrantDatabase(_connector=connector)
+
+
+# Models.
+
+
+def get_embedding_model() -> embedding.EmbeddingModel:
+    configs: dict[embedding.EmbeddingModelName, embedding.EmbeddingModelConfig] = {
+        embedding.EmbeddingModelName.MINILM: embedding.EmbeddingModelConfig(
+            model_name=embedding.EmbeddingModelName.MINILM,
+            embedding_size=384,
+            max_input_length=256,
+        )
+    }
+
+    model_name = embedding.EmbeddingModelName(settings.EMBEDDING_MODEL_NAME)
+    config = configs[model_name]
+
+    return embedding.SentenceTransformerEmbeddingModel(config=config)
