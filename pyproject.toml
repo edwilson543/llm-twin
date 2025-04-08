@@ -28,6 +28,7 @@ dependencies = [
     "pytest-env>=1.1.5",
     "qdrant-client>=1.13.3",
     "selenium>=4.29.0",
+    "sentence-transformers>=4.0.2",
     "tqdm>=4.67.1",
     "zenml[server]>=0.75.0",
 ]
