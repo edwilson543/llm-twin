@@ -16,16 +16,16 @@ class DocumentChunker(abc.ABC, typing.Generic[CleanedDocumentT, ChunkT]):
     """
 
     def chunk(self, *, document: CleanedDocumentT) -> list[ChunkT]:
-        chunked_documents: list[ChunkT] = []
+        chunks: list[ChunkT] = []
 
         for content in self._chunk_content(content=document.content):
             chunk_id = hashlib.md5(content.encode()).hexdigest()
-            chunk_document = self._create_chunk(
+            chunk = self._create_chunk(
                 document=document, chunk_id=chunk_id, content=content
             )
-            chunked_documents.append(chunk_document)
+            chunks.append(chunk)
 
-        return chunked_documents
+        return chunks
 
     @abc.abstractmethod
     def _create_chunk(
