@@ -107,9 +107,6 @@ class QdrantDatabase(vector_storage.VectorDatabase):
 
         return collection
 
-    def delete_collection(self, collection: vector_storage.Collection) -> None:
-        self._connector.client.delete_collection(collection_name=collection.value)
-
 
 # Serialization.
 
