@@ -4,17 +4,17 @@ import typing
 from unittest import mock
 
 from llm_twin import settings
-from llm_twin.domain.feature_engineering import embedding
+from llm_twin.domain import models
 
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
-class FakeEmbeddingModelConfig(embedding.EmbeddingModelConfig):
-    model_name: embedding.EmbeddingModelName = embedding.EmbeddingModelName.FAKE
+class FakeEmbeddingModelConfig(models.EmbeddingModelConfig):
+    model_name: models.EmbeddingModelName = models.EmbeddingModelName.FAKE
     embedding_size: int = 3
     max_input_length: int = 256
 
 
-class FakeEmbeddingModel(embedding.EmbeddingModel):
+class FakeEmbeddingModel(models.EmbeddingModel):
     def generate_embeddings(self, *, input_text: list[str]) -> list[list[float]]:
         return [self.canned_embedding] * len(input_text)
 

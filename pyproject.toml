@@ -91,7 +91,7 @@ layers = [
     "feature_engineering",
     "etl",
     "authors",
-    "storage",
+    "models | storage",
 ]
 exhaustive = true
 

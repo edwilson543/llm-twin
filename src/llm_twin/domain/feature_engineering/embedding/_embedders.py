@@ -1,9 +1,10 @@
 import abc
 import typing
 
+from llm_twin.domain import models
 from llm_twin.domain.feature_engineering import chunking
 
-from . import _documents, _model
+from . import _documents
 
 
 ChunkT = typing.TypeVar("ChunkT", bound=chunking.Chunk)
@@ -15,7 +16,7 @@ class ChunkEmbedder(abc.ABC, typing.Generic[ChunkT, EmbeddedChunkT]):
     Base class for embedding a particular chunk type.
     """
 
-    def __init__(self, *, embedding_model: _model.EmbeddingModel) -> None:
+    def __init__(self, *, embedding_model: models.EmbeddingModel) -> None:
         self._embedding_model = embedding_model
 
     def embed(self, *, chunk: ChunkT) -> EmbeddedChunkT:

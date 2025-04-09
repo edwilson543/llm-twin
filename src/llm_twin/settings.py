@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pydantic_settings
 
-from llm_twin.domain.feature_engineering import embedding
+from llm_twin.domain import models
 from llm_twin.domain.storage import document as document_storage
 from llm_twin.domain.storage import vector as vector_storage
 from llm_twin.infrastructure.db import mongo, qdrant
@@ -49,16 +49,19 @@ def get_vector_database() -> vector_storage.VectorDatabase:
 # Models.
 
 
-def get_embedding_model() -> embedding.EmbeddingModel:
-    configs: dict[embedding.EmbeddingModelName, embedding.EmbeddingModelConfig] = {
-        embedding.EmbeddingModelName.MINILM: embedding.EmbeddingModelConfig(
-            model_name=embedding.EmbeddingModelName.MINILM,
+def get_embedding_model_config() -> models.EmbeddingModelConfig:
+    configs: dict[models.EmbeddingModelName, models.EmbeddingModelConfig] = {
+        models.EmbeddingModelName.MINILM: models.EmbeddingModelConfig(
+            model_name=models.EmbeddingModelName.MINILM,
             embedding_size=384,
             max_input_length=256,
         )
     }
 
-    model_name = embedding.EmbeddingModelName(settings.EMBEDDING_MODEL_NAME)
-    config = configs[model_name]
+    model_name = models.EmbeddingModelName(settings.EMBEDDING_MODEL_NAME)
+    return configs[model_name]
 
-    return embedding.SentenceTransformerEmbeddingModel(config=config)
+
+def get_embedding_model() -> models.EmbeddingModel:
+    config = get_embedding_model_config()
+    return models.SentenceTransformerEmbeddingModel(config=config)

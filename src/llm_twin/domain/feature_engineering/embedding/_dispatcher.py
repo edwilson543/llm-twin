@@ -1,10 +1,11 @@
 import collections
 import dataclasses
 
+from llm_twin.domain import models
 from llm_twin.domain.feature_engineering import chunking
 from llm_twin.domain.storage import vector as vector_storage
 
-from . import _documents, _embedders, _model
+from . import _documents, _embedders
 
 
 @dataclasses.dataclass(frozen=True)
@@ -17,7 +18,7 @@ EmbedderRegistryT = dict[vector_storage.DataCategory, ChunkEmbedderT]
 
 
 class EmbedderDispatcher:
-    def __init__(self, *, embedding_model: _model.EmbeddingModel) -> None:
+    def __init__(self, *, embedding_model: models.EmbeddingModel) -> None:
         self._embedder_registry: EmbedderRegistryT = {
             vector_storage.DataCategory.ARTICLES: _embedders.ArticleChunkEmbedder(
                 embedding_model=embedding_model
