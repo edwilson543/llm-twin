@@ -1,5 +1,7 @@
 import contextlib
 import dataclasses
+import typing
+from unittest import mock
 
 from llm_twin import settings
 from llm_twin.domain.feature_engineering import embedding
@@ -24,3 +26,15 @@ class FakeEmbeddingModel(embedding.EmbeddingModel):
 def get_fake_embedding_model() -> FakeEmbeddingModel:
     config = FakeEmbeddingModelConfig()
     return FakeEmbeddingModel(config=config)
+
+
+@contextlib.contextmanager
+def install_fake_embedding_model() -> typing.Generator[FakeEmbeddingModel, None, None]:
+    """
+    Helper that overrides the settings module to install a fake embedding model.
+    """
+    fake_embedding_model = get_fake_embedding_model()
+    with mock.patch.object(
+        settings, "get_embedding_model", return_value=fake_embedding_model
+    ):
+        yield fake_embedding_model

@@ -1,0 +1,39 @@
+from llm_twin.domain.feature_engineering import embedding
+from llm_twin.orchestration.steps.feature_engineering import (
+    _embed_chunked_documents,
+)
+from testing.factories import vectors as vector_factories
+from testing.helpers import context as context_helpers
+from testing.helpers import embeddings as embeddings_helpers
+from testing.helpers import storage as storage_helpers
+
+
+def test_chunks_article_and_repository_documents():
+    article_chunk = vector_factories.ArticleChunk()
+    repository_chunk = vector_factories.RepositoryChunk()
+    chunked_documents = [article_chunk, repository_chunk]
+
+    context = context_helpers.FakeContext()
+
+    with (
+        embeddings_helpers.install_fake_embedding_model() as embedding_model,
+        storage_helpers.install_in_memory_vector_db() as vector_db,
+    ):
+        embedded_chunks = _embed_chunked_documents.embed_chunked_documents.entrypoint(
+            chunked_documents=chunked_documents, context=context
+        )
+
+    assert vector_db.vectors == embedded_chunks
+    assert len(embedded_chunks) == len(chunked_documents)
+
+    embedded_article = embedded_chunks[0]
+    assert isinstance(embedded_article, embedding.EmbeddedArticleChunk)
+    assert embedded_article.chunked_document_id == article_chunk.id
+    assert embedded_article.embedding == embedding_model.canned_embedding
+
+    embedded_repository = embedded_chunks[1]
+    assert isinstance(embedded_repository, embedding.EmbeddedRepositoryChunk)
+    assert embedded_repository.chunked_document_id == repository_chunk.id
+    assert embedded_repository.embedding == embedding_model.canned_embedding
+
+    assert context.output_metadata["embedded_chunks"]["num_documents"] == 2
