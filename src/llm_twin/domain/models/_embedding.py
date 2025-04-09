@@ -5,7 +5,7 @@ import pathlib
 
 import sentence_transformers
 
-from llm_twin import utils
+from . import _singleton
 
 
 class EmbeddingModelName(enum.Enum):
@@ -29,7 +29,7 @@ class UnableToEmbedText(Exception):
     model_name: EmbeddingModelName
 
 
-class EmbeddingModel(abc.ABC, metaclass=utils.SingletonMeta):
+class EmbeddingModel(abc.ABC, metaclass=_singleton.SingletonMeta):
     """
     Base class for an embedding model.
     """
