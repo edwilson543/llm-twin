@@ -45,10 +45,8 @@ class RepositoryChunker(
 
         token_splitter = text_splitter.SentenceTransformersTokenTextSplitter(
             chunk_overlap=self.chunk_overlap,
-            # tokens_per_chunk=embedding_model.max_input_length,
-            tokens_per_chunk=1000,  # TODO -> dynamic.
-            # model_name=embedding_model.model_id,
-            model_name="some-model",  # TODO -> dynamic.
+            tokens_per_chunk=self._embedding_model_config.max_input_length,
+            model_name=self._embedding_model_config.model_name.value,
         )
         chunks_by_tokens = []
         for section in text_split_by_characters:

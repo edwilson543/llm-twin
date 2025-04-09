@@ -1,5 +1,6 @@
 import dataclasses
 
+from llm_twin.domain import models
 from llm_twin.domain.storage import vector as vector_storage
 
 from . import _chunkers
@@ -15,10 +16,14 @@ ChunkerRegistryT = dict[vector_storage.DataCategory, ChunkerT]
 
 
 class ChunkerDispatcher:
-    def __init__(self) -> None:
+    def __init__(self, *, embedding_model_config: models.EmbeddingModelConfig) -> None:
         self._chunker_registry: ChunkerRegistryT = {
-            vector_storage.DataCategory.ARTICLES: _chunkers.ArticleChunker(),
-            vector_storage.DataCategory.REPOSITORIES: _chunkers.RepositoryChunker(),
+            vector_storage.DataCategory.ARTICLES: _chunkers.ArticleChunker(
+                embedding_model_config=embedding_model_config
+            ),
+            vector_storage.DataCategory.REPOSITORIES: _chunkers.RepositoryChunker(
+                embedding_model_config=embedding_model_config
+            ),
         }
 
     def get_chunker(self, *, document: _chunkers.CleanedDocumentT) -> ChunkerT:

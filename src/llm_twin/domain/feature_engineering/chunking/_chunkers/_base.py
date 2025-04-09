@@ -2,6 +2,7 @@ import abc
 import hashlib
 import typing
 
+from llm_twin.domain import models
 from llm_twin.domain.feature_engineering import cleaning
 from llm_twin.domain.feature_engineering.chunking import _documents
 
@@ -14,6 +15,9 @@ class DocumentChunker(abc.ABC, typing.Generic[CleanedDocumentT, ChunkT]):
     """
     Base class for chunking a particular document type.
     """
+
+    def __init__(self, *, embedding_model_config: models.EmbeddingModelConfig) -> None:
+        self._embedding_model_config = embedding_model_config
 
     def chunk(self, *, document: CleanedDocumentT) -> list[ChunkT]:
         chunks: list[ChunkT] = []
