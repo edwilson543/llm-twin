@@ -1,6 +1,6 @@
 import factory
 
-from llm_twin.domain.feature_engineering import cleaning
+from llm_twin.domain.feature_engineering import chunking, cleaning
 from llm_twin.domain.storage import vector as vector_storage
 
 from . import documents
@@ -65,3 +65,25 @@ class CleanedRepository(_CleanedDocument):
 
     class Meta:
         model = cleaning.CleanedRepository
+
+
+# Chunking.
+
+
+class _Chunk(_CleanedDocument):
+    cleaned_document_id = factory.Sequence(lambda n: f"cleaned-document-{n}")
+
+
+class ArticleChunk(_Chunk):
+    link = factory.Sequence(lambda n: f"https://fake.com/article-{n}/")
+
+    class Meta:
+        model = chunking.ArticleChunk
+
+
+class RepositoryChunk(_Chunk):
+    name = factory.Sequence(lambda n: f"repo-{n}")
+    link = factory.Sequence(lambda n: f"https://github.com/edwilson543/repo-{n}/")
+
+    class Meta:
+        model = chunking.RepositoryChunk
