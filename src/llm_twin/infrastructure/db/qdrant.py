@@ -9,8 +9,8 @@ import qdrant_client
 from qdrant_client import models as qdrant_models
 from qdrant_client.http import exceptions as qdrant_exceptions
 
+from llm_twin.domain import models
 from llm_twin.domain.storage import vector as vector_storage
-from llm_twin.domain.storage.vector import VectorT, _vector
 
 
 class QdrantDatabaseConnector:
@@ -36,6 +36,7 @@ class QdrantDatabaseConnector:
 @dataclasses.dataclass(frozen=True)
 class QdrantDatabase(vector_storage.VectorDatabase):
     _connector: QdrantDatabaseConnector
+    _embedding_model_config: models.EmbeddingModelConfig
 
     def bulk_find(
         self,
@@ -97,9 +98,7 @@ class QdrantDatabase(vector_storage.VectorDatabase):
 
         vector_config: dict | qdrant_models.VectorParams = {}
         if vector_class.model_fields.get("embedding"):
-            vector_config = qdrant_models.VectorParams(
-                size=3, distance=qdrant_models.Distance.COSINE
-            )
+            vector_config = self._vector_config()
 
         self._connector.client.create_collection(
             collection_name=collection.value, vectors_config=vector_config
@@ -107,20 +106,26 @@ class QdrantDatabase(vector_storage.VectorDatabase):
 
         return collection
 
+    def _vector_config(self) -> qdrant_models.VectorParams:
+        return qdrant_models.VectorParams(
+            size=self._embedding_model_config.embedding_size,
+            distance=qdrant_models.Distance.COSINE,
+        )
+
 
 # Serialization.
 
 
 def _get_vector_from_record(
-    *, record: qdrant_models.Record, vector_class: type[VectorT]
-) -> VectorT:
+    *, record: qdrant_models.Record, vector_class: type[vector_storage.VectorT]
+) -> vector_storage.VectorT:
     attributes = {"id": record.id, **(record.payload or {})}
     if issubclass(vector_class, vector_storage.VectorEmbedding):
         attributes.update({"embedding": record.vector})
     return vector_class(**attributes)
 
 
-def _get_point_from_vector(vector: _vector.Vector) -> qdrant_models.PointStruct:
+def _get_point_from_vector(vector: vector_storage.Vector) -> qdrant_models.PointStruct:
     payload = vector.model_dump(
         exclude={"id", "embedding"}, exclude_unset=False, by_alias=True
     )

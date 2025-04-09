@@ -7,9 +7,8 @@ from testing.helpers import embeddings as embeddings_helpers
 
 
 def _get_dispatcher() -> _dispatcher.ChunkerDispatcher:
-    return _dispatcher.ChunkerDispatcher(
-        embedding_model_config=embeddings_helpers.FakeEmbeddingModelConfig()
-    )
+    embedding_model_config = embeddings_helpers.get_fake_embedding_model_config()
+    return _dispatcher.ChunkerDispatcher(embedding_model_config=embedding_model_config)
 
 
 class TestGetChunker:

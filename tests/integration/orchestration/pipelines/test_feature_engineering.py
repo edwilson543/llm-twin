@@ -1,5 +1,6 @@
 from llm_twin.orchestration.pipelines import _feature_engineering
 from testing.factories import documents as document_factories
+from testing.helpers import embeddings as embeddings_helpers
 
 
 def test_processes_raw_documents_for_given_authors_into_features():
@@ -9,6 +10,7 @@ def test_processes_raw_documents_for_given_authors_into_features():
     # TODO -> create an article for author, and repository for another author.
     # TODO -> how can this be sped up...
 
-    _feature_engineering.process_raw_documents_into_features.entrypoint(
-        author_full_names=author_full_names
-    )
+    with embeddings_helpers.install_fake_embedding_model():
+        _feature_engineering.process_raw_documents_into_features.entrypoint(
+            author_full_names=author_full_names
+        )

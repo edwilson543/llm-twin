@@ -1,17 +1,9 @@
 import contextlib
-import dataclasses
 import typing
 from unittest import mock
 
 from llm_twin import settings
 from llm_twin.domain import models
-
-
-@dataclasses.dataclass(frozen=True, kw_only=True)
-class FakeEmbeddingModelConfig(models.EmbeddingModelConfig):
-    model_name: models.EmbeddingModelName = models.EmbeddingModelName.FAKE
-    embedding_size: int = 3
-    max_input_length: int = 256
 
 
 class FakeEmbeddingModel(models.EmbeddingModel):
@@ -23,9 +15,29 @@ class FakeEmbeddingModel(models.EmbeddingModel):
         return [1.0, 0.0, 0.0]
 
 
+def get_fake_embedding_model_config() -> models.EmbeddingModelConfig:
+    return models.EmbeddingModelConfig(
+        model_name=models.EmbeddingModelName.FAKE,
+        embedding_size=3,
+        max_input_length=256,
+    )
+
+
 def get_fake_embedding_model() -> FakeEmbeddingModel:
-    config = FakeEmbeddingModelConfig()
+    config = get_fake_embedding_model_config()
     return FakeEmbeddingModel(config=config)
+
+
+@contextlib.contextmanager
+def install_fake_embedding_model_config() -> typing.Generator[None, None, None]:
+    """
+    Helper that overrides the settings module to install the fake embedding model config.
+    """
+    fake_config = get_fake_embedding_model_config()
+    with mock.patch.object(
+        settings, "get_embedding_model_config", return_value=fake_config
+    ):
+        yield
 
 
 @contextlib.contextmanager
