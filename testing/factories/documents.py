@@ -3,6 +3,8 @@ import factory
 from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 
+from . import _mixins
+
 
 class _Document(factory.Factory):
     pass
@@ -28,16 +30,11 @@ class _ExtractedDocument(_Document):
         exclude = ("author",)
 
 
-class Article(_ExtractedDocument):
-    link = factory.Sequence(lambda n: f"https://fake.com/article-{n}/")
-
+class Article(_ExtractedDocument, _mixins.ArticleMixin):
     class Meta:
         model = raw_documents.Article
 
 
-class Repository(_ExtractedDocument):
-    name = factory.Sequence(lambda n: f"repo-{n}")
-    link = factory.Sequence(lambda n: f"https://github.com/edwilson543/repo-{n}/")
-
+class Repository(_ExtractedDocument, _mixins.RepositoryMixin):
     class Meta:
         model = raw_documents.Repository

@@ -3,7 +3,7 @@ import factory
 from llm_twin.domain.feature_engineering import chunking, cleaning
 from llm_twin.domain.storage import vector as vector_storage
 
-from . import documents
+from . import _mixins, documents
 
 
 # Dummy.
@@ -52,17 +52,12 @@ class _CleanedDocument(factory.Factory):
     author_full_name = factory.LazyAttribute(lambda o: o.author.full_name)
 
 
-class CleanedArticle(_CleanedDocument):
-    link = factory.Sequence(lambda n: f"https://fake.com/article-{n}/")
-
+class CleanedArticle(_CleanedDocument, _mixins.ArticleMixin):
     class Meta:
         model = cleaning.CleanedArticle
 
 
-class CleanedRepository(_CleanedDocument):
-    name = factory.Sequence(lambda n: f"repo-{n}")
-    link = factory.Sequence(lambda n: f"https://github.com/edwilson543/repo-{n}/")
-
+class CleanedRepository(_CleanedDocument, _mixins.RepositoryMixin):
     class Meta:
         model = cleaning.CleanedRepository
 
@@ -74,16 +69,11 @@ class _Chunk(_CleanedDocument):
     cleaned_document_id = factory.Sequence(lambda n: f"cleaned-document-{n}")
 
 
-class ArticleChunk(_Chunk):
-    link = factory.Sequence(lambda n: f"https://fake.com/article-{n}/")
-
+class ArticleChunk(_Chunk, _mixins.ArticleMixin):
     class Meta:
         model = chunking.ArticleChunk
 
 
-class RepositoryChunk(_Chunk):
-    name = factory.Sequence(lambda n: f"repo-{n}")
-    link = factory.Sequence(lambda n: f"https://github.com/edwilson543/repo-{n}/")
-
+class RepositoryChunk(_Chunk, _mixins.RepositoryMixin):
     class Meta:
         model = chunking.RepositoryChunk
