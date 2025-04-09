@@ -11,6 +11,9 @@ class Collection(enum.Enum):
     CLEANED_ARTICLES = "articles"
     CLEANED_REPOSITORIES = "cleaned_repositories"
 
+    EMBEDDED_ARTICLES = "embedded_articles"
+    EMBEDDED_REPOSITORIES = "embedded_repositories"
+
     # Testing.
     TESTING_VECTORS = "testing_vectors"
     TESTING_VECTOR_EMBEDDINGS = "testing_vector_embeddings"
