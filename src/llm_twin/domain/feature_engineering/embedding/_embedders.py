@@ -53,11 +53,11 @@ class ArticleChunkEmbedder(
     ) -> _documents.EmbeddedArticleChunk:
         return _documents.EmbeddedArticleChunk(
             id=chunk.id,
+            raw_document_id=chunk.raw_document_id,
             content=chunk.content,
             embedding=embedding,
             platform=chunk.platform,
             link=chunk.link,
-            chunked_document_id=chunk.id,
             author_id=chunk.author_id,
             author_full_name=chunk.author_full_name,
             metadata=self._metadata,
@@ -72,12 +72,12 @@ class RepositoryChunkEmbedder(
     ) -> _documents.EmbeddedRepositoryChunk:
         return _documents.EmbeddedRepositoryChunk(
             id=chunk.id,
+            raw_document_id=chunk.raw_document_id,
             content=chunk.content,
             embedding=embedding,
             platform=chunk.platform,
             name=chunk.name,
             link=chunk.link,
-            chunked_document_id=chunk.id,
             author_id=chunk.author_id,
             author_full_name=chunk.author_full_name,
             metadata=self._metadata,

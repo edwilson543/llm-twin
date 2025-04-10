@@ -6,11 +6,11 @@ from llm_twin.domain.storage import vector as vector_storage
 
 
 class Chunk(vector_storage.Vector, abc.ABC):
+    raw_document_id: str
     content: str
     platform: str
     author_id: str
     author_full_name: str
-    cleaned_document_id: str
     metadata: dict = pydantic.Field(default_factory=dict)
 
 

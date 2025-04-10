@@ -7,10 +7,10 @@ from llm_twin.domain.storage import vector as vector_storage
 
 
 class EmbeddedChunk(vector_storage.Vector, abc.ABC):
+    raw_document_id: str
     content: str
     embedding: list[float]
     platform: str
-    chunked_document_id: str
     author_id: str
     author_full_name: str
     metadata: dict = pydantic.Field(default_factory=dict)

@@ -23,10 +23,10 @@ class ArticleChunker(
     ) -> _documents.ArticleChunk:
         return _documents.ArticleChunk(
             id=str(uuid.UUID(chunk_id, version=4)),
+            raw_document_id=document.raw_document_id,
             content=content,
             platform=document.platform,
             link=document.link,
-            cleaned_document_id=document.id,
             author_id=document.author_id,
             author_full_name=document.author_full_name,
             metadata={"min_length": self.min_length, "max_length": self.max_length},

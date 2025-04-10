@@ -44,6 +44,7 @@ class VectorEmbedding(_base.Factory):
 
 
 class _CleanedDocument(_base.Factory):
+    raw_document_id = factory.Sequence(lambda n: f"raw-document-{n}")
     content = factory.Sequence(lambda n: f"content-{n}")
     platform = "some-platform"
 

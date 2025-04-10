@@ -24,11 +24,11 @@ class RepositoryChunker(
     ) -> _documents.RepositoryChunk:
         return _documents.RepositoryChunk(
             id=str(uuid.UUID(chunk_id, version=4)),
+            raw_document_id=document.raw_document_id,
             content=content,
             platform=document.platform,
             name=document.name,
             link=document.link,
-            cleaned_document_id=document.id,
             author_id=document.author_id,
             author_full_name=document.author_full_name,
             metadata={

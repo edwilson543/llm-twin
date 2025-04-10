@@ -28,6 +28,7 @@ class ArticleCleaner(DocumentCleaner[raw_documents.Article, _documents.CleanedAr
 
         return _documents.CleanedArticle(
             id=document.id,
+            raw_document_id=document.id,
             content=_clean_text(" #### ".join(valid_content)),
             platform=document.platform,
             link=document.link,
@@ -44,6 +45,7 @@ class RepositoryCleaner(
     ) -> _documents.CleanedRepository:
         return _documents.CleanedRepository(
             id=document.id,
+            raw_document_id=document.id,
             content=_clean_text(" #### ".join(document.content.values())),
             platform=document.platform,
             name=document.name,
