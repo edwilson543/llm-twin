@@ -13,12 +13,12 @@ from llm_twin.domain import models
 from llm_twin.domain.storage import vector as vector_storage
 
 
-class QdrantDatabaseConnector:
+class _QdrantDatabaseConnector:
     _client: qdrant_client.QdrantClient
 
     def __new__(
         cls, database_host: str, database_port: int, *args: object, **kwargs: object
-    ) -> QdrantDatabaseConnector:
+    ) -> _QdrantDatabaseConnector:
         if not hasattr(cls, "_client"):
             uri = f"{database_host}:{database_port}"
             cls._client = qdrant_client.QdrantClient(
@@ -35,8 +35,19 @@ class QdrantDatabaseConnector:
 
 @dataclasses.dataclass(frozen=True)
 class QdrantDatabase(vector_storage.VectorDatabase):
-    _connector: QdrantDatabaseConnector
+    _connector: _QdrantDatabaseConnector
     _embedding_model_config: models.EmbeddingModelConfig
+
+    @classmethod
+    def build(
+        cls,
+        *,
+        host: str,
+        port: int,
+        embedding_model_config: models.EmbeddingModelConfig,
+    ) -> typing.Self:
+        connector = _QdrantDatabaseConnector(database_host=host, database_port=port)
+        return cls(_connector=connector, _embedding_model_config=embedding_model_config)
 
     def bulk_find(
         self,

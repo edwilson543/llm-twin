@@ -43,12 +43,10 @@ def qdrant_db() -> typing.Generator[qdrant.QdrantDatabase, None, None]:
     Provide a qdrant database and remove all testing data after each test.
     """
     embedding_model_config = embeddings_helpers.get_fake_embedding_model_config()
-    connector = qdrant.QdrantDatabaseConnector(
-        database_host=settings.settings.QDRANT_DATABASE_HOST,
-        database_port=settings.settings.QDRANT_DATABASE_PORT,
-    )
-    db = QdrantDatabase(
-        _connector=connector, _embedding_model_config=embedding_model_config
+    db = QdrantDatabase.build(
+        host=settings.settings.QDRANT_DATABASE_HOST,
+        port=settings.settings.QDRANT_DATABASE_PORT,
+        embedding_model_config=embedding_model_config,
     )
 
     with mock.patch.object(settings, "get_vector_database", return_value=db):

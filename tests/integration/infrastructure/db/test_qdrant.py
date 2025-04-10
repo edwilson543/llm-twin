@@ -1,11 +1,9 @@
-from llm_twin.infrastructure.db import qdrant
-from testing.factories import vectors as vector_factories
 from llm_twin import settings
+from testing.factories import vectors as vector_factories
+
 
 class TestBulkInsertBulkFindVectors:
-    def test_can_bulk_insert_and_then_bulk_find_vectors(
-        self
-    ):
+    def test_can_bulk_insert_and_then_bulk_find_vectors(self):
         vector_a = vector_factories.Vector.build(name="a")
         vector_b = vector_factories.Vector.build(name="b")
 
@@ -18,9 +16,7 @@ class TestBulkInsertBulkFindVectors:
         assert sorted_result == [vector_a, vector_b]
         assert next_offset is None
 
-    def test_can_bulk_insert_and_then_bulk_find_to_limit_then_scroll_from_offset(
-        self
-    ):
+    def test_can_bulk_insert_and_then_bulk_find_to_limit_then_scroll_from_offset(self):
         vector = vector_factories.Vector.build(name="a")
         other_vector = vector_factories.Vector.build(name="b")
 
@@ -44,9 +40,7 @@ class TestBulkInsertBulkFindVectors:
 
 
 class TestBulkInsertBulkFindVectorEmbeddings:
-    def test_can_bulk_insert_and_then_bulk_find_vector_embeddings(
-        self
-    ):
+    def test_can_bulk_insert_and_then_bulk_find_vector_embeddings(self):
         vector_a = vector_factories.VectorEmbedding.build(
             name="a", embedding=[1.0, 0.0, 0.0]
         )

@@ -40,12 +40,10 @@ def get_document_database() -> document_storage.DocumentDatabase:
 
 def get_vector_database() -> vector_storage.VectorDatabase:
     embedding_model_config = get_embedding_model_config()
-    connector = qdrant.QdrantDatabaseConnector(
-        database_host=settings.QDRANT_DATABASE_HOST,
-        database_port=settings.QDRANT_DATABASE_PORT,
-    )
-    return qdrant.QdrantDatabase(
-        _connector=connector, _embedding_model_config=embedding_model_config
+    return qdrant.QdrantDatabase.build(
+        host=settings.QDRANT_DATABASE_HOST,
+        port=settings.QDRANT_DATABASE_PORT,
+        embedding_model_config=embedding_model_config,
     )
 
 
