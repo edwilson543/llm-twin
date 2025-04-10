@@ -3,10 +3,10 @@ import factory
 from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 
-from . import _mixins
+from . import _mixins, _base
 
 
-class _Document(factory.Factory):
+class _Document(_base.Factory):
     pass
 
 
@@ -19,7 +19,7 @@ class Author(_Document):
 
 
 class _ExtractedDocument(_Document):
-    content = factory.LazyFunction(dict)
+    content = factory.LazyFunction(lambda: {"some": "content"})
     platform = "some-platform"
 
     author = factory.SubFactory(Author)

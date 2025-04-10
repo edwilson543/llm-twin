@@ -3,7 +3,7 @@ import factory
 from llm_twin.domain.feature_engineering import chunking, cleaning
 from llm_twin.domain.storage import vector as vector_storage
 
-from . import _mixins, documents
+from . import _mixins, documents, _base
 
 
 # Dummy.
@@ -17,7 +17,7 @@ class _Vector(vector_storage.Vector):
         category = vector_storage.DataCategory.TESTING
 
 
-class Vector(factory.Factory):
+class Vector(_base.Factory):
     name = factory.Sequence(lambda n: f"vector-{n}")
 
     class Meta:
@@ -32,7 +32,7 @@ class _VectorEmbedding(vector_storage.VectorEmbedding):
         category = vector_storage.DataCategory.TESTING
 
 
-class VectorEmbedding(factory.Factory):
+class VectorEmbedding(_base.Factory):
     name = factory.Sequence(lambda n: f"vector-{n}")
     embedding = factory.LazyFunction(lambda: [1.0, 0.0, 0.0])
 
@@ -43,7 +43,7 @@ class VectorEmbedding(factory.Factory):
 # Cleaning.
 
 
-class _CleanedDocument(factory.Factory):
+class _CleanedDocument(_base.Factory):
     content = factory.Sequence(lambda n: f"content-{n}")
     platform = "some-platform"
 
