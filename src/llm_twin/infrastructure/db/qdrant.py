@@ -56,7 +56,7 @@ class QdrantDatabase(vector_storage.VectorDatabase):
         limit: int,
         offset: str | None = None,
     ) -> tuple[list[vector_storage.VectorT], str | None]:
-        collection = vector_class.collection()
+        collection = self._maybe_create_collection(vector_class=vector_class)
 
         try:
             records, next_offset = self._connector.client.scroll(
