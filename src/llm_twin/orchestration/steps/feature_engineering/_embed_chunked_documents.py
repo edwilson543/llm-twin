@@ -9,9 +9,9 @@ from llm_twin.orchestration.steps import context
 
 @zenml.step
 def embed_chunked_documents(
-    chunked_documents: typing.Annotated[list[chunking.Chunk], "chunked_documents"],
+    chunked_documents: typing.Annotated[list[chunking.RepositoryChunk | chunking.ArticleChunk], "chunked_documents"],
     context: context.StepContext | None = None,
-) -> typing.Annotated[list[embedding.EmbeddedChunk], "embedded_chunks"]:
+) -> typing.Annotated[list[embedding.EmbeddedRepositoryChunk | embedding.EmbeddedArticleChunk], "embedded_chunks"]:
     embedding_model = settings.get_embedding_model()
     dispatcher = embedding.EmbedderDispatcher(embedding_model=embedding_model)
 

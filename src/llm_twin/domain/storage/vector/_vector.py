@@ -8,7 +8,7 @@ from llm_twin.domain.storage import _ids
 
 
 class Collection(enum.Enum):
-    CLEANED_ARTICLES = "articles"
+    CLEANED_ARTICLES = "cleaned_articles"
     CLEANED_REPOSITORIES = "cleaned_repositories"
 
     EMBEDDED_ARTICLES = "embedded_articles"

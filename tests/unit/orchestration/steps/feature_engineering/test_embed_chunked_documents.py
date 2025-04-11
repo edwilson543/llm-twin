@@ -28,12 +28,12 @@ def test_chunks_article_and_repository_documents():
 
     embedded_article = embedded_chunks[0]
     assert isinstance(embedded_article, embedding.EmbeddedArticleChunk)
-    assert embedded_article.chunked_document_id == article_chunk.id
+    assert embedded_article.raw_document_id == article_chunk.raw_document_id
     assert embedded_article.embedding == embedding_model.canned_embedding
 
     embedded_repository = embedded_chunks[1]
     assert isinstance(embedded_repository, embedding.EmbeddedRepositoryChunk)
-    assert embedded_repository.chunked_document_id == repository_chunk.id
+    assert embedded_repository.raw_document_id == repository_chunk.raw_document_id
     assert embedded_repository.embedding == embedding_model.canned_embedding
 
     assert context.output_metadata["embedded_chunks"]["num_documents"] == 2

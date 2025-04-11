@@ -18,7 +18,7 @@ class TestEmbedChunk:
         assert isinstance(embedded_article, _documents.EmbeddedArticleChunk)
         assert embedded_article.embedding == embedding_model.canned_embedding
         assert embedded_article.content == article.content
-        assert embedded_article.chunked_document_id == article.id
+        assert embedded_article.raw_document_id == article.raw_document_id
 
     def test_embeds_repository_chunk(self):
         repository = vector_factories.RepositoryChunk()
@@ -31,7 +31,7 @@ class TestEmbedChunk:
         assert isinstance(embedded_repository, _documents.EmbeddedRepositoryChunk)
         assert embedded_repository.embedding == embedding_model.canned_embedding
         assert embedded_repository.content == repository.content
-        assert embedded_repository.chunked_document_id == repository.id
+        assert embedded_repository.raw_document_id == repository.raw_document_id
 
     def test_raises_when_no_embedder_is_registered_for_data_category(self):
         some_chunk = vector_factories.Vector()

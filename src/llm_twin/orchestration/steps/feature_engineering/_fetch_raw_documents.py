@@ -33,7 +33,7 @@ def fetch_raw_documents(
 
 def _fetch_raw_documents_for_author(
     *, db: document_storage.DocumentDatabase, author_full_name: str
-) -> list[raw_documents.RawDocument]:
+) -> list[raw_documents.Article | raw_documents.Repository]:
     loguru.logger.info(f"Fetching raw documents for '{author_full_name}'.")
     name = utils.Name.from_full_name(author_full_name)
     author = db.get_or_create(

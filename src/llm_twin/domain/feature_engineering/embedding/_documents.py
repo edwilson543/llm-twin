@@ -6,10 +6,9 @@ import pydantic
 from llm_twin.domain.storage import vector as vector_storage
 
 
-class EmbeddedChunk(vector_storage.Vector, abc.ABC):
+class EmbeddedChunk(vector_storage.VectorEmbedding, abc.ABC):
     raw_document_id: str
     content: str
-    embedding: list[float]
     platform: str
     author_id: str
     author_full_name: str

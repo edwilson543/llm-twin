@@ -1,9 +1,11 @@
+import uuid
+
 import factory
 
 from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 
-from . import _mixins, _base
+from . import _base, _mixins
 
 
 class _Document(_base.Factory):
@@ -11,8 +13,8 @@ class _Document(_base.Factory):
 
 
 class Author(_Document):
-    first_name = factory.Sequence(lambda n: f"first-name-{n}")
-    last_name = factory.Sequence(lambda n: f"last-name-{n}")
+    first_name = factory.Sequence(lambda n: f"{uuid.uuid4()}-{n}")
+    last_name = factory.Sequence(lambda n: f"{uuid.uuid4()}-{n}")
 
     class Meta:
         model = authors.Author

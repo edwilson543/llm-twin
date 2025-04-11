@@ -7,8 +7,8 @@ from llm_twin.orchestration.steps import (
 
 @zenml.pipeline
 def process_raw_documents_into_features(author_full_names: list[str]) -> None:
-    raw_document = feature_engineering_steps.fetch_raw_documents(author_full_names)
-    cleaned_documents = feature_engineering_steps.clean_raw_documents(raw_document)
+    raw_documents = feature_engineering_steps.fetch_raw_documents(author_full_names)
+    cleaned_documents = feature_engineering_steps.clean_raw_documents(raw_documents)
     chunked_documents = feature_engineering_steps.chunk_cleaned_documents(
         cleaned_documents
     )

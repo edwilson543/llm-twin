@@ -10,9 +10,9 @@ from llm_twin.orchestration.steps import context
 
 @zenml.step
 def clean_raw_documents(
-    raw_documents: typing.Annotated[list[raw_documents.RawDocument], "raw_documents"],
+    raw_documents: typing.Annotated[list[raw_documents.Article | raw_documents.Repository], "raw_documents"],
     context: context.StepContext | None = None,
-) -> typing.Annotated[list[cleaning.CleanedDocument], "cleaned_documents"]:
+) -> typing.Annotated[list[cleaning.CleanedArticle | cleaning.CleanedRepository], "cleaned_documents"]:
     db = settings.get_vector_database()
     dispatcher = cleaning.CleanerDispatcher()
 

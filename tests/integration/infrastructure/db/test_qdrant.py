@@ -41,14 +41,14 @@ class TestBulkInsertBulkFindVectors:
 
 class TestBulkInsertBulkFindVectorEmbeddings:
     def test_can_bulk_insert_and_then_bulk_find_vector_embeddings(self):
-        vector_a = vector_factories.VectorEmbedding.build(
-            name="a", embedding=[1.0, 0.0, 0.0]
-        )
-        vector_b = vector_factories.VectorEmbedding.build(
-            name="b", embedding=[0.0, 1.0, 0.0]
-        )
-
         qdrant_db = settings.get_vector_database()
+
+        embedding_model_config = settings.get_embedding_model_config()
+        embedding = [1.0] + [0.0] * (embedding_model_config.embedding_size - 1)
+
+        vector_a = vector_factories.VectorEmbedding.build(name="a", embedding=embedding)
+        vector_b = vector_factories.VectorEmbedding.build(name="b", embedding=embedding)
+
         qdrant_db.bulk_insert(vectors=[vector_a, vector_b])
 
         vectors, next_offset = qdrant_db.bulk_find(vector_class=type(vector_a), limit=2)
