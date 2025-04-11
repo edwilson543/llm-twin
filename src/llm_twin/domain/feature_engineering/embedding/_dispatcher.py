@@ -1,5 +1,6 @@
 import collections
 import dataclasses
+import typing
 
 from llm_twin.domain import models
 from llm_twin.domain.feature_engineering import chunking
@@ -33,7 +34,7 @@ class EmbedderDispatcher:
         return embedded_chunks[0]
 
     def embed_chunks(
-        self, *, chunks: list[chunking.Chunk]
+        self, *, chunks: typing.Sequence[chunking.Chunk]
     ) -> list[_documents.EmbeddedChunk]:
         grouped_chunks = collections.defaultdict(list)
         for chunk in chunks:

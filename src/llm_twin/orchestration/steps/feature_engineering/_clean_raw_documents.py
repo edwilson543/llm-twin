@@ -3,20 +3,21 @@ import typing
 import zenml
 
 from llm_twin import settings
-from llm_twin.domain.etl import raw_documents
 from llm_twin.domain.feature_engineering import cleaning
 from llm_twin.orchestration.steps import context
+
+from . import _types
 
 
 @zenml.step
 def clean_raw_documents(
-    raw_documents: typing.Annotated[list[raw_documents.Article | raw_documents.Repository], "raw_documents"],
+    raw_documents: _types.RawDocumentsInputT,
     context: context.StepContext | None = None,
-) -> typing.Annotated[list[cleaning.CleanedArticle | cleaning.CleanedRepository], "cleaned_documents"]:
+) -> _types.CleanedDocumentsOutputT:
     db = settings.get_vector_database()
     dispatcher = cleaning.CleanerDispatcher()
 
-    cleaned_documents: list[cleaning.CleanedDocument] = []
+    cleaned_documents: _types.CleanedDocumentsOutputT = []
 
     for document in raw_documents:
         cleaner = dispatcher.get_cleaner(document=document)
@@ -33,7 +34,7 @@ def clean_raw_documents(
     return cleaned_documents
 
 
-def _get_metadata(cleaned_documents: list[cleaning.CleanedDocument]) -> dict:
+def _get_metadata(cleaned_documents: _types.CleanedDocumentsOutputT) -> dict:
     metadata: dict[str, typing.Any] = {"num_documents": len(cleaned_documents)}
 
     for document in cleaned_documents:

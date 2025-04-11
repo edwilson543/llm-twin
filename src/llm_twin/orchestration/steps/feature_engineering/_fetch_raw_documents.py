@@ -9,15 +9,17 @@ from llm_twin.domain.etl import raw_documents
 from llm_twin.domain.storage import document as document_storage
 from llm_twin.orchestration.steps import context
 
+from . import _types
+
 
 @zenml.step
 def fetch_raw_documents(
     author_full_names: list[str],
     context: context.StepContext | None = None,
-) -> typing.Annotated[list[raw_documents.RawDocument], "raw_documents"]:
+) -> _types.RawDocumentsOutputT:
     db = settings.get_document_database()
 
-    documents: list[raw_documents.RawDocument] = []
+    documents = []
 
     for author_full_name in author_full_names:
         author_documents = _fetch_raw_documents_for_author(
@@ -33,7 +35,7 @@ def fetch_raw_documents(
 
 def _fetch_raw_documents_for_author(
     *, db: document_storage.DocumentDatabase, author_full_name: str
-) -> list[raw_documents.Article | raw_documents.Repository]:
+) -> _types.RawDocumentsOutputT:
     loguru.logger.info(f"Fetching raw documents for '{author_full_name}'.")
     name = utils.Name.from_full_name(author_full_name)
     author = db.get_or_create(
@@ -50,7 +52,7 @@ def _fetch_raw_documents_for_author(
     return [*articles, *repositories]
 
 
-def _get_metadata(*, documents: list[raw_documents.RawDocument]) -> dict:
+def _get_metadata(*, documents: _types.RawDocumentsOutputT) -> dict:
     metadata: dict[str, typing.Any] = {"num_documents": len(documents)}
 
     for document in documents:
