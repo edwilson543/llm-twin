@@ -18,5 +18,6 @@ def get_fake_embedding_model() -> FakeEmbeddingModel:
         model_name=models.EmbeddingModelName.FAKE,
         embedding_size=3,
         max_input_length=256,
+        cache_dir=None,
     )
     return FakeEmbeddingModel(config=config)

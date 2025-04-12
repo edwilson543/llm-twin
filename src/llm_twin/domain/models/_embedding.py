@@ -1,7 +1,6 @@
 import abc
 import dataclasses
 import enum
-import pathlib
 
 import sentence_transformers
 from langchain import text_splitter
@@ -21,8 +20,8 @@ class EmbeddingModelConfig:
     embedding_size: int
     max_input_length: int
 
+    cache_dir: str | None
     device: str = "cpu"
-    cache_dir: pathlib.Path | None = None
 
 
 @dataclasses.dataclass(frozen=True)
@@ -78,8 +77,7 @@ class SentenceTransformerEmbeddingModel(EmbeddingModel):
         self._model = sentence_transformers.SentenceTransformer(
             model_name_or_path=self.model_name.value,
             device=config.device,
-            config_kwargs={"from_tf": True},
-            cache_folder=str(config.cache_dir) if config.cache_dir else None,
+            cache_folder=config.cache_dir,
         )
         self._model.eval()
 

@@ -19,6 +19,7 @@ class Settings(pydantic_settings.BaseSettings):
 
     # Embeddings.
     EMBEDDING_MODEL_NAME: str = "sentence-transformers/all-MiniLM-L6-v2"
+    MODEL_CACHE_DIR: str | None = None
 
     @classmethod
     def load_settings(cls) -> Settings:
@@ -56,6 +57,7 @@ def _get_embedding_model_config() -> models.EmbeddingModelConfig:
             model_name=models.EmbeddingModelName.MINILM,
             embedding_size=384,
             max_input_length=256,
+            cache_dir=settings.MODEL_CACHE_DIR,
         )
     }
 
