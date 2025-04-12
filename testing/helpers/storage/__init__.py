@@ -1,2 +1,2 @@
-from ._document import InMemoryDocumentDatabase, install_in_memory_document_db
-from ._vector import InMemoryVectorDatabase, QdrantDatabase, install_in_memory_vector_db
+from ._document import InMemoryDocumentDatabase
+from ._vector import InMemoryVectorDatabase, QdrantDatabase

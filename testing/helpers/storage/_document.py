@@ -1,10 +1,7 @@
-import contextlib
 import dataclasses
 import typing
 import uuid
-from unittest import mock
 
-from llm_twin import settings
 from llm_twin.domain.storage import document as document_storage
 
 
@@ -53,15 +50,3 @@ class InMemoryDocumentDatabase(document_storage.DocumentDatabase):
             getattr(document, filter_key, uuid.uuid4()) == filter_value
             for filter_key, filter_value in filter_options.items()
         )
-
-
-@contextlib.contextmanager
-def install_in_memory_document_db(
-    db: InMemoryDocumentDatabase | None = None,
-) -> typing.Generator[InMemoryDocumentDatabase, None, None]:
-    """
-    Helper to install an in memory database for unit tests.
-    """
-    db = db or InMemoryDocumentDatabase()
-    with mock.patch.object(settings, "get_document_database", return_value=db):
-        yield db

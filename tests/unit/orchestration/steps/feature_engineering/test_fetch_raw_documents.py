@@ -1,6 +1,7 @@
 from llm_twin.orchestration.steps.feature_engineering import _fetch_raw_documents
 from testing.factories import documents as document_factories
 from testing.helpers import context as context_helpers
+from testing.helpers import settings as settings_helpers
 from testing.helpers import storage as storage_helpers
 
 
@@ -33,7 +34,7 @@ def test_gets_all_raw_documents_for_specified_authors():
     context = context_helpers.FakeContext()
 
     author_full_names = [author.full_name, other_author.full_name]
-    with storage_helpers.install_in_memory_document_db(db=db):
+    with settings_helpers.install_in_memory_document_db(db=db):
         documents = _fetch_raw_documents.fetch_raw_documents.entrypoint(
             author_full_names=author_full_names, context=context
         )
@@ -61,7 +62,7 @@ def test_gets_no_raw_documents_for_author_that_does_not_exist():
 
     context = context_helpers.FakeContext()
 
-    with storage_helpers.install_in_memory_document_db(db=db):
+    with settings_helpers.install_in_memory_document_db(db=db):
         documents = _fetch_raw_documents.fetch_raw_documents.entrypoint(
             author_full_names=[author.full_name], context=context
         )

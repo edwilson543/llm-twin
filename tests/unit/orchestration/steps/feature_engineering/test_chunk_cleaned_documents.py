@@ -4,7 +4,7 @@ from llm_twin.orchestration.steps.feature_engineering import (
 )
 from testing.factories import vectors as vector_factories
 from testing.helpers import context as context_helpers
-from testing.helpers import embeddings as embeddings_helpers
+from testing.helpers import settings as settings_helpers
 
 
 def test_chunks_article_documents():
@@ -13,9 +13,10 @@ def test_chunks_article_documents():
 
     context = context_helpers.FakeContext()
 
-    chunks = _chunk_cleaned_documents.chunk_cleaned_documents.entrypoint(
-        cleaned_documents=[article], context=context
-    )
+    with settings_helpers.install_fake_embedding_model():
+        chunks = _chunk_cleaned_documents.chunk_cleaned_documents.entrypoint(
+            cleaned_documents=[article], context=context
+        )
 
     num_chunks = len("A? ") * 5
     assert len(chunks) == num_chunks
@@ -33,7 +34,7 @@ def test_chunks_repository_documents():
 
     context = context_helpers.FakeContext()
 
-    with embeddings_helpers.install_fake_embedding_model():
+    with settings_helpers.install_fake_embedding_model():
         chunks = _chunk_cleaned_documents.chunk_cleaned_documents.entrypoint(
             cleaned_documents=cleaned_documents, context=context
         )

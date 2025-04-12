@@ -4,8 +4,7 @@ from llm_twin.orchestration.steps.feature_engineering import (
 )
 from testing.factories import vectors as vector_factories
 from testing.helpers import context as context_helpers
-from testing.helpers import embeddings as embeddings_helpers
-from testing.helpers import storage as storage_helpers
+from testing.helpers import settings as settings_helpers
 
 
 def test_embeds_article_and_repository_documents():
@@ -19,8 +18,8 @@ def test_embeds_article_and_repository_documents():
     context = context_helpers.FakeContext()
 
     with (
-        embeddings_helpers.install_fake_embedding_model() as embedding_model,
-        storage_helpers.install_in_memory_vector_db() as vector_db,
+        settings_helpers.install_fake_embedding_model() as embedding_model,
+        settings_helpers.install_in_memory_vector_db() as vector_db,
     ):
         embedded_chunks = _embed_chunked_documents.embed_chunked_documents.entrypoint(
             batch_size=2, chunked_documents=chunked_documents, context=context
