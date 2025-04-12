@@ -78,6 +78,7 @@ class SentenceTransformerEmbeddingModel(EmbeddingModel):
         self._model = sentence_transformers.SentenceTransformer(
             model_name_or_path=self.model_name.value,
             device=config.device,
+            config_kwargs={"from_tf": True},
             cache_folder=str(config.cache_dir) if config.cache_dir else None,
         )
         self._model.eval()
