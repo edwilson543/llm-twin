@@ -43,7 +43,7 @@ class TestBulkInsertBulkFindVectorEmbeddings:
     def test_can_bulk_insert_and_then_bulk_find_vector_embeddings(self):
         qdrant_db = settings.get_vector_database()
 
-        embedding_model_config = settings.get_embedding_model_config()
+        embedding_model_config = settings._get_embedding_model_config()
         embedding = [1.0] + [0.0] * (embedding_model_config.embedding_size - 1)
 
         vector_a = vector_factories.VectorEmbedding.build(name="a", embedding=embedding)

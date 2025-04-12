@@ -16,7 +16,7 @@ def qdrant_db() -> typing.Generator[qdrant.QdrantDatabase, None, None]:
     db = storage_helpers.QdrantDatabase.build(
         host=settings.settings.QDRANT_DATABASE_HOST,
         port=settings.settings.QDRANT_DATABASE_PORT,
-        embedding_model_config=settings.get_embedding_model_config(),
+        embedding_model_config=settings._get_embedding_model_config(),
     )
 
     with mock.patch.object(settings, "get_vector_database", return_value=db):

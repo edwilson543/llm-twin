@@ -39,7 +39,7 @@ def get_document_database() -> document_storage.DocumentDatabase:
 
 
 def get_vector_database() -> vector_storage.VectorDatabase:
-    embedding_model_config = get_embedding_model_config()
+    embedding_model_config = _get_embedding_model_config()
     return qdrant.QdrantDatabase.build(
         host=settings.QDRANT_DATABASE_HOST,
         port=settings.QDRANT_DATABASE_PORT,
@@ -50,7 +50,7 @@ def get_vector_database() -> vector_storage.VectorDatabase:
 # Models.
 
 
-def get_embedding_model_config() -> models.EmbeddingModelConfig:
+def _get_embedding_model_config() -> models.EmbeddingModelConfig:
     configs: dict[models.EmbeddingModelName, models.EmbeddingModelConfig] = {
         models.EmbeddingModelName.MINILM: models.EmbeddingModelConfig(
             model_name=models.EmbeddingModelName.MINILM,
@@ -64,5 +64,5 @@ def get_embedding_model_config() -> models.EmbeddingModelConfig:
 
 
 def get_embedding_model() -> models.EmbeddingModel:
-    config = get_embedding_model_config()
+    config = _get_embedding_model_config()
     return models.SentenceTransformerEmbeddingModel(config=config)

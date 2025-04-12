@@ -3,8 +3,8 @@ from llm_twin.orchestration.steps.feature_engineering import (
     _chunk_cleaned_documents,
 )
 from testing.factories import vectors as vector_factories
-from testing.helpers import embeddings as embeddings_helpers
 from testing.helpers import context as context_helpers
+from testing.helpers import embeddings as embeddings_helpers
 
 
 def test_chunks_article_documents():

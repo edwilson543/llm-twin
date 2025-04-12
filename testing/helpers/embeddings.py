@@ -18,29 +18,13 @@ class FakeEmbeddingModel(models.EmbeddingModel):
         return [letter for letter in input_text]
 
 
-def get_fake_embedding_model_config() -> models.EmbeddingModelConfig:
-    return models.EmbeddingModelConfig(
+def get_fake_embedding_model() -> FakeEmbeddingModel:
+    config = models.EmbeddingModelConfig(
         model_name=models.EmbeddingModelName.FAKE,
         embedding_size=3,
         max_input_length=256,
     )
-
-
-def get_fake_embedding_model() -> FakeEmbeddingModel:
-    config = get_fake_embedding_model_config()
     return FakeEmbeddingModel(config=config)
-
-
-@contextlib.contextmanager
-def install_fake_embedding_model_config() -> typing.Generator[None, None, None]:
-    """
-    Helper that overrides the settings module to install the fake embedding model config.
-    """
-    fake_config = get_fake_embedding_model_config()
-    with mock.patch.object(
-        settings, "get_embedding_model_config", return_value=fake_config
-    ):
-        yield
 
 
 @contextlib.contextmanager
