@@ -53,8 +53,10 @@ filterwarnings = [
     "ignore:pkg_resources:DeprecationWarning:zenml",
     "ignore:The `schema` method is deprecated; use `model_json_schema` instead:pydantic.PydanticDeprecatedSince20:pydantic.main"
 ]
-# Only allow connecting to MongoDB and Qdrant databases during tests.
-addopts = "--disable-socket --allow-hosts=127.0.0.1,localhost"
+# Only allow connecting to:
+# - Local databases (MongoDB and Qdrant)
+# - Hugging face, for loading pre-trained models.
+addopts = "--disable-socket --allow-hosts=127.0.0.1,localhost,huggingface.co"
 
 [tool.pytest_env]
 MONGO_DATABASE_HOST = "mongodb://test_user:test_password@127.0.0.1:27018"
