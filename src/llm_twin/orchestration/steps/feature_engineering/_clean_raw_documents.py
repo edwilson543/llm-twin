@@ -20,8 +20,7 @@ def clean_raw_documents(
     cleaned_documents: _types.CleanedDocumentsOutputT = []
 
     for document in raw_documents:
-        cleaner = dispatcher.get_cleaner(document=document)
-        cleaned_document = cleaner.clean(document=document)
+        cleaned_document = dispatcher.clean_document(document=document)
         cleaned_documents.append(cleaned_document)
 
     db.bulk_insert(vectors=cleaned_documents)

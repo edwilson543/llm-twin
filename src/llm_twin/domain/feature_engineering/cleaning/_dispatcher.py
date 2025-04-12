@@ -3,7 +3,7 @@ import dataclasses
 from llm_twin.domain.storage import document as document_storage
 from llm_twin.domain.storage import vector as vector_storage
 
-from . import _cleaners
+from . import _cleaners, _documents
 
 
 @dataclasses.dataclass(frozen=True)
@@ -22,7 +22,9 @@ class CleanerDispatcher:
             vector_storage.DataCategory.REPOSITORIES: _cleaners.RepositoryCleaner(),
         }
 
-    def get_cleaner(self, *, document: _cleaners.RawDocumentT) -> CleanerT:
+    def clean_document(
+        self, *, document: _cleaners.RawDocumentT
+    ) -> _documents.CleanedDocument:
         raw_document_collection = document.get_collection_name()
 
         try:
@@ -31,6 +33,8 @@ class CleanerDispatcher:
             raise NoCleanerRegistered(collection=raw_document_collection) from exc
 
         try:
-            return self._cleaner_registry[data_category]
+            cleaner = self._cleaner_registry[data_category]
         except KeyError as exc:
             raise NoCleanerRegistered(collection=raw_document_collection) from exc
+
+        return cleaner.clean(document=document)
