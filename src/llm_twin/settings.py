@@ -18,7 +18,7 @@ class Settings(pydantic_settings.BaseSettings):
     QDRANT_DATABASE_PORT: int = 6333
 
     # Embeddings.
-    EMBEDDING_MODEL_NAME: str = "sentence-transformers/all-MiniLM-L6-v2"
+    EMBEDDING_MODEL_NAME: str = models.EmbeddingModelName.MINILM.value
     MODEL_CACHE_DIR: str | None = None
 
     @classmethod

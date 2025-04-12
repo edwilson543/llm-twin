@@ -9,7 +9,7 @@ from . import _singleton
 
 
 class EmbeddingModelName(enum.Enum):
-    MINILM = "sentence-transformers/all-MiniLM-L6-v2"
+    MINILM = "all-MiniLM-L6-v2"
     FAKE = "fake"
 
 
@@ -78,6 +78,7 @@ class SentenceTransformerEmbeddingModel(EmbeddingModel):
             model_name_or_path=self.model_name.value,
             device=config.device,
             cache_folder=config.cache_dir,
+            config_kwargs={"from_tf": True},
         )
         self._model.eval()
 
