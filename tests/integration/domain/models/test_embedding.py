@@ -21,3 +21,17 @@ class TestSentenceTransformerEmbeddingModel:
         for embedding in embeddings:
             assert len(embedding) == model.embedding_size == 384
             assert sum(embedding) > 0
+
+    def test_splits_text_on_tokens(self):
+        input_text = "Some chunked content."
+
+        config = _embedding.EmbeddingModelConfig(
+            model_name=_embedding.EmbeddingModelName.MINILM,
+            max_input_length=1,  # Equal to tokens per chunk.
+            embedding_size=123,
+        )
+        model = _embedding.SentenceTransformerEmbeddingModel(config=config)
+
+        chunks = model.split_text_on_tokens(input_text=input_text, chunk_overlap=0)
+
+        assert len(chunks) > 1

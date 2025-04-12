@@ -16,8 +16,8 @@ class DocumentChunker(abc.ABC, typing.Generic[CleanedDocumentT, ChunkT]):
     Base class for chunking a particular document type.
     """
 
-    def __init__(self, *, embedding_model_config: models.EmbeddingModelConfig) -> None:
-        self._embedding_model_config = embedding_model_config
+    def __init__(self, *, embedding_model: models.EmbeddingModel) -> None:
+        self._embedding_model = embedding_model
 
     def chunk(self, *, document: CleanedDocumentT) -> list[ChunkT]:
         chunks: list[ChunkT] = []

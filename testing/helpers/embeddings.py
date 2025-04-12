@@ -14,6 +14,9 @@ class FakeEmbeddingModel(models.EmbeddingModel):
     def canned_embedding(self) -> list[float]:
         return [1.0, 0.0, 0.0]
 
+    def split_text_on_tokens(self, *, input_text: str, chunk_overlap: int) -> list[str]:
+        return [letter for letter in input_text]
+
 
 def get_fake_embedding_model_config() -> models.EmbeddingModelConfig:
     return models.EmbeddingModelConfig(

@@ -16,13 +16,13 @@ ChunkerRegistryT = dict[vector_storage.DataCategory, ChunkerT]
 
 
 class ChunkerDispatcher:
-    def __init__(self, *, embedding_model_config: models.EmbeddingModelConfig) -> None:
+    def __init__(self, *, embedding_model: models.EmbeddingModel) -> None:
         self._chunker_registry: ChunkerRegistryT = {
             vector_storage.DataCategory.ARTICLES: _chunkers.ArticleChunker(
-                embedding_model_config=embedding_model_config
+                embedding_model=embedding_model
             ),
             vector_storage.DataCategory.REPOSITORIES: _chunkers.RepositoryChunker(
-                embedding_model_config=embedding_model_config
+                embedding_model=embedding_model
             ),
         }
 

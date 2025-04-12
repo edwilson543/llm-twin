@@ -12,10 +12,8 @@ def chunk_cleaned_documents(
     cleaned_documents: _types.CleanedDocumentsInputT,
     context: context.StepContext | None = None,
 ) -> _types.ChunkedDocumentsOutputT:
-    embedding_model_config = settings.get_embedding_model_config()
-    dispatcher = chunking.ChunkerDispatcher(
-        embedding_model_config=embedding_model_config
-    )
+    embedding_model = settings.get_embedding_model()
+    dispatcher = chunking.ChunkerDispatcher(embedding_model=embedding_model)
 
     chunked_documents: _types.ChunkedDocumentsOutputT = []
 

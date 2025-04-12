@@ -12,11 +12,11 @@ class RepositoryChunker(
     _base.DocumentChunker[cleaning.CleanedRepository, _documents.RepositoryChunk]
 ):
     @property
-    def chunk_size(self) -> int:
+    def _chunk_size(self) -> int:
         return 500
 
     @property
-    def chunk_overlap(self) -> int:
+    def _chunk_overlap(self) -> int:
         return 50
 
     def _create_chunk(
@@ -32,24 +32,22 @@ class RepositoryChunker(
             author_id=document.author_id,
             author_full_name=document.author_full_name,
             metadata={
-                "chunk_size": self.chunk_size,
-                "chunk_overlap": self.chunk_overlap,
+                "chunk_size": self._chunk_size,
+                "chunk_overlap": self._chunk_overlap,
             },
         )
 
     def _chunk_content(self, content: str) -> list[str]:
         character_splitter = text_splitter.RecursiveCharacterTextSplitter(
-            separators=["\n\n"], chunk_size=self.chunk_size, chunk_overlap=0
+            separators=["\n\n"], chunk_size=self._chunk_size, chunk_overlap=0
         )
         text_split_by_characters = character_splitter.split_text(content)
 
-        token_splitter = text_splitter.SentenceTransformersTokenTextSplitter(
-            chunk_overlap=self.chunk_overlap,
-            tokens_per_chunk=self._embedding_model_config.max_input_length,
-            model_name=self._embedding_model_config.model_name.value,
-        )
         chunks_by_tokens = []
         for section in text_split_by_characters:
-            chunks_by_tokens.extend(token_splitter.split_text(section))
+            chunks = self._embedding_model.split_text_on_tokens(
+                input_text=section, chunk_overlap=self._chunk_overlap
+            )
+            chunks_by_tokens.extend(chunks)
 
         return chunks_by_tokens

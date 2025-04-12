@@ -1,15 +1,14 @@
 import pytest
 
-from llm_twin import settings
 from llm_twin.domain.feature_engineering.chunking import _dispatcher, _documents
 from llm_twin.domain.storage import vector as vector_storage
 from testing.factories import vectors as vector_factories
-from testing.helpers import chunking as chunking_helpers
+from testing.helpers import embeddings as embeddings_helpers
 
 
 def _get_dispatcher() -> _dispatcher.ChunkerDispatcher:
-    embedding_model_config = settings.get_embedding_model_config()
-    return _dispatcher.ChunkerDispatcher(embedding_model_config=embedding_model_config)
+    embedding_model = embeddings_helpers.get_fake_embedding_model()
+    return _dispatcher.ChunkerDispatcher(embedding_model=embedding_model)
 
 
 class TestSplitDocumentIntoChunks:
@@ -28,18 +27,17 @@ class TestSplitDocumentIntoChunks:
             assert isinstance(article_chunk, _documents.ArticleChunk)
 
     def test_splits_cleaned_repository_into_chunks(self):
-        repository = vector_factories.CleanedRepository()
+        repository = vector_factories.CleanedRepository(content="abc")
         dispatcher = _get_dispatcher()
 
-        mock_chunks = ["a", "b", "c"]
-        with chunking_helpers.mock_repository_chunker(chunks=mock_chunks):
-            repository_chunks = dispatcher.split_document_into_chunks(
-                document=repository
-            )
+        repository_chunks = dispatcher.split_document_into_chunks(document=repository)
 
-        assert len(repository_chunks) == len(mock_chunks)
-        for repository_chunk in repository_chunks:
-            assert isinstance(repository_chunk, _documents.RepositoryChunk)
+        # The fake embedding model just chunks on each character.
+        assert all(
+            isinstance(chunk, _documents.RepositoryChunk) for chunk in repository_chunks
+        )
+        assert len(repository_chunks) == len("abc")
+        assert [chunk.content for chunk in repository_chunks] == ["a", "b", "c"]
 
     def test_raises_when_no_chunker_is_registered_for_data_category(self):
         some_document = vector_factories.Vector()

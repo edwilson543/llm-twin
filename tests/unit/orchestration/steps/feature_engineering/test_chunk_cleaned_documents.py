@@ -3,7 +3,7 @@ from llm_twin.orchestration.steps.feature_engineering import (
     _chunk_cleaned_documents,
 )
 from testing.factories import vectors as vector_factories
-from testing.helpers import chunking as chunking_helpers
+from testing.helpers import embeddings as embeddings_helpers
 from testing.helpers import context as context_helpers
 
 
@@ -27,19 +27,19 @@ def test_chunks_article_documents():
 
 
 def test_chunks_repository_documents():
-    repository = vector_factories.CleanedRepository()
-    other_repository = vector_factories.CleanedRepository()
+    repository = vector_factories.CleanedRepository(content="abc")
+    other_repository = vector_factories.CleanedRepository(content="def")
     cleaned_documents = [repository, other_repository]
 
     context = context_helpers.FakeContext()
 
-    mock_chunks = ["a", "b", "c"]
-    with chunking_helpers.mock_repository_chunker(chunks=mock_chunks):
+    with embeddings_helpers.install_fake_embedding_model():
         chunks = _chunk_cleaned_documents.chunk_cleaned_documents.entrypoint(
             cleaned_documents=cleaned_documents, context=context
         )
 
-    num_chunks = len([repository, other_repository]) * len(mock_chunks)
+    # The fake embedding model just chunks on each character.
+    num_chunks = len("abc") + len("def")
     assert len(chunks) == num_chunks
     assert all(isinstance(chunk, chunking.RepositoryChunk) for chunk in chunks)
     assert context.output_metadata["chunked_documents"] == {

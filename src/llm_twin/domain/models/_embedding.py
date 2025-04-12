@@ -4,6 +4,7 @@ import enum
 import pathlib
 
 import sentence_transformers
+from langchain import text_splitter
 
 from . import _singleton
 
@@ -46,6 +47,13 @@ class EmbeddingModel(abc.ABC, metaclass=_singleton.SingletonMeta):
         """
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def split_text_on_tokens(self, *, input_text: str, chunk_overlap: int) -> list[str]:
+        """
+        Split the input text on tokens used by the embedding model.
+        """
+        raise NotImplementedError
+
     @property
     def model_name(self) -> EmbeddingModelName:
         return self._config.model_name
@@ -56,6 +64,10 @@ class EmbeddingModel(abc.ABC, metaclass=_singleton.SingletonMeta):
 
     @property
     def max_input_length(self) -> int:
+        return self._config.max_input_length
+
+    @property
+    def chunk_overlap(self) -> int:
         return self._config.max_input_length
 
 
@@ -80,3 +92,11 @@ class SentenceTransformerEmbeddingModel(EmbeddingModel):
             raise UnableToEmbedText(model_name=self.model_name) from exc
 
         return [embedding.tolist() for embedding in embeddings]
+
+    def split_text_on_tokens(self, *, input_text: str, chunk_overlap: int) -> list[str]:
+        token_splitter = text_splitter.SentenceTransformersTokenTextSplitter(
+            chunk_overlap=chunk_overlap,
+            tokens_per_chunk=self.max_input_length,
+            model_name=self.model_name.value,
+        )
+        return token_splitter.split_text(input_text)
