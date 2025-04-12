@@ -47,6 +47,7 @@ def install_in_memory_vector_db(
     with mock.patch.object(settings, "get_vector_database", return_value=db):
         yield db
 
+
 @dataclasses.dataclass(frozen=True)
 class QdrantDatabase(qdrant.QdrantDatabase):
     """
@@ -73,4 +74,3 @@ class QdrantDatabase(qdrant.QdrantDatabase):
         """
         for collection in self._collections:
             self._connector.client.delete_collection(collection_name=collection.value)
-
