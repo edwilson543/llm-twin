@@ -20,8 +20,7 @@ def chunk_cleaned_documents(
     chunked_documents: _types.ChunkedDocumentsOutputT = []
 
     for document in cleaned_documents:
-        chunker = dispatcher.get_chunker(document=document)
-        chunk = chunker.chunk(document=document)
+        chunk = dispatcher.split_document_into_chunks(document=document)
         chunked_documents.extend(chunk)
 
     step_context = context or zenml.get_step_context()

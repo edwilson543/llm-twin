@@ -3,7 +3,7 @@ import dataclasses
 from llm_twin.domain import models
 from llm_twin.domain.storage import vector as vector_storage
 
-from . import _chunkers
+from . import _chunkers, _documents
 
 
 @dataclasses.dataclass(frozen=True)
@@ -26,10 +26,14 @@ class ChunkerDispatcher:
             ),
         }
 
-    def get_chunker(self, *, document: _chunkers.CleanedDocumentT) -> ChunkerT:
+    def split_document_into_chunks(
+        self, *, document: _chunkers.CleanedDocumentT
+    ) -> list[_documents.Chunk]:
         data_category = document.category()
 
         try:
-            return self._chunker_registry[data_category]
+            chunker = self._chunker_registry[data_category]
         except KeyError as exc:
             raise NoDocumentChunkerRegistered(data_category=data_category) from exc
+
+        return chunker.chunk(document=document)
