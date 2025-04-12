@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import dataclasses
+import typing
 
 import loguru
 from pymongo import collection as pymongo_collection
@@ -8,7 +9,7 @@ from pymongo import database as pymongo_database
 from pymongo import errors as pymongo_errors
 from pymongo import mongo_client
 
-from llm_twin.domain import documents
+from llm_twin.domain.storage import document as document_storage
 
 
 class MongoDatabaseConnector:
@@ -39,31 +40,70 @@ class MongoDatabaseConnector:
         return super().__new__(cls)
 
     def get_collection(
-        self, collection: documents.Collection
+        self, document_class: type[document_storage.Document]
     ) -> pymongo_collection.Collection:
+        collection_name = document_class.get_collection_name()
         assert self._database is not None  # For mypy.
-        return self._database[collection.value]
+        return self._database[collection_name.value]
 
 
 @dataclasses.dataclass
-class MongoDatabase(documents.NoSQLDatabase):
+class MongoDatabase(document_storage.DocumentDatabase):
     _connector: MongoDatabaseConnector
 
     def find_one(
-        self, *, collection: documents.Collection, **filter_options: object
-    ) -> documents.RawDocument:
-        mongo_collection = self._connector.get_collection(collection)
+        self,
+        *,
+        document_class: type[document_storage.DocumentT],
+        **filter_options: object,
+    ) -> document_storage.DocumentT:
+        mongo_collection = self._connector.get_collection(document_class)
 
-        if (result := mongo_collection.find_one(filter_options)) is None:
-            raise documents.DocumentDoesNotExist
-        return result
+        if (serialized_document := mongo_collection.find_one(filter_options)) is None:
+            raise document_storage.DocumentDoesNotExist
+        return _deserialize(
+            serialized_document=serialized_document, document_class=document_class
+        )
 
-    def insert_one(
-        self, *, collection: documents.Collection, document: documents.RawDocument
-    ) -> None:
-        mongo_collection = self._connector.get_collection(collection)
+    def find_many(
+        self,
+        *,
+        document_class: type[document_storage.DocumentT],
+        **filter_options: object,
+    ) -> list[document_storage.DocumentT]:
+        mongo_collection = self._connector.get_collection(document_class)
+        serialized_documents = mongo_collection.find(filter_options)
+
+        return [
+            _deserialize(
+                serialized_document=serialized_document, document_class=document_class
+            )
+            for serialized_document in serialized_documents
+        ]
+
+    def insert_one(self, *, document: document_storage.Document) -> None:
+        mongo_collection = self._connector.get_collection(type(document))
+        serialized_document = _serialize(document=document)
 
         try:
-            mongo_collection.insert_one(document)
+            mongo_collection.insert_one(serialized_document)
         except pymongo_errors.WriteError as exc:
-            raise documents.UnableToSaveDocument from exc
+            raise document_storage.UnableToSaveDocument from exc
+
+
+# Serialization.
+
+
+def _deserialize(
+    *,
+    serialized_document: dict[str, typing.Any],
+    document_class: type[document_storage.DocumentT],
+) -> document_storage.DocumentT:
+    if not serialized_document:
+        raise document_storage.DocumentIsEmpty()
+
+    return document_class(**serialized_document)
+
+
+def _serialize(*, document: document_storage.Document) -> dict[str, typing.Any]:
+    return document.model_dump(by_alias=True)

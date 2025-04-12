@@ -21,13 +21,20 @@ dependencies = [
     "chromedriver-autoinstaller>=0.6.4",
     "click>=8.1.3",
     "factory-boy>=3.3.3",
+    "langchain>=0.3.23",
     "loguru>=0.7.3",
     "pydantic-settings>=2.8.1",
     "pymongo>=4.11.2",
     "pytest-env>=1.1.5",
+    "qdrant-client>=1.13.3",
     "selenium>=4.29.0",
+    "sentence-transformers>=4.0.2",
+    #  transformers>=4.5.1 currently breaking on MacOS.
+    # TODO: remove once resolved. https://github.com/huggingface/transformers/issues/37326.
+    "transformers<=4.50.3",
     "tqdm>=4.67.1",
     "zenml[server]>=0.75.0",
+    "pytest-socket>=0.7.0",
 ]
 
 [dependency-groups]
@@ -46,10 +53,15 @@ filterwarnings = [
     "ignore:pkg_resources:DeprecationWarning:zenml",
     "ignore:The `schema` method is deprecated; use `model_json_schema` instead:pydantic.PydanticDeprecatedSince20:pydantic.main"
 ]
+# Only allow connecting to:
+# - Local databases (MongoDB and Qdrant)
+# - Hugging face, for loading pre-trained models.
+addopts = "--disable-socket --allow-hosts=127.0.0.1,localhost,huggingface.co"
 
 [tool.pytest_env]
 MONGO_DATABASE_HOST = "mongodb://test_user:test_password@127.0.0.1:27018"
 MONGO_DATABASE_NAME = "llm-twin-test"
+QDRANT_DATABASE_PORT = 6335
 
 [tool.mypy]
 ignore_missing_imports = true
@@ -77,6 +89,47 @@ layers = [
 exhaustive = true
 
 [[tool.importlinter.contracts]]
+name = "Domain layer"
+type = "layers"
+containers = "llm_twin.domain"
+layers = [
+    "feature_engineering",
+    "etl",
+    "authors",
+    "models | storage",
+]
+exhaustive = true
+
+[[tool.importlinter.contracts]]
+name = "ETL subdomain"
+type = "layers"
+containers = "llm_twin.domain.etl"
+layers = [
+    "crawling",
+    "raw_documents",
+]
+exhaustive = true
+
+[[tool.importlinter.contracts]]
+name = "Feature engineering subdomain"
+type = "layers"
+containers = "llm_twin.domain.feature_engineering"
+layers = [
+    "embedding",
+    "chunking",
+    "cleaning",
+]
+exhaustive = true
+
+[[tool.importlinter.contracts]]
+name = "Storage subdomain"
+type = "independence"
+modules = [
+    "llm_twin.domain.storage.document",
+    "llm_twin.domain.storage.vector",
+]
+
+[[tool.importlinter.contracts]]
 name = "Orchestration layer"
 type = "layers"
 containers = "llm_twin.orchestration"
@@ -85,6 +138,14 @@ layers = [
     "steps",
 ]
 exhaustive = true
+
+[[tool.importlinter.contracts]]
+name = "Orchestration steps"
+type = "independence"
+modules = [
+    "llm_twin.orchestration.steps.etl",
+    "llm_twin.orchestration.steps.feature_engineering",
+]
 
 [tool.ruff]
 

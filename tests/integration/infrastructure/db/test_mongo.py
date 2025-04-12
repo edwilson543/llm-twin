@@ -2,43 +2,67 @@ import uuid
 
 import pytest
 
-from llm_twin.domain import documents
+from llm_twin import settings
+from llm_twin.domain.storage import document as document_storage
 from llm_twin.infrastructure.db import mongo
-from llm_twin.settings import settings
+from testing.factories import documents as document_factories
 
 
-@pytest.fixture(scope="module")
-def _connector() -> mongo.MongoDatabaseConnector:
-    return mongo.MongoDatabaseConnector(
-        database_host=settings.MONGO_DATABASE_HOST,
-        database_name=settings.MONGO_DATABASE_NAME,
-    )
-
-
-@pytest.fixture(scope="function")
-def db(_connector) -> mongo.MongoDatabase:
-    return mongo.MongoDatabase(_connector=_connector)
+def _get_mongo_db() -> mongo.MongoDatabase:
+    db = settings.get_document_database()
+    assert isinstance(db, mongo.MongoDatabase)
+    return db
 
 
 class TestInsertOneFindOne:
-    def test_finds_document_that_was_inserted(self, db: mongo.MongoDatabase):
-        collection = documents.Collection.USERS
-        document = {"id": str(uuid.uuid4()), "foo": "bar"}
-        other_document = {"id": str(uuid.uuid4()), "baz": "qux"}
+    def test_finds_document_that_was_inserted(self):
+        document = document_factories.Author()
+        other_document = document_factories.Author()
 
-        db.insert_one(collection=collection, document=document)
-        db.insert_one(collection=collection, document=other_document)
+        db = _get_mongo_db()
 
-        result = db.find_one(collection=collection, id=document["id"])
+        db.insert_one(document=document)
+        db.insert_one(document=other_document)
+
+        result = db.find_one(document_class=type(document), id=document.id)
 
         assert result == document
 
-    def test_raises_when_document_does_not_exist_for_collection(
-        self, db: mongo.MongoDatabase
-    ):
-        collection = documents.Collection.USERS
-        document = {"id": str(uuid.uuid4()), "foo": "bar"}
-        db.insert_one(collection=collection, document=document)
+    def test_raises_when_document_does_not_exist(self):
+        # Make a document but don't insert it into the db.
+        document = document_factories.Author()
 
-        with pytest.raises(documents.DocumentDoesNotExist):
-            db.find_one(collection=documents.Collection.POSTS, id=document["id"])
+        db = _get_mongo_db()
+
+        with pytest.raises(document_storage.DocumentDoesNotExist):
+            db.find_one(document_class=type(document), id=document.id)
+
+
+class TestFindMany:
+    def test_finds_multiple_documents_matching_filter_options(self):
+        first_name = str(uuid.uuid4())
+        filter_options = {"first_name": first_name}
+        matching_document = document_factories.Author(first_name=first_name)
+        other_matching_document = document_factories.Author(first_name=first_name)
+        non_matching_document = document_factories.Author(first_name=str(uuid.uuid4()))
+
+        db = _get_mongo_db()
+
+        db.insert_one(document=matching_document)
+        db.insert_one(document=other_matching_document)
+        db.insert_one(document=non_matching_document)
+
+        result = db.find_many(document_class=type(matching_document), **filter_options)
+
+        assert result == [matching_document, other_matching_document]
+
+    def test_returns_empty_list_when_no_document_matches_filter_options(self):
+        # Make a document but don't insert it into the db.
+        document = document_factories.Author()
+
+        db = _get_mongo_db()
+
+        filter_options = {"first_name": str(uuid.uuid4())}
+        result = db.find_many(document_class=type(document), **filter_options)
+
+        assert result == []

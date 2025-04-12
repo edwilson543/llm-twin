@@ -45,14 +45,18 @@ zenml_down:
 mongosh:
 	docker exec -it llm-twin-mongo mongosh "mongodb://mongo_user:mongo_password@127.0.0.1:27017" --username mongo_user --authenticationDatabase admin
 
+.PHONY:mongosh_test
+mongosh_test:
+	docker exec -it llm-twin-mongo-testing mongosh "mongodb://test_user:test_password@127.0.0.1:27017" --username test_user --authenticationDatabase admin
+
 # CLI
 .PHONY:etl_me
 etl_me:
-	python src/llm_twin/interfaces/cli/etl_user_data/run.py --config-filename=ed-wilson.yaml --disable-cache
+	python src/llm_twin/interfaces/cli/etl/run.py --config-filename=ed-wilson.yaml --disable-cache
 
 .PHONY:etl_jack
 etl_jack:
-	python src/llm_twin/interfaces/cli/etl_user_data/run.py --config-filename=jackof-alltrades.yaml --disable-cache
+	python src/llm_twin/interfaces/cli/etl/run.py --config-filename=jackof-alltrades.yaml --disable-cache
 
 # CI checks
 
