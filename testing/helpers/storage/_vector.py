@@ -34,9 +34,9 @@ class InMemoryVectorDatabase(vector_storage.VectorDatabase):
 
 
 @dataclasses.dataclass(frozen=True)
-class QdrantDatabase(qdrant.QdrantDatabase):
+class QdrantDatabaseWithTearDown(qdrant.QdrantDatabase):
     """
-    Thin wrapper around the actual Qdrant database to provide teardown.
+    Thin wrapper around the actual Qdrant database to provide teardown functionality.
     """
 
     _collections: list[vector_storage.Collection] = dataclasses.field(

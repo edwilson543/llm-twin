@@ -1,2 +1,2 @@
 from ._document import InMemoryDocumentDatabase
-from ._vector import InMemoryVectorDatabase, QdrantDatabase
+from ._vector import InMemoryVectorDatabase, QdrantDatabaseWithTearDown
