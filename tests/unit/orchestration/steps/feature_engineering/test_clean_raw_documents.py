@@ -1,8 +1,8 @@
 from llm_twin.domain.feature_engineering import cleaning
 from llm_twin.orchestration.steps.feature_engineering import _clean_raw_documents
 from testing.factories import documents as document_factories
+from testing.helpers import config as config_helpers
 from testing.helpers import context as context_helpers
-from testing.helpers import settings as settings_helpers
 
 
 def test_cleans_all_raw_documents_and_persists_in_database():
@@ -11,7 +11,7 @@ def test_cleans_all_raw_documents_and_persists_in_database():
 
     context = context_helpers.FakeContext()
 
-    with settings_helpers.install_in_memory_vector_db() as db:
+    with config_helpers.install_in_memory_vector_db() as db:
         cleaned_documents = _clean_raw_documents.clean_raw_documents.entrypoint(
             raw_documents=[article, repository], context=context
         )

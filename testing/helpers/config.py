@@ -2,7 +2,7 @@ import contextlib
 import typing
 from unittest import mock
 
-from llm_twin import settings
+from llm_twin.config import settings
 from testing.helpers import embeddings as embeddings_helpers
 from testing.helpers import storage as storage_helpers
 

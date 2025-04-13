@@ -1,4 +1,4 @@
-from llm_twin import settings
+from llm_twin.config import settings
 from llm_twin.domain.feature_engineering import embedding
 from llm_twin.orchestration.pipelines import _feature_engineering
 from testing.factories import documents as document_factories

@@ -2,7 +2,7 @@ import typing
 
 import zenml
 
-from llm_twin import settings
+from llm_twin.config import settings
 from llm_twin.domain.feature_engineering import cleaning
 from llm_twin.orchestration.steps import context
 

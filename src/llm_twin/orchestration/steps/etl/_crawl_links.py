@@ -7,7 +7,7 @@ import loguru
 import tqdm
 import zenml
 
-from llm_twin import settings
+from llm_twin.config import settings
 from llm_twin.domain import authors
 from llm_twin.domain.etl import crawling
 from llm_twin.orchestration.steps import context

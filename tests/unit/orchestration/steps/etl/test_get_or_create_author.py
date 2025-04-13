@@ -2,15 +2,15 @@ from unittest import mock
 
 from llm_twin.orchestration.steps.etl import _get_or_create_author
 from testing.factories import documents as document_factories
+from testing.helpers import config as config_helpers
 from testing.helpers import context as context_helpers
-from testing.helpers import settings as settings_helpers
 from testing.helpers import storage as storage_helpers
 
 
 def test_creates_author_when_author_does_not_exist():
     context = context_helpers.FakeContext()
 
-    with settings_helpers.install_in_memory_document_db() as db:
+    with config_helpers.install_in_memory_document_db() as db:
         _get_or_create_author.get_or_create_author.entrypoint(
             full_name="Ed Wilson", context=context
         )
@@ -29,7 +29,7 @@ def test_gets_author_when_author_already_exists():
     db = storage_helpers.InMemoryDocumentDatabase(documents=documents)
     context = context_helpers.FakeContext()
 
-    with settings_helpers.install_in_memory_document_db(db=db):
+    with config_helpers.install_in_memory_document_db(db=db):
         _get_or_create_author.get_or_create_author.entrypoint(
             full_name="Ed Wilson", context=context
         )

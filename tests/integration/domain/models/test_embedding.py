@@ -1,4 +1,4 @@
-from llm_twin import settings
+from llm_twin.config import settings
 from llm_twin.domain.models import _embedding
 
 

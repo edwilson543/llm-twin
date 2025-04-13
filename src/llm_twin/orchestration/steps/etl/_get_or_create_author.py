@@ -3,7 +3,8 @@ import typing
 import loguru
 import zenml
 
-from llm_twin import settings, utils
+from llm_twin import utils
+from llm_twin.config import settings
 from llm_twin.domain import authors
 from llm_twin.orchestration.steps import context
 

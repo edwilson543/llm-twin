@@ -3,7 +3,7 @@ from unittest import mock
 
 import pytest
 
-from llm_twin import settings
+from llm_twin.config import settings
 from llm_twin.infrastructure.db import qdrant
 from testing.helpers import storage as storage_helpers
 

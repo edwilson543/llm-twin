@@ -3,8 +3,8 @@ from llm_twin.orchestration.steps.feature_engineering import (
     _chunk_cleaned_documents,
 )
 from testing.factories import vectors as vector_factories
+from testing.helpers import config as config_helpers
 from testing.helpers import context as context_helpers
-from testing.helpers import settings as settings_helpers
 
 
 def test_chunks_article_documents():
@@ -13,7 +13,7 @@ def test_chunks_article_documents():
 
     context = context_helpers.FakeContext()
 
-    with settings_helpers.install_fake_embedding_model():
+    with config_helpers.install_fake_embedding_model():
         chunks = _chunk_cleaned_documents.chunk_cleaned_documents.entrypoint(
             cleaned_documents=[article], context=context
         )
@@ -34,7 +34,7 @@ def test_chunks_repository_documents():
 
     context = context_helpers.FakeContext()
 
-    with settings_helpers.install_fake_embedding_model():
+    with config_helpers.install_fake_embedding_model():
         chunks = _chunk_cleaned_documents.chunk_cleaned_documents.entrypoint(
             cleaned_documents=cleaned_documents, context=context
         )

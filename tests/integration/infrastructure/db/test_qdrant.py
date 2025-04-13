@@ -1,4 +1,4 @@
-from llm_twin import settings
+from llm_twin.config import settings
 from testing.factories import vectors as vector_factories
 
 

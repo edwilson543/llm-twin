@@ -1,6 +1,6 @@
 import factory
 
-from llm_twin import settings
+from llm_twin.config import settings
 from llm_twin.domain.storage import document as document_storage
 from llm_twin.domain.storage import vector as vector_storage
 

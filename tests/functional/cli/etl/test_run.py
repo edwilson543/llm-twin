@@ -2,7 +2,7 @@ import pytest
 from click import testing as click_testing
 from zenml import client as zenml_client
 
-from llm_twin import settings
+from llm_twin.config import settings
 from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 from llm_twin.interfaces.cli import exceptions as cli_exceptions

@@ -2,8 +2,8 @@ from unittest import mock
 
 from llm_twin.orchestration.steps.etl import _crawl_links
 from testing.factories import documents as document_factories
+from testing.helpers import config as config_helpers
 from testing.helpers import context as context_helpers
-from testing.helpers import settings as settings_helpers
 
 
 def test_crawls_links_for_fake_domain_successfully():
@@ -15,7 +15,7 @@ def test_crawls_links_for_fake_domain_successfully():
         "https://fake.com/edwilson543/post-2/",
     ]
 
-    with settings_helpers.install_in_memory_document_db() as db:
+    with config_helpers.install_in_memory_document_db() as db:
         _crawl_links.crawl_links.entrypoint(author=author, links=links, context=context)
 
     assert db.dumped_documents == [
@@ -47,7 +47,7 @@ def test_continues_after_failing_to_crawl_broken_link():
         "https://fake.com/edwilson543/post-2/",
     ]
 
-    with settings_helpers.install_in_memory_document_db() as db:
+    with config_helpers.install_in_memory_document_db() as db:
         _crawl_links.crawl_links.entrypoint(author=author, links=links, context=context)
 
     assert db.dumped_documents == [
