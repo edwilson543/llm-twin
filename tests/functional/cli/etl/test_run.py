@@ -2,7 +2,7 @@ import pytest
 from click import testing as click_testing
 from zenml import client as zenml_client
 
-from llm_twin.config import settings
+from llm_twin import config
 from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 from llm_twin.interfaces.cli import exceptions as cli_exceptions
@@ -18,7 +18,7 @@ def test_runs_etl_pipeline_and_persists_outcome():
     assert result.exit_code == 0
 
     # Ensure the relevant articles were extracted.
-    db = settings.get_document_database()
+    db = config.get_document_database()
     author = db.find_one(
         document_class=authors.Author, first_name="Jackof", last_name="Alltrades"
     )

@@ -7,7 +7,7 @@ import loguru
 import tqdm
 import zenml
 
-from llm_twin.config import settings
+from llm_twin import config
 from llm_twin.domain import authors
 from llm_twin.domain.etl import crawling
 from llm_twin.orchestration.steps import context
@@ -21,7 +21,7 @@ def crawl_links(
 ) -> typing.Annotated[list[str], "crawled_links"]:
     loguru.logger.info(f"Crawling links {links}")
 
-    db = settings.get_document_database()
+    db = config.get_document_database()
     dispatcher = crawling.CrawlerDispatcher()
 
     metadata: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))

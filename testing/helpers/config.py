@@ -2,7 +2,7 @@ import contextlib
 import typing
 from unittest import mock
 
-from llm_twin.config import settings
+from llm_twin import config
 from testing.helpers import embeddings as embeddings_helpers
 from testing.helpers import storage as storage_helpers
 
@@ -18,7 +18,7 @@ def install_in_memory_document_db(
     Helper to install an in memory database for unit tests.
     """
     db = db or storage_helpers.InMemoryDocumentDatabase()
-    with mock.patch.object(settings, "get_document_database", return_value=db):
+    with mock.patch.object(config, "get_document_database", return_value=db):
         yield db
 
 
@@ -30,7 +30,7 @@ def install_in_memory_vector_db(
     Helper to install an in memory database for unit tests.
     """
     db = db or storage_helpers.InMemoryVectorDatabase()
-    with mock.patch.object(settings, "get_vector_database", return_value=db):
+    with mock.patch.object(config, "get_vector_database", return_value=db):
         yield db
 
 
@@ -46,6 +46,6 @@ def install_fake_embedding_model() -> typing.Generator[
     """
     fake_embedding_model = embeddings_helpers.get_fake_embedding_model()
     with mock.patch.object(
-        settings, "get_embedding_model", return_value=fake_embedding_model
+        config, "get_embedding_model", return_value=fake_embedding_model
     ):
         yield fake_embedding_model

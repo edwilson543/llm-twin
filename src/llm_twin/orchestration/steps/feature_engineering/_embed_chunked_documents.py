@@ -1,6 +1,6 @@
 import zenml
 
-from llm_twin.config import settings
+from llm_twin import config
 from llm_twin.domain.feature_engineering import embedding
 from llm_twin.orchestration.steps import context
 
@@ -13,9 +13,9 @@ def embed_chunked_documents(
     batch_size: int = 1000,
     context: context.StepContext | None = None,
 ) -> _types.EmbeddedDocumentsOutputT:
-    embedding_model = settings.get_embedding_model()
+    embedding_model = config.get_embedding_model()
     dispatcher = embedding.EmbedderDispatcher(embedding_model=embedding_model)
-    db = settings.get_vector_database()
+    db = config.get_vector_database()
 
     embedded_documents: _types.EmbeddedDocumentsOutputT = []
     batch_indices = range(0, len(chunked_documents), batch_size)

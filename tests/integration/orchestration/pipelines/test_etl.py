@@ -1,6 +1,6 @@
 import uuid
 
-from llm_twin.config import settings
+from llm_twin import config
 from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 from llm_twin.orchestration.pipelines import _etl
@@ -19,7 +19,7 @@ def test_extracts_transforms_and_loads_data_for_author():
         author_full_name=f"{first_name} {last_name}", links=links
     )
 
-    db = settings.get_document_database()
+    db = config.get_document_database()
     author = db.find_one(
         document_class=authors.Author, first_name=first_name, last_name=last_name
     )

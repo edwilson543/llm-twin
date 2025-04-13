@@ -2,7 +2,7 @@ import typing
 
 import zenml
 
-from llm_twin.config import settings
+from llm_twin import config
 from llm_twin.domain.feature_engineering import cleaning
 from llm_twin.orchestration.steps import context
 
@@ -14,7 +14,7 @@ def clean_raw_documents(
     raw_documents: _types.RawDocumentsInputT,
     context: context.StepContext | None = None,
 ) -> _types.CleanedDocumentsOutputT:
-    db = settings.get_vector_database()
+    db = config.get_vector_database()
     dispatcher = cleaning.CleanerDispatcher()
 
     cleaned_documents: _types.CleanedDocumentsOutputT = []

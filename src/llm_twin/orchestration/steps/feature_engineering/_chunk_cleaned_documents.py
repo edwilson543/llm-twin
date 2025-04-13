@@ -1,6 +1,6 @@
 import zenml
 
-from llm_twin.config import settings
+from llm_twin import config
 from llm_twin.domain.feature_engineering import chunking
 from llm_twin.orchestration.steps import context
 
@@ -12,7 +12,7 @@ def chunk_cleaned_documents(
     cleaned_documents: _types.CleanedDocumentsInputT,
     context: context.StepContext | None = None,
 ) -> _types.ChunkedDocumentsOutputT:
-    embedding_model = settings.get_embedding_model()
+    embedding_model = config.get_embedding_model()
     dispatcher = chunking.ChunkerDispatcher(embedding_model=embedding_model)
 
     chunked_documents: _types.ChunkedDocumentsOutputT = []

@@ -1,4 +1,4 @@
-from llm_twin.config import settings
+from llm_twin import config
 from llm_twin.domain.feature_engineering import embedding
 from llm_twin.orchestration.pipelines import _feature_engineering
 from testing.factories import documents as document_factories
@@ -18,7 +18,7 @@ def test_processes_raw_article_for_given_author_into_features():
     )
     pipeline(author_full_names=[author.full_name])
 
-    db = settings.get_vector_database()
+    db = config.get_vector_database()
     embedded_articles, next_offset = db.bulk_find(
         vector_class=embedding.EmbeddedArticleChunk, limit=5
     )
@@ -43,7 +43,7 @@ def test_processes_raw_repository_for_given_author_into_features():
     )
     pipeline.entrypoint(author_full_names=[author.full_name])
 
-    db = settings.get_vector_database()
+    db = config.get_vector_database()
     embedded_repository_chunks, next_offset = db.bulk_find(
         vector_class=embedding.EmbeddedRepositoryChunk, limit=2
     )

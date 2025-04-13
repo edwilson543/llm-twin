@@ -3,8 +3,7 @@ import typing
 import loguru
 import zenml
 
-from llm_twin import utils
-from llm_twin.config import settings
+from llm_twin import config, utils
 from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 from llm_twin.domain.storage import document as document_storage
@@ -18,7 +17,7 @@ def fetch_raw_documents(
     author_full_names: list[str],
     context: context.StepContext | None = None,
 ) -> _types.RawDocumentsOutputT:
-    db = settings.get_document_database()
+    db = config.get_document_database()
 
     documents = []
 

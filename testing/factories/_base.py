@@ -1,6 +1,6 @@
 import factory
 
-from llm_twin.config import settings
+from llm_twin import config
 from llm_twin.domain.storage import document as document_storage
 from llm_twin.domain.storage import vector as vector_storage
 
@@ -19,10 +19,10 @@ class Factory[T](factory.Factory):
         instance = model_class(*args, **kwargs)
 
         if isinstance(instance, document_storage.Document):
-            document_db = settings.get_document_database()
+            document_db = config.get_document_database()
             document_db.insert_one(document=instance)
         elif isinstance(instance, vector_storage.Vector):
-            vector_db = settings.get_vector_database()
+            vector_db = config.get_vector_database()
             vector_db.bulk_insert(vectors=[instance])
         else:
             raise NotImplementedError(f"Cannot create object of type {type(instance)}.")
