@@ -31,6 +31,8 @@ class DataCategory(enum.Enum):
     PREFERENCE_DATASET = "preference_dataset"
     PREFERENCE_SAMPLE = "preference_sample"
 
+    PROMPT = "prompt"
+
 
 class Config(pydantic.BaseModel):
     collection: typing.ClassVar[Collection]
