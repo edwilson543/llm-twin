@@ -25,6 +25,12 @@ class DataCategory(enum.Enum):
     REPOSITORIES = "repositories"
     TESTING = "testing"
 
+    INSTRUCT_DATASET = "instruct_dataset"
+    INSTRUCT_SAMPLE = "instruct_sample"
+
+    PREFERENCE_DATASET = "preference_dataset"
+    PREFERENCE_SAMPLE = "preference_sample"
+
 
 class Config(pydantic.BaseModel):
     collection: typing.ClassVar[Collection]
