@@ -8,7 +8,7 @@ class TestDataset:
         sample = dataset_factories.InstructSample()
         other_sample = dataset_factories.InstructSample()
 
-        dataset = _datasets._SampleDataset(
+        dataset = _datasets.SampleDataset(
             input_data_category=vector_storage.DataCategory.TESTING,
             samples=[sample, other_sample],
         )

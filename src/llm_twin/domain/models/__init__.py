@@ -5,3 +5,4 @@ from ._embedding import (
     SentenceTransformerEmbeddingModel,
     UnableToEmbedText,
 )
+from ._language import LanguageModel

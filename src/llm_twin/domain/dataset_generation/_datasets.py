@@ -30,13 +30,13 @@ class PreferenceSample(vector_storage.Vector):
 SampleT = typing.TypeVar("SampleT", bound=InstructSample | PreferenceSample)
 
 
-class _SampleDataset(vector_storage.Vector, typing.Generic[SampleT]):
+class SampleDataset(vector_storage.Vector, typing.Generic[SampleT]):
     input_data_category: vector_storage.DataCategory
     samples: list[SampleT]
 
     def train_test_split(
         self,
-        test_size: float = 0.2,
+        test_size: float,
         random_state: int = 42,
     ) -> tuple[typing.Self, typing.Self]:
         train_samples, test_samples = train_test_split(
@@ -52,12 +52,12 @@ class _SampleDataset(vector_storage.Vector, typing.Generic[SampleT]):
         return type(self)(input_data_category=self.input_data_category, samples=samples)
 
 
-class InstructSampleDataset(_SampleDataset[InstructSample]):
+class InstructSampleDataset(SampleDataset[InstructSample]):
     class _Config(vector_storage.Config):
         category = vector_storage.DataCategory.INSTRUCT_DATASET
 
 
-class PreferenceSampleDataset(_SampleDataset[PreferenceSample]):
+class PreferenceSampleDataset(SampleDataset[PreferenceSample]):
     class _Config(vector_storage.Config):
         category = vector_storage.DataCategory.PREFERENCE_DATASET
 
@@ -65,13 +65,13 @@ class PreferenceSampleDataset(_SampleDataset[PreferenceSample]):
 # Train test splits.
 
 
-class _TrainTestSplit[SampleDatasetT: _SampleDataset](vector_storage.Vector):
+class TrainTestSplit[SampleDatasetT: SampleDataset](vector_storage.Vector):
     datasets: list[SampleDatasetT]
 
 
-class InstructTrainTestSplit(_TrainTestSplit[InstructSampleDataset]):
+class InstructTrainTestSplit(TrainTestSplit[InstructSampleDataset]):
     pass
 
 
-class PreferenceTrainTestSplit(_TrainTestSplit[PreferenceSampleDataset]):
+class PreferenceTrainTestSplit(TrainTestSplit[PreferenceSampleDataset]):
     pass
