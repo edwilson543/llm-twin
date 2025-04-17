@@ -7,15 +7,26 @@ from llm_twin.domain.storage import vector as vector_storage
 
 from . import _datasets
 
+import dataclasses
+
+
+@dataclasses.dataclass(frozen=True)
+class MissingPromptVariable(Exception):
+    variable_name: str
+
 
 class Prompt(vector_storage.Vector):
     template: str
-    input_variables: dict
-    content: str
-    num_tokens: int | None = None
+    variables: dict[str, typing.Any]
 
     class _Config(vector_storage.Config):
         category = vector_storage.DataCategory.PROMPT
+
+    def render(self) -> str:
+        try:
+            return self.template.format(**self.variables)
+        except KeyError as exc:
+            raise MissingPromptVariable(variable_name=exc.args[0]) from exc
 
 
 class GenerateSamplePrompt(vector_storage.Vector):

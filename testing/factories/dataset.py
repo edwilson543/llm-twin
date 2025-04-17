@@ -3,6 +3,12 @@ import factory
 from llm_twin.domain import dataset_generation
 from llm_twin.domain.storage import vector as vector_storage
 
+class Prompt(factory.Factory):
+    template = factory.Sequence(lambda n: f"template-{n}")
+    variables = factory.LazyFunction(dict)
+
+    class Meta:
+        model = dataset_generation.Prompt
 
 class InstructSample(factory.Factory):
     instruction = factory.Sequence(lambda n: f"instruction-{n}/")

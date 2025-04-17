@@ -8,4 +8,4 @@ from ._datasets import (
     PreferenceTrainTestSplit,
     TrainTestSplit,
 )
-from ._prompts import GenerateSamplePrompt, GenerateSamplePromptFactory
+from ._prompts import GenerateSamplePrompt, GenerateSamplePromptFactory, Prompt
