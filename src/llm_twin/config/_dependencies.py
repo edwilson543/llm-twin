@@ -1,4 +1,4 @@
-from llm_twin.domain import models
+from llm_twin.domain import models, dataset_generation
 from llm_twin.domain.storage import document as document_storage
 from llm_twin.domain.storage import vector as vector_storage
 from llm_twin.infrastructure.db import mongo, qdrant
@@ -46,3 +46,7 @@ def _get_embedding_model_config() -> models.EmbeddingModelConfig:
 def get_embedding_model() -> models.EmbeddingModel:
     config = _get_embedding_model_config()
     return models.SentenceTransformerEmbeddingModel(config=config)
+
+
+def get_language_model() -> models.LanguageModel:
+    return models.OpenAILanguageModel()

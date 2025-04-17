@@ -49,3 +49,17 @@ def install_fake_embedding_model() -> typing.Generator[
         config, "get_embedding_model", return_value=fake_embedding_model
     ):
         yield fake_embedding_model
+
+
+@contextlib.contextmanager
+def install_fake_language_model() -> typing.Generator[
+    models_helpers.FakeLanguageModel, None, None
+]:
+    """
+    Helper that overrides the settings module to install a fake language model.
+    """
+    fake_language_model = models_helpers.FakeLanguageModel()
+    with mock.patch.object(
+        config, "get_language_model", return_value=fake_language_model
+    ):
+        yield fake_language_model
