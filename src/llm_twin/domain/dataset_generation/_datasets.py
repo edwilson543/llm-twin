@@ -1,8 +1,14 @@
+import enum
 import typing
 
 from sklearn.model_selection import train_test_split
 
 from llm_twin.domain.storage import vector as vector_storage
+
+
+class DatasetType(enum.Enum):
+    INSTRUCT = "INSTRUCT"
+    PREFERENCE = "PREFERENCE"
 
 
 # Samples.
