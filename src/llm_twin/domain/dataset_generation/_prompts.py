@@ -7,8 +7,6 @@ from llm_twin.domain.storage import vector as vector_storage
 
 from . import _datasets
 
-import dataclasses
-
 
 @dataclasses.dataclass(frozen=True)
 class MissingPromptVariable(Exception):
@@ -29,48 +27,48 @@ class Prompt(vector_storage.Vector):
             raise MissingPromptVariable(variable_name=exc.args[0]) from exc
 
 
-class GenerateSamplePrompt(vector_storage.Vector):
+class GenerateSamplePrompt(Prompt):
     input_data_category: vector_storage.DataCategory
     document: chunking.Chunk
 
 
 @dataclasses.dataclass(frozen=True)
 class GenerateSamplePromptFactory:
-    prompt_template: str
+    dataset_type: _datasets.DatasetType
     language_model: models.LanguageModel
-
-    # Constructors.
-    @classmethod
-    def build(
-        cls,
-        *,
-        dataset_type: _datasets.DatasetType,
-        language_model: models.LanguageModel,
-    ) -> typing.Self:
-        prompt_template = {
-            _datasets.DatasetType.INSTRUCT: INSTRUCT_PROMPT_TEMPLATE,
-            _datasets.DatasetType.PREFERENCE: PREFERENCE_PROMPT_TEMPLATE,
-        }[dataset_type]
-
-        return cls(prompt_template=prompt_template, language_model=language_model)
 
     # Queries.
 
-    @classmethod
     def create_prompts_for_generating_samples(
-        cls, *, documents: list[chunking.Chunk]
+        self, *, documents: list[chunking.Chunk]
     ) -> list[GenerateSamplePrompt]:
-        raise NotImplementedError
+        return [self._get_prompt(document=document) for document in documents]
 
-    @classmethod
-    def _get_system_prompt(cls) -> Prompt:
+    def _get_system_prompt(self) -> Prompt:
         template = "You are a helpful assistant who generates {dataset_format} based on the given context."
-        del template
-        raise NotImplementedError
 
-    @classmethod
-    def _get_prompt(cls, *, document: chunking.Chunk) -> GenerateSamplePrompt:
-        raise NotImplementedError
+        dataset_format = {
+            _datasets.DatasetType.INSTRUCT: "instruction-answer pairs",
+            _datasets.DatasetType.PREFERENCE: "instruction-answer triples",
+        }[self.dataset_type]
+        variables = {"dataset_format": dataset_format}
+
+        return Prompt(template=template, variables=variables)
+
+    def _get_prompt(self, *, document: chunking.Chunk) -> GenerateSamplePrompt:
+        prompt_template = {
+            _datasets.DatasetType.INSTRUCT: INSTRUCT_PROMPT_TEMPLATE,
+            _datasets.DatasetType.PREFERENCE: PREFERENCE_PROMPT_TEMPLATE,
+        }[self.dataset_type]
+
+        variables = {"extract": document.content}
+
+        return GenerateSamplePrompt(
+            template=prompt_template,
+            variables=variables,
+            input_data_category=document.category(),
+            document=document,
+        )
 
 
 INSTRUCT_PROMPT_TEMPLATE = """Based on the following extract, generate five instruction-answer pairs. 
@@ -85,13 +83,6 @@ Example instruction: Explain the concept of an LLM Twin.
 Example answer: An LLM Twin is essentially an AI character that mimics your writing style, personality, and voice.
 It's designed to write just like you by incorporating these elements into a language model.
 The idea is to create a digital replica of your writing habits using advanced AI techniques.
-
-Structure the answer in JSON format, ready to be loaded in Python by json.loads(), as a list of objects.
-Do not add any extra characters and provide your response in JSON format with the following structure:
-[
-    {"instruction": "...", "answer": "..."},
-    ...
-]
 
 Extract:
 {{extract}}
@@ -108,17 +99,6 @@ Important:
 - Ensure that the extracted answer, the chosen one, is a verbatim copy from the context, including all punctuation and apostrophes.
 - Do not add any ellipsis (...) or [...]  to indicate skipped text in the extracted answer.
 - If the relevant text is not continuous, use two separate sentences from the context instead of skipping text.
-
-Structure the answer in JSON format, ready to be loaded in Python by json.loads(), as a list of objects.
-Do not add any extra characters and provide your response in JSON format with the following structure:
-[
-    {
-        "instruction": "...",
-        "rejected": "...",
-        "chosen": "..."
-    },
-    ...
-]
 
 Extract:
 {{extract}}

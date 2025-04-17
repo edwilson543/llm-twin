@@ -1,7 +1,9 @@
 import pytest
 
-from llm_twin.domain.dataset_generation import _prompts
+from llm_twin.domain.dataset_generation import _datasets, _prompts
 from testing.factories import dataset as dataset_factories
+from testing.factories import vectors as vector_factories
+from testing.helpers import models as models_helpers
 
 
 class TestPrompt__Render:
@@ -23,3 +25,41 @@ class TestPrompt__Render:
             prompt.render()
 
         assert exc.value.variable_name == "b"
+
+
+class TestGenerateSamplePromptFactory__CreatePromptsForGeneratingSamples:
+    @pytest.mark.parametrize(
+        "dataset_type,template",
+        [
+            (_datasets.DatasetType.INSTRUCT, _prompts.INSTRUCT_PROMPT_TEMPLATE),
+            (_datasets.DatasetType.PREFERENCE, _prompts.PREFERENCE_PROMPT_TEMPLATE),
+        ],
+    )
+    def test_creates_prompts_for_generating_instruct_samples(
+        self, dataset_type: _datasets.DatasetType, template: str
+    ):
+        language_model = models_helpers.FakeLanguageModel()
+        factory = _prompts.GenerateSamplePromptFactory(
+            dataset_type=dataset_type, language_model=language_model
+        )
+        repository = vector_factories.RepositoryChunk.build()
+        article = vector_factories.ArticleChunk.build()
+        documents = [repository, article]
+
+        prompts = factory.create_prompts_for_generating_samples(documents=documents)
+
+        assert len(prompts) == 2
+
+        repository_prompt = prompts[0]
+        assert repository_prompt.document == repository
+        assert repository_prompt.input_data_category == repository.category()
+        assert repository_prompt.template == template
+        assert repository_prompt.variables == {"extract": repository.content}
+        assert repository_prompt.render()
+
+        article_prompt = prompts[1]
+        assert article_prompt.document == article
+        assert article_prompt.input_data_category == article.category()
+        assert article_prompt.template == template
+        assert article_prompt.variables == {"extract": article.content}
+        assert article_prompt.render()

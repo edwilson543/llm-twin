@@ -20,15 +20,18 @@ def test_creates_prompts_for_generating_instruct_samples(
 ):
     article = vector_factories.ArticleChunk()
     other_article = vector_factories.ArticleChunk()
+    repository = vector_factories.RepositoryChunk()
 
     context = context_helpers.FakeContext()
 
     prompts = _create_prompts_for_generating_samples.create_prompts_for_generating_samples.entrypoint(
-        documents=[article, other_article], dataset_type=dataset_type, context=context
+        documents=[article, other_article, repository],
+        dataset_type=dataset_type,
+        context=context,
     )
 
-    assert len(prompts) == 2
+    assert len(prompts) == 3
     for prompt in prompts:
-        pass
+        assert prompt.render()
 
-    assert context.output_metadata["sample_generation_prompts"]["num_prompts"] == 2
+    assert context.output_metadata["sample_generation_prompts"]["num_prompts"] == 3
