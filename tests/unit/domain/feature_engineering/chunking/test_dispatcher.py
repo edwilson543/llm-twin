@@ -3,11 +3,11 @@ import pytest
 from llm_twin.domain.feature_engineering.chunking import _dispatcher, _documents
 from llm_twin.domain.storage import vector as vector_storage
 from testing.factories import vectors as vector_factories
-from testing.helpers import embeddings as embeddings_helpers
+from testing.helpers import models as models_helpers
 
 
 def _get_dispatcher() -> _dispatcher.ChunkerDispatcher:
-    embedding_model = embeddings_helpers.get_fake_embedding_model()
+    embedding_model = models_helpers.get_fake_embedding_model()
     return _dispatcher.ChunkerDispatcher(embedding_model=embedding_model)
 
 

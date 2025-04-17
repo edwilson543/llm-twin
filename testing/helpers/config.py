@@ -3,7 +3,7 @@ import typing
 from unittest import mock
 
 from llm_twin import config
-from testing.helpers import embeddings as embeddings_helpers
+from testing.helpers import models as models_helpers
 from testing.helpers import storage as storage_helpers
 
 
@@ -39,12 +39,12 @@ def install_in_memory_vector_db(
 
 @contextlib.contextmanager
 def install_fake_embedding_model() -> typing.Generator[
-    embeddings_helpers.FakeEmbeddingModel, None, None
+    models_helpers.FakeEmbeddingModel, None, None
 ]:
     """
     Helper that overrides the settings module to install a fake embedding model.
     """
-    fake_embedding_model = embeddings_helpers.get_fake_embedding_model()
+    fake_embedding_model = models_helpers.get_fake_embedding_model()
     with mock.patch.object(
         config, "get_embedding_model", return_value=fake_embedding_model
     ):
