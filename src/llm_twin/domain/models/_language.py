@@ -18,3 +18,11 @@ class LanguageModel(abc.ABC):
     @abc.abstractmethod
     def decode(self, *, tokens: list[int]) -> str:
         raise NotImplementedError
+
+
+class OpenAILanguageModel(LanguageModel):
+    def encode(self, *, text: str) -> list[int]:
+        return []
+
+    def decode(self, *, tokens: list[int]) -> str:
+        return ""

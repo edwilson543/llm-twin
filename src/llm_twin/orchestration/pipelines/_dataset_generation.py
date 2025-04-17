@@ -9,7 +9,7 @@ def generate_sample_datasets(
     *, dataset_type: dataset_generation.DatasetType, test_split_size: float
 ) -> None:
     chunks = dataset_generation_steps.fetch_chunked_documents()
-    prompts = dataset_generation_steps.create_sample_generation_prompts(
+    prompts = dataset_generation_steps.create_prompts_for_generating_samples(
         documents=chunks, dataset_type=dataset_type
     )
     dataset_generation_steps.generate_sample_dataset(
