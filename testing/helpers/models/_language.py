@@ -1,16 +1,26 @@
 import dataclasses
 
-from llm_twin.domain import models
-from llm_twin.domain.models import Message
-from llm_twin.domain.models._language import _ResponseFormatT
+from llm_twin.domain import dataset_generation, models
+from testing.factories import dataset as dataset_factories
 
 
 @dataclasses.dataclass(frozen=True)
 class FakeLanguageModel(models.LanguageModel):
     def get_response(
-        self, *, messages: list[Message], response_format: type[_ResponseFormatT]
-    ) -> _ResponseFormatT:
-        return response_format()
+        self,
+        *,
+        messages: list[models.Message],
+        response_format: type[models.ResponseFormatT],
+    ) -> models.ResponseFormatT:
+        response_factories = {
+            dataset_generation.InstructSample: dataset_factories.InstructSample,
+            dataset_generation.PreferenceSample: dataset_factories.PreferenceSample,
+        }
+
+        response = response_factories[response_format]()
+        assert isinstance(response, response_format)  # For mypy.
+
+        return response
 
     def encode(self, *, text: str) -> list[int]:
         return [1, 2, 3]

@@ -1,5 +1,4 @@
 from llm_twin.domain.dataset_generation import _datasets
-from llm_twin.domain.storage import vector as vector_storage
 from testing.factories import dataset as dataset_factories
 
 

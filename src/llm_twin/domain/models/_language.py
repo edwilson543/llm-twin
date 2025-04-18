@@ -6,7 +6,7 @@ import typing
 import pydantic
 
 
-_ResponseFormatT = typing.TypeVar("_ResponseFormatT", bound=pydantic.BaseModel)
+ResponseFormatT = typing.TypeVar("ResponseFormatT", bound=pydantic.BaseModel)
 
 
 class Role(enum.Enum):
@@ -38,8 +38,8 @@ class LanguageModel(abc.ABC):
 
     @abc.abstractmethod
     def get_response(
-        self, *, messages: list[Message], response_format: type[_ResponseFormatT]
-    ) -> _ResponseFormatT:
+        self, *, messages: list[Message], response_format: type[ResponseFormatT]
+    ) -> ResponseFormatT:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -53,8 +53,8 @@ class LanguageModel(abc.ABC):
 
 class OpenAILanguageModel(LanguageModel):
     def get_response(
-        self, *, messages: list[Message], response_format: type[_ResponseFormatT]
-    ) -> _ResponseFormatT:
+        self, *, messages: list[Message], response_format: type[ResponseFormatT]
+    ) -> ResponseFormatT:
         raise NotImplementedError
 
     def encode(self, *, text: str) -> list[int]:

@@ -3,8 +3,10 @@ import factory
 from llm_twin.domain import dataset_generation
 from llm_twin.domain.storage import vector as vector_storage
 
+from . import _base, vectors
 
-class Prompt(factory.Factory):
+
+class Prompt(_base.Factory):
     template = factory.Sequence(lambda n: f"template-{n}")
     variables = factory.LazyFunction(dict)
 
@@ -12,15 +14,41 @@ class Prompt(factory.Factory):
         model = dataset_generation.Prompt
 
 
-class InstructSample(factory.Factory):
-    instruction = factory.Sequence(lambda n: f"instruction-{n}/")
+class _GenerateInstructSamplePrompt(Prompt):
+    input_data_category = vector_storage.DataCategory.ARTICLES
+    document = factory.SubFactory(vectors.ArticleChunk)
+
+    class Meta:
+        abstract = True
+        model = dataset_generation.GenerateSamplePrompt
+
+
+class GenerateInstructSamplePrompt(_GenerateInstructSamplePrompt):
+    response_format = dataset_generation.InstructSample
+
+
+class GeneratePreferenceSamplePrompt(_GenerateInstructSamplePrompt):
+    response_format = dataset_generation.PreferenceSample
+
+
+class InstructSample(_base.Factory):
+    instruction = factory.Sequence(lambda n: f"instruction-{n}")
     answer = factory.Sequence(lambda n: f"answer-{n}")
 
     class Meta:
         model = dataset_generation.InstructSample
 
 
-class SampleDataset(factory.Factory):
+class PreferenceSample(_base.Factory):
+    instruction = factory.Sequence(lambda n: f"instruction-{n}")
+    rejected = factory.Sequence(lambda n: f"rejected-{n}")
+    chosen = factory.Sequence(lambda n: f"chosen-{n}")
+
+    class Meta:
+        model = dataset_generation.PreferenceSample
+
+
+class SampleDataset(_base.Factory):
     input_data_category = vector_storage.DataCategory.TESTING
     samples = factory.LazyFunction(list)
 

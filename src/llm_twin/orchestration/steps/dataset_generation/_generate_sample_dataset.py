@@ -27,8 +27,8 @@ def generate_sample_dataset(
         prompts=prompts,
     )
 
-    context = context or zenml.get_step_context()
-    context.add_output_metadata(
+    step_context = context or zenml.get_step_context()
+    step_context.add_output_metadata(
         output_name="sample_dataset",
         metadata={
             "dataset_type": dataset_type.value,
