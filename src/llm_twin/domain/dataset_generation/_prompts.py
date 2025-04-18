@@ -1,6 +1,8 @@
 import dataclasses
 import typing
 
+import pydantic
+
 from llm_twin.domain import models
 from llm_twin.domain.feature_engineering import chunking
 from llm_twin.domain.storage import vector as vector_storage
@@ -13,7 +15,7 @@ class MissingPromptVariable(Exception):
     variable_name: str
 
 
-class Prompt(vector_storage.Vector):
+class Prompt[ResponseFormat: pydantic.BaseModel](vector_storage.Vector):
     template: str
     variables: dict[str, typing.Any]
 
@@ -27,9 +29,13 @@ class Prompt(vector_storage.Vector):
             raise MissingPromptVariable(variable_name=exc.args[0]) from exc
 
 
+_SampleT = _datasets.InstructSample | _datasets.PreferenceSample
+
+
 class GenerateSamplePrompt(Prompt):
     input_data_category: vector_storage.DataCategory
     document: chunking.Chunk
+    response_format: type[_SampleT]
 
 
 @dataclasses.dataclass(frozen=True)
@@ -56,19 +62,28 @@ class GenerateSamplePromptFactory:
         return Prompt(template=template, variables=variables)
 
     def _get_prompt(self, *, document: chunking.Chunk) -> GenerateSamplePrompt:
-        prompt_template = {
+        variables = {"extract": document.content}
+        return GenerateSamplePrompt(
+            template=self._get_prompt_template(),
+            variables=variables,
+            response_format=self._get_response_format(),
+            input_data_category=document.category(),
+            document=document,
+        )
+
+    def _get_prompt_template(self) -> str:
+        return {
             _datasets.DatasetType.INSTRUCT: INSTRUCT_PROMPT_TEMPLATE,
             _datasets.DatasetType.PREFERENCE: PREFERENCE_PROMPT_TEMPLATE,
         }[self.dataset_type]
 
-        variables = {"extract": document.content}
+    def _get_response_format(self) -> type[_SampleT]:
+        mapping: dict[_datasets.DatasetType, type[_SampleT]] = {
+            _datasets.DatasetType.INSTRUCT: _datasets.InstructSample,
+            _datasets.DatasetType.PREFERENCE: _datasets.PreferenceSample,
+        }
+        return mapping[self.dataset_type]
 
-        return GenerateSamplePrompt(
-            template=prompt_template,
-            variables=variables,
-            input_data_category=document.category(),
-            document=document,
-        )
 
 
 INSTRUCT_PROMPT_TEMPLATE = """Based on the following extract, generate five instruction-answer pairs. 

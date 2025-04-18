@@ -28,19 +28,10 @@ class TestPrompt__Render:
 
 
 class TestGenerateSamplePromptFactory__CreatePromptsForGeneratingSamples:
-    @pytest.mark.parametrize(
-        "dataset_type,template",
-        [
-            (_datasets.DatasetType.INSTRUCT, _prompts.INSTRUCT_PROMPT_TEMPLATE),
-            (_datasets.DatasetType.PREFERENCE, _prompts.PREFERENCE_PROMPT_TEMPLATE),
-        ],
-    )
-    def test_creates_prompts_for_generating_instruct_samples(
-        self, dataset_type: _datasets.DatasetType, template: str
-    ):
+    def test_creates_prompts_for_generating_instruct_samples(self):
         language_model = models_helpers.FakeLanguageModel()
         factory = _prompts.GenerateSamplePromptFactory(
-            dataset_type=dataset_type, language_model=language_model
+            dataset_type=_datasets.DatasetType.INSTRUCT, language_model=language_model
         )
         repository = vector_factories.RepositoryChunk.build()
         article = vector_factories.ArticleChunk.build()
@@ -53,13 +44,44 @@ class TestGenerateSamplePromptFactory__CreatePromptsForGeneratingSamples:
         repository_prompt = prompts[0]
         assert repository_prompt.document == repository
         assert repository_prompt.input_data_category == repository.category()
-        assert repository_prompt.template == template
         assert repository_prompt.variables == {"extract": repository.content}
+        assert repository_prompt.response_format == _datasets.InstructSample
         assert repository_prompt.render()
+        assert repository_prompt.template == _prompts.INSTRUCT_PROMPT_TEMPLATE
 
         article_prompt = prompts[1]
         assert article_prompt.document == article
         assert article_prompt.input_data_category == article.category()
-        assert article_prompt.template == template
+        assert article_prompt.template == _prompts.INSTRUCT_PROMPT_TEMPLATE
         assert article_prompt.variables == {"extract": article.content}
         assert article_prompt.render()
+        assert article_prompt.response_format == _datasets.InstructSample
+
+    def test_creates_prompts_for_generating_preference_sample(self):
+        language_model = models_helpers.FakeLanguageModel()
+        factory = _prompts.GenerateSamplePromptFactory(
+            dataset_type=_datasets.DatasetType.PREFERENCE, language_model=language_model
+        )
+        repository = vector_factories.RepositoryChunk.build()
+        article = vector_factories.ArticleChunk.build()
+        documents = [repository, article]
+
+        prompts = factory.create_prompts_for_generating_samples(documents=documents)
+
+        assert len(prompts) == 2
+
+        repository_prompt = prompts[0]
+        assert repository_prompt.document == repository
+        assert repository_prompt.input_data_category == repository.category()
+        assert repository_prompt.template == _prompts.PREFERENCE_PROMPT_TEMPLATE
+        assert repository_prompt.variables == {"extract": repository.content}
+        assert repository_prompt.render()
+        assert repository_prompt.response_format == _datasets.PreferenceSample
+
+        article_prompt = prompts[1]
+        assert article_prompt.document == article
+        assert article_prompt.input_data_category == article.category()
+        assert article_prompt.template == _prompts.PREFERENCE_PROMPT_TEMPLATE
+        assert article_prompt.variables == {"extract": article.content}
+        assert article_prompt.render()
+        assert article_prompt.response_format == _datasets.PreferenceSample
