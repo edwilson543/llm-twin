@@ -1,32 +1,27 @@
-import abc
-import dataclasses
-from abc import abstractmethod
+from __future__ import annotations
 
 from llm_twin.domain import models
-from llm_twin.domain.storage import vector as vector_storage
 
 from . import _datasets, _prompts
 
 
-@dataclasses.dataclass(frozen=True)
-class SampleDatasetFactory[SampleDatasetT: _datasets.SampleDataset](abc.ABC):
-    language_model: models.LanguageModel
+def generate_sample_dataset(
+    *,
+    language_model: models.LanguageModel,
+    system_prompt: _prompts.Prompt,
+    prompts: list[_prompts.GenerateSamplePrompt],
+) -> _datasets.SampleDataset:
+    system_message = models.Message.system(content=system_prompt.render())
 
-    @classmethod
-    def generate_sample_dataset(
-        cls,
-        *,
-        system_prompt: _prompts.Prompt,
-        prompts: list[_prompts.GenerateSamplePrompt],
-        test_size: float,
-    ) -> _datasets.TrainTestSplit[SampleDatasetT]:
-        raise NotImplementedError
+    samples: list[_datasets.SampleT] = []
 
-    @classmethod
-    @abstractmethod
-    def _post_process_datasets(
-        cls,
-        datasets: dict[vector_storage.DataCategory, SampleDatasetT],
-        test_size: float,
-    ) -> _datasets.TrainTestSplit[SampleDatasetT]:
-        raise NotImplementedError
+    for prompt in prompts:
+        user_message = models.Message.user(content=prompt.render())
+
+        sample = language_model.get_response(
+            messages=[system_message, user_message],
+            response_format=prompt.response_format,
+        )
+        samples.append(sample)
+
+    return _datasets.SampleDataset(samples=samples)

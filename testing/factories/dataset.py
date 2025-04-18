@@ -20,9 +20,9 @@ class InstructSample(factory.Factory):
         model = dataset_generation.InstructSample
 
 
-class InstructDataset(factory.Factory):
+class SampleDataset(factory.Factory):
     input_data_category = vector_storage.DataCategory.TESTING
     samples = factory.LazyFunction(list)
 
     class Meta:
-        model = dataset_generation.InstructSampleDataset
+        model = dataset_generation.SampleDataset

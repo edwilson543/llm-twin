@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import enum
-import typing
 
 from sklearn.model_selection import train_test_split
 
@@ -31,53 +32,36 @@ class PreferenceSample(vector_storage.Vector):
         category = vector_storage.DataCategory.PREFERENCE_SAMPLE
 
 
+SampleT = InstructSample | PreferenceSample
+
 # Datasets.
 
-SampleT = typing.TypeVar("SampleT", bound=InstructSample | PreferenceSample)
 
-
-class SampleDataset(vector_storage.Vector, typing.Generic[SampleT]):
-    input_data_category: vector_storage.DataCategory
+class SampleDataset(vector_storage.Vector):
     samples: list[SampleT]
 
     def train_test_split(
         self,
         test_size: float,
         random_state: int = 42,
-    ) -> tuple[typing.Self, typing.Self]:
+    ) -> TrainTestSplit:
         train_samples, test_samples = train_test_split(
             self.samples, test_size=test_size, random_state=random_state
         )
-        return self._new(samples=train_samples), self._new(samples=test_samples)
+        return TrainTestSplit(
+            train=SampleDataset(samples=train_samples),
+            test=SampleDataset(samples=test_samples),
+        )
 
     @property
     def num_samples(self) -> int:
         return len(self.samples)
 
-    def _new(self, *, samples: list[SampleT]) -> typing.Self:
-        return type(self)(input_data_category=self.input_data_category, samples=samples)
 
+class TrainTestSplit(vector_storage.Vector):
+    train: SampleDataset
+    test: SampleDataset
 
-class InstructSampleDataset(SampleDataset[InstructSample]):
-    class _Config(vector_storage.Config):
-        category = vector_storage.DataCategory.INSTRUCT_DATASET
-
-
-class PreferenceSampleDataset(SampleDataset[PreferenceSample]):
-    class _Config(vector_storage.Config):
-        category = vector_storage.DataCategory.PREFERENCE_DATASET
-
-
-# Train test splits.
-
-
-class TrainTestSplit[SampleDatasetT: SampleDataset](vector_storage.Vector):
-    datasets: list[SampleDatasetT]
-
-
-class InstructTrainTestSplit(TrainTestSplit[InstructSampleDataset]):
-    pass
-
-
-class PreferenceTrainTestSplit(TrainTestSplit[PreferenceSampleDataset]):
-    pass
+    @property
+    def test_size(self) -> float:
+        return self.test.num_samples / (self.train.num_samples + self.test.num_samples)

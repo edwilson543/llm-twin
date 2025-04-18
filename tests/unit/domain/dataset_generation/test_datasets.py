@@ -9,14 +9,11 @@ class TestDataset:
         other_sample = dataset_factories.InstructSample()
 
         dataset = _datasets.SampleDataset(
-            input_data_category=vector_storage.DataCategory.TESTING,
             samples=[sample, other_sample],
         )
 
-        train, test = dataset.train_test_split(test_size=0.5, random_state=31)
+        train_test_split = dataset.train_test_split(test_size=0.5, random_state=31)
 
-        assert train.input_data_category == dataset.input_data_category
-        assert train.samples == [sample]
-
-        assert test.input_data_category == dataset.input_data_category
-        assert test.samples == [other_sample]
+        assert train_test_split.train.samples == [sample]
+        assert train_test_split.test.samples == [other_sample]
+        assert train_test_split.test_size == 0.5

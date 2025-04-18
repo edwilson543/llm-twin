@@ -5,4 +5,4 @@ from ._embedding import (
     SentenceTransformerEmbeddingModel,
     UnableToEmbedText,
 )
-from ._language import LanguageModel, OpenAILanguageModel
+from ._language import LanguageModel, Message, OpenAILanguageModel

@@ -26,13 +26,10 @@ class Prompt(vector_storage.Vector):
             raise MissingPromptVariable(variable_name=exc.args[0]) from exc
 
 
-_SampleT = _datasets.InstructSample | _datasets.PreferenceSample
-
-
 class GenerateSamplePrompt(Prompt):
     input_data_category: vector_storage.DataCategory
     document: chunking.Chunk
-    response_format: type[_SampleT]
+    response_format: type[_datasets.SampleT]
 
 
 class GenerateSamplePromptFactory:
@@ -76,7 +73,7 @@ class _GenerateSamplePromptFactory:
 
     dataset_format: str
     prompt_template: str
-    response_format: type[_SampleT]
+    response_format: type[_datasets.SampleT]
 
     def get_prompt(self, *, document: chunking.Chunk) -> GenerateSamplePrompt:
         variables = {"extract": document.content}
