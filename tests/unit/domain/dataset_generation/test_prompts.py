@@ -85,3 +85,31 @@ class TestGenerateSamplePromptFactory__CreatePromptsForGeneratingSamples:
         assert article_prompt.variables == {"extract": article.content}
         assert article_prompt.render()
         assert article_prompt.response_format == _datasets.PreferenceSample
+
+
+class TestGenerateSamplePromptFactory__GetSystemPrompt:
+    def test_gets_system_prompt_for_generating_instruct_dataset_samples(self):
+        language_model = models_helpers.FakeLanguageModel()
+        factory = _prompts.GenerateSamplePromptFactory(
+            dataset_type=_datasets.DatasetType.INSTRUCT, language_model=language_model
+        )
+
+        system_prompt = factory.get_system_prompt()
+
+        assert (
+            system_prompt.render()
+            == "You are a helpful assistant who generates instruction-answer pairs based on the given context."
+        )
+
+    def test_gets_system_prompt_for_generating_preference_dataset_samples(self):
+        language_model = models_helpers.FakeLanguageModel()
+        factory = _prompts.GenerateSamplePromptFactory(
+            dataset_type=_datasets.DatasetType.PREFERENCE, language_model=language_model
+        )
+
+        system_prompt = factory.get_system_prompt()
+
+        assert (
+            system_prompt.render()
+            == "You are a helpful assistant who generates instruction-answer triples based on the given context."
+        )

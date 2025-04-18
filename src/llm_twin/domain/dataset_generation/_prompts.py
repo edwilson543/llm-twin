@@ -1,8 +1,6 @@
 import dataclasses
 import typing
 
-import pydantic
-
 from llm_twin.domain import models
 from llm_twin.domain.feature_engineering import chunking
 from llm_twin.domain.storage import vector as vector_storage
@@ -15,7 +13,7 @@ class MissingPromptVariable(Exception):
     variable_name: str
 
 
-class Prompt[ResponseFormat: pydantic.BaseModel](vector_storage.Vector):
+class Prompt(vector_storage.Vector):
     template: str
     variables: dict[str, typing.Any]
 
@@ -50,7 +48,7 @@ class GenerateSamplePromptFactory:
     ) -> list[GenerateSamplePrompt]:
         return [self._get_prompt(document=document) for document in documents]
 
-    def _get_system_prompt(self) -> Prompt:
+    def get_system_prompt(self) -> Prompt:
         template = "You are a helpful assistant who generates {dataset_format} based on the given context."
 
         dataset_format = {
@@ -83,7 +81,6 @@ class GenerateSamplePromptFactory:
             _datasets.DatasetType.PREFERENCE: _datasets.PreferenceSample,
         }
         return mapping[self.dataset_type]
-
 
 
 INSTRUCT_PROMPT_TEMPLATE = """Based on the following extract, generate five instruction-answer pairs. 

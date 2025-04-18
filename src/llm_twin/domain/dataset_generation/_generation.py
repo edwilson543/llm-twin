@@ -11,11 +11,14 @@ from . import _datasets, _prompts
 @dataclasses.dataclass(frozen=True)
 class SampleDatasetFactory[SampleDatasetT: _datasets.SampleDataset](abc.ABC):
     language_model: models.LanguageModel
-    prompt_template_str: str
 
     @classmethod
     def generate_sample_dataset(
-        cls, *, prompts: list[_prompts.GenerateSamplePrompt], test_size: float
+        cls,
+        *,
+        system_prompt: _prompts.Prompt,
+        prompts: list[_prompts.GenerateSamplePrompt],
+        test_size: float,
     ) -> _datasets.TrainTestSplit[SampleDatasetT]:
         raise NotImplementedError
 
