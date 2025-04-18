@@ -1,7 +1,6 @@
 import dataclasses
 import typing
 
-from llm_twin.domain import models
 from llm_twin.domain.feature_engineering import chunking
 from llm_twin.domain.storage import vector as vector_storage
 
@@ -36,51 +35,63 @@ class GenerateSamplePrompt(Prompt):
     response_format: type[_SampleT]
 
 
-@dataclasses.dataclass(frozen=True)
 class GenerateSamplePromptFactory:
-    dataset_type: _datasets.DatasetType
-    language_model: models.LanguageModel
+    """
+    Dispatch a different prompt factory according to the dataset type.
+    """
 
-    # Queries.
+    def __init__(self) -> None:
+        self._registry: dict[_datasets.DatasetType, _GenerateSamplePromptFactory] = {
+            _datasets.DatasetType.INSTRUCT: _GenerateSamplePromptFactory(
+                prompt_template=INSTRUCT_PROMPT_TEMPLATE,
+                response_format=_datasets.InstructSample,
+                dataset_format="instruction-answer pairs",
+            ),
+            _datasets.DatasetType.PREFERENCE: _GenerateSamplePromptFactory(
+                prompt_template=PREFERENCE_PROMPT_TEMPLATE,
+                response_format=_datasets.PreferenceSample,
+                dataset_format="instruction-answer triples",
+            ),
+        }
 
     def create_prompts_for_generating_samples(
-        self, *, documents: list[chunking.Chunk]
+        self, *, dataset_type: _datasets.DatasetType, documents: list[chunking.Chunk]
     ) -> list[GenerateSamplePrompt]:
-        return [self._get_prompt(document=document) for document in documents]
+        factory = self._registry[dataset_type]
+        return [factory.get_prompt(document=document) for document in documents]
 
-    def get_system_prompt(self) -> Prompt:
-        template = "You are a helpful assistant who generates {dataset_format} based on the given context."
+        self,
+        *,
+        dataset_type: _datasets.DatasetType,
+        documents: typing.Sequence[chunking.Chunk],
+        factory = self._registry[dataset_type]
+        return factory.get_system_prompt()
 
-        dataset_format = {
-            _datasets.DatasetType.INSTRUCT: "instruction-answer pairs",
-            _datasets.DatasetType.PREFERENCE: "instruction-answer triples",
-        }[self.dataset_type]
-        variables = {"dataset_format": dataset_format}
 
-        return Prompt(template=template, variables=variables)
+@dataclasses.dataclass(frozen=True)
+class _GenerateSamplePromptFactory:
+    """
+    Create prompts for generating particular sample dataset type.
+    """
 
-    def _get_prompt(self, *, document: chunking.Chunk) -> GenerateSamplePrompt:
+    dataset_format: str
+    prompt_template: str
+    response_format: type[_SampleT]
+
+    def get_prompt(self, *, document: chunking.Chunk) -> GenerateSamplePrompt:
         variables = {"extract": document.content}
         return GenerateSamplePrompt(
-            template=self._get_prompt_template(),
+            template=self.prompt_template,
             variables=variables,
-            response_format=self._get_response_format(),
+            response_format=self.response_format,
             input_data_category=document.category(),
             document=document,
         )
 
-    def _get_prompt_template(self) -> str:
-        return {
-            _datasets.DatasetType.INSTRUCT: INSTRUCT_PROMPT_TEMPLATE,
-            _datasets.DatasetType.PREFERENCE: PREFERENCE_PROMPT_TEMPLATE,
-        }[self.dataset_type]
-
-    def _get_response_format(self) -> type[_SampleT]:
-        mapping: dict[_datasets.DatasetType, type[_SampleT]] = {
-            _datasets.DatasetType.INSTRUCT: _datasets.InstructSample,
-            _datasets.DatasetType.PREFERENCE: _datasets.PreferenceSample,
-        }
-        return mapping[self.dataset_type]
+    def get_system_prompt(self) -> Prompt:
+        template = "You are a helpful assistant who generates {dataset_format} based on the given context."
+        variables = {"dataset_format": self.dataset_format}
+        return Prompt(template=template, variables=variables)
 
 
 INSTRUCT_PROMPT_TEMPLATE = """Based on the following extract, generate five instruction-answer pairs. 

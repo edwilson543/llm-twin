@@ -3,7 +3,6 @@ import pytest
 from llm_twin.domain.dataset_generation import _datasets, _prompts
 from testing.factories import dataset as dataset_factories
 from testing.factories import vectors as vector_factories
-from testing.helpers import models as models_helpers
 
 
 class TestPrompt__Render:
@@ -29,15 +28,15 @@ class TestPrompt__Render:
 
 class TestGenerateSamplePromptFactory__CreatePromptsForGeneratingSamples:
     def test_creates_prompts_for_generating_instruct_samples(self):
-        language_model = models_helpers.FakeLanguageModel()
-        factory = _prompts.GenerateSamplePromptFactory(
-            dataset_type=_datasets.DatasetType.INSTRUCT, language_model=language_model
-        )
         repository = vector_factories.RepositoryChunk.build()
         article = vector_factories.ArticleChunk.build()
         documents = [repository, article]
 
-        prompts = factory.create_prompts_for_generating_samples(documents=documents)
+        factory = _prompts.GenerateSamplePromptFactory()
+
+        prompts = factory.create_prompts_for_generating_samples(
+            dataset_type=_datasets.DatasetType.INSTRUCT, documents=documents
+        )
 
         assert len(prompts) == 2
 
@@ -58,15 +57,15 @@ class TestGenerateSamplePromptFactory__CreatePromptsForGeneratingSamples:
         assert article_prompt.response_format == _datasets.InstructSample
 
     def test_creates_prompts_for_generating_preference_sample(self):
-        language_model = models_helpers.FakeLanguageModel()
-        factory = _prompts.GenerateSamplePromptFactory(
-            dataset_type=_datasets.DatasetType.PREFERENCE, language_model=language_model
-        )
         repository = vector_factories.RepositoryChunk.build()
         article = vector_factories.ArticleChunk.build()
         documents = [repository, article]
 
-        prompts = factory.create_prompts_for_generating_samples(documents=documents)
+        factory = _prompts.GenerateSamplePromptFactory()
+
+        prompts = factory.create_prompts_for_generating_samples(
+            dataset_type=_datasets.DatasetType.PREFERENCE, documents=documents
+        )
 
         assert len(prompts) == 2
 
@@ -89,12 +88,11 @@ class TestGenerateSamplePromptFactory__CreatePromptsForGeneratingSamples:
 
 class TestGenerateSamplePromptFactory__GetSystemPrompt:
     def test_gets_system_prompt_for_generating_instruct_dataset_samples(self):
-        language_model = models_helpers.FakeLanguageModel()
-        factory = _prompts.GenerateSamplePromptFactory(
-            dataset_type=_datasets.DatasetType.INSTRUCT, language_model=language_model
-        )
+        factory = _prompts.GenerateSamplePromptFactory()
 
-        system_prompt = factory.get_system_prompt()
+        system_prompt = factory.get_system_prompt(
+            dataset_type=_datasets.DatasetType.INSTRUCT
+        )
 
         assert (
             system_prompt.render()
@@ -102,12 +100,11 @@ class TestGenerateSamplePromptFactory__GetSystemPrompt:
         )
 
     def test_gets_system_prompt_for_generating_preference_dataset_samples(self):
-        language_model = models_helpers.FakeLanguageModel()
-        factory = _prompts.GenerateSamplePromptFactory(
-            dataset_type=_datasets.DatasetType.PREFERENCE, language_model=language_model
-        )
+        factory = _prompts.GenerateSamplePromptFactory()
 
-        system_prompt = factory.get_system_prompt()
+        system_prompt = factory.get_system_prompt(
+            dataset_type=_datasets.DatasetType.PREFERENCE
+        )
 
         assert (
             system_prompt.render()
