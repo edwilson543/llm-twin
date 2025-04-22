@@ -18,10 +18,10 @@ def generate_sample_dataset(
     for prompt in prompts:
         user_message = models.Message.user(content=prompt.render())
 
-        sample = language_model.get_response(
+        response = language_model.get_response(
             messages=[system_message, user_message],
             response_format=prompt.response_format,
         )
-        samples.append(sample)
+        samples.extend(response.samples)
 
     return _datasets.SampleDataset(samples=samples)

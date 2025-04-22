@@ -6,4 +6,10 @@ from ._datasets import (
     TrainTestSplit,
 )
 from ._generation import generate_sample_dataset
-from ._prompts import GenerateSamplePrompt, GenerateSamplePromptFactory, Prompt
+from ._prompts import (
+    GenerateSamplePrompt,
+    GenerateSamplePromptFactory,
+    InstructSampleList,
+    PreferenceSampleList,
+    Prompt,
+)

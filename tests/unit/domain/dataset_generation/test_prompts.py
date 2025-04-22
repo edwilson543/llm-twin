@@ -43,18 +43,18 @@ class TestGenerateSamplePromptFactory__CreatePromptsForGeneratingSamples:
         repository_prompt = prompts[0]
         assert repository_prompt.document == repository
         assert repository_prompt.input_data_category == repository.category()
-        assert repository_prompt.variables == {"extract": repository.content}
-        assert repository_prompt.response_format == _datasets.InstructSample
-        assert repository_prompt.render()
+        assert repository_prompt.response_format == _prompts.InstructSampleList
         assert repository_prompt.template == _prompts.INSTRUCT_PROMPT_TEMPLATE
+        assert repository_prompt.variables == {"extract": repository.content}
+        assert repository_prompt.render()
 
         article_prompt = prompts[1]
         assert article_prompt.document == article
         assert article_prompt.input_data_category == article.category()
+        assert article_prompt.response_format == _prompts.InstructSampleList
         assert article_prompt.template == _prompts.INSTRUCT_PROMPT_TEMPLATE
         assert article_prompt.variables == {"extract": article.content}
         assert article_prompt.render()
-        assert article_prompt.response_format == _datasets.InstructSample
 
     def test_creates_prompts_for_generating_preference_sample(self):
         repository = vector_factories.RepositoryChunk.build()
@@ -72,18 +72,18 @@ class TestGenerateSamplePromptFactory__CreatePromptsForGeneratingSamples:
         repository_prompt = prompts[0]
         assert repository_prompt.document == repository
         assert repository_prompt.input_data_category == repository.category()
+        assert repository_prompt.response_format == _prompts.PreferenceSampleList
         assert repository_prompt.template == _prompts.PREFERENCE_PROMPT_TEMPLATE
         assert repository_prompt.variables == {"extract": repository.content}
         assert repository_prompt.render()
-        assert repository_prompt.response_format == _datasets.PreferenceSample
 
         article_prompt = prompts[1]
         assert article_prompt.document == article
         assert article_prompt.input_data_category == article.category()
+        assert article_prompt.response_format == _prompts.PreferenceSampleList
         assert article_prompt.template == _prompts.PREFERENCE_PROMPT_TEMPLATE
         assert article_prompt.variables == {"extract": article.content}
         assert article_prompt.render()
-        assert article_prompt.response_format == _datasets.PreferenceSample
 
 
 class TestGenerateSamplePromptFactory__GetSystemPrompt:

@@ -1,6 +1,8 @@
 import dataclasses
 import typing
 
+import pydantic
+
 from llm_twin.domain.feature_engineering import chunking
 from llm_twin.domain.storage import vector as vector_storage
 
@@ -26,10 +28,21 @@ class Prompt(vector_storage.Vector):
             raise MissingPromptVariable(variable_name=exc.args[0]) from exc
 
 
+class InstructSampleList(pydantic.BaseModel):
+    samples: list[_datasets.InstructSample]
+
+
+class PreferenceSampleList(pydantic.BaseModel):
+    samples: list[_datasets.PreferenceSample]
+
+
+ResponseFormatT = InstructSampleList | PreferenceSampleList
+
+
 class GenerateSamplePrompt(Prompt):
     input_data_category: vector_storage.DataCategory
     document: chunking.Chunk
-    response_format: type[_datasets.SampleT]
+    response_format: type[ResponseFormatT]
 
 
 class GenerateSamplePromptFactory:
@@ -41,12 +54,12 @@ class GenerateSamplePromptFactory:
         self._registry: dict[_datasets.DatasetType, _GenerateSamplePromptFactory] = {
             _datasets.DatasetType.INSTRUCT: _GenerateSamplePromptFactory(
                 prompt_template=INSTRUCT_PROMPT_TEMPLATE,
-                response_format=_datasets.InstructSample,
+                response_format=InstructSampleList,
                 dataset_format="instruction-answer pairs",
             ),
             _datasets.DatasetType.PREFERENCE: _GenerateSamplePromptFactory(
                 prompt_template=PREFERENCE_PROMPT_TEMPLATE,
-                response_format=_datasets.PreferenceSample,
+                response_format=PreferenceSampleList,
                 dataset_format="instruction-answer triples",
             ),
         }
@@ -73,7 +86,7 @@ class _GenerateSamplePromptFactory:
 
     dataset_format: str
     prompt_template: str
-    response_format: type[_datasets.SampleT]
+    response_format: type[ResponseFormatT]
 
     def get_prompt(self, *, document: chunking.Chunk) -> GenerateSamplePrompt:
         variables = {"extract": document.content}

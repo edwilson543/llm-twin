@@ -17,7 +17,7 @@ class TestGenerateSampleDataset:
             prompts=[prompt, other_prompt],
         )
 
-        assert dataset.num_samples == 2
+        assert dataset.num_samples == 2 * dataset_factories.SAMPLES_PER_PROMPT
         assert all(
             isinstance(sample, _datasets.InstructSample) for sample in dataset.samples
         )
@@ -32,7 +32,7 @@ class TestGenerateSampleDataset:
             language_model=language_model, system_prompt=system_prompt, prompts=[prompt]
         )
 
-        assert dataset.num_samples == 1
+        assert dataset.num_samples == 1 * dataset_factories.SAMPLES_PER_PROMPT
         assert all(
             isinstance(sample, _datasets.PreferenceSample) for sample in dataset.samples
         )

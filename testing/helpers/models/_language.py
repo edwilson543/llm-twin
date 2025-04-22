@@ -13,8 +13,8 @@ class FakeLanguageModel(models.LanguageModel):
         response_format: type[models.ResponseFormatT],
     ) -> models.ResponseFormatT:
         response_factories = {
-            dataset_generation.InstructSample: dataset_factories.InstructSample,
-            dataset_generation.PreferenceSample: dataset_factories.PreferenceSample,
+            dataset_generation.InstructSampleList: dataset_factories.InstructSampleList,
+            dataset_generation.PreferenceSampleList: dataset_factories.PreferenceSampleList,
         }
 
         response = response_factories[response_format]()
