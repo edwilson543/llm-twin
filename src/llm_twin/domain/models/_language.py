@@ -10,7 +10,7 @@ import pydantic
 ResponseFormatT = typing.TypeVar("ResponseFormatT", bound=pydantic.BaseModel)
 
 
-class Role(enum.Enum):
+class Role(enum.StrEnum):
     SYSTEM = "system"
     USER = "user"
 

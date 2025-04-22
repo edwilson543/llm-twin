@@ -9,7 +9,7 @@ import pydantic
 from llm_twin.domain.storage import _ids
 
 
-class Collection(enum.Enum):
+class Collection(enum.StrEnum):
     CLEANED_ARTICLES = "cleaned_articles"
     CLEANED_REPOSITORIES = "cleaned_repositories"
 
@@ -21,7 +21,7 @@ class Collection(enum.Enum):
     TESTING_VECTOR_EMBEDDINGS = "testing_vector_embeddings"
 
 
-class DataCategory(enum.Enum):
+class DataCategory(enum.StrEnum):
     POSTS = "posts"
     ARTICLES = "articles"
     REPOSITORIES = "repositories"

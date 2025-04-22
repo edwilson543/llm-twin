@@ -8,7 +8,7 @@ from langchain import text_splitter
 from . import _singleton
 
 
-class EmbeddingModelName(enum.Enum):
+class EmbeddingModelName(enum.StrEnum):
     MINILM = "all-MiniLM-L6-v2"
     FAKE = "fake"
 
