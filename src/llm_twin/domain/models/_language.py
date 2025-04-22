@@ -3,6 +3,7 @@ import dataclasses
 import enum
 import typing
 
+import openai
 import pydantic
 
 
@@ -31,6 +32,11 @@ class Message:
         return {"role": self.role.value, "content": self.content}
 
 
+@dataclasses.dataclass(frozen=True)
+class UnableToGetResponse(Exception):
+    model: str
+
+
 class LanguageModel(abc.ABC):
     """
     Third-party LLM used to automate tasks in the training pipeline.
@@ -42,23 +48,27 @@ class LanguageModel(abc.ABC):
     ) -> ResponseFormatT:
         raise NotImplementedError
 
-    @abc.abstractmethod
-    def encode(self, *, text: str) -> list[int]:
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def decode(self, *, tokens: list[int]) -> str:
-        raise NotImplementedError
-
 
 class OpenAILanguageModel(LanguageModel):
+    def __init__(self, *, api_key: str, model: str) -> None:
+        self._client = openai.OpenAI(api_key=api_key)
+        self._model = model
+
     def get_response(
         self, *, messages: list[Message], response_format: type[ResponseFormatT]
     ) -> ResponseFormatT:
-        raise NotImplementedError
+        serialized_messages = [message.serialize() for message in messages]
 
-    def encode(self, *, text: str) -> list[int]:
-        return []
+        try:
+            response = self._client.beta.chat.completions.parse(
+                model=self._model,
+                messages=serialized_messages,  # type: ignore[arg-type]
+                response_format=response_format,
+            )
+        except openai.APIError as exc:
+            raise UnableToGetResponse(model=self._model) from exc
 
-    def decode(self, *, tokens: list[int]) -> str:
-        return ""
+        if not (parsed_samples := response.choices[0].message.parsed):
+            raise UnableToGetResponse(model=self._model)
+
+        return parsed_samples

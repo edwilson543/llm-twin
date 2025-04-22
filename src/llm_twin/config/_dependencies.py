@@ -49,4 +49,6 @@ def get_embedding_model() -> models.EmbeddingModel:
 
 
 def get_language_model() -> models.LanguageModel:
-    return models.OpenAILanguageModel()
+    return models.OpenAILanguageModel(
+        api_key=settings.OPENAI_API_KEY, model=settings.OPENAI_MODEL_TAG
+    )

@@ -18,6 +18,10 @@ class Settings(pydantic_settings.BaseSettings):
     EMBEDDING_MODEL_NAME: str = models.EmbeddingModelName.MINILM.value
     MODEL_CACHE_DIR: str | None = None
 
+    # Vendors.
+    OPENAI_API_KEY: str = ""
+    OPENAI_MODEL_TAG: str = "gpt-4o-mini"
+
     @classmethod
     def load_settings(cls) -> Settings:
         return cls()

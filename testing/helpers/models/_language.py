@@ -21,9 +21,3 @@ class FakeLanguageModel(models.LanguageModel):
         assert isinstance(response, response_format)  # For mypy.
 
         return response
-
-    def encode(self, *, text: str) -> list[int]:
-        return [1, 2, 3]
-
-    def decode(self, *, tokens: list[int]) -> str:
-        return "some text"
