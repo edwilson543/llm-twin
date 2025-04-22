@@ -1,7 +1,6 @@
 import factory
 
 from llm_twin.domain import dataset_generation
-from llm_twin.domain.storage import vector as vector_storage
 
 from . import _base, vectors
 
@@ -15,7 +14,6 @@ class Prompt(_base.Factory):
 
 
 class _GenerateSamplePrompt(Prompt):
-    input_data_category = vector_storage.DataCategory.ARTICLES
     document = factory.SubFactory(vectors.ArticleChunk)
 
     class Meta:
@@ -70,7 +68,6 @@ class PreferenceSample(_base.Factory):
 
 
 class SampleDataset(_base.Factory):
-    input_data_category = vector_storage.DataCategory.TESTING
     samples = factory.LazyFunction(list)
 
     class Meta:

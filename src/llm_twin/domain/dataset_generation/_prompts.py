@@ -40,9 +40,12 @@ ResponseFormatT = InstructSampleList | PreferenceSampleList
 
 
 class GenerateSamplePrompt(Prompt):
-    input_data_category: vector_storage.DataCategory
     document: chunking.Chunk
     response_format: type[ResponseFormatT]
+
+    @property
+    def input_data_category(self) -> vector_storage.DataCategory:
+        return self.document.category()
 
 
 class GenerateSamplePromptFactory:
@@ -94,7 +97,6 @@ class _GenerateSamplePromptFactory:
             template=self.prompt_template,
             variables=variables,
             response_format=self.response_format,
-            input_data_category=document.category(),
             document=document,
         )
 
