@@ -3,13 +3,14 @@ import typing
 import zenml
 
 from llm_twin.domain import dataset_generation
-from llm_twin.domain.feature_engineering import chunking
 from llm_twin.orchestration.steps import context
+
+from . import _types
 
 
 @zenml.step
 def create_prompts_for_generating_samples(
-    documents: typing.Annotated[list[chunking.Chunk], "chunked_documents"],
+    documents: _types.ChunkedDocumentsInputT,
     dataset_type: typing.Annotated[dataset_generation.DatasetType, "dataset_type"],
     context: context.StepContext | None = None,
 ) -> typing.Annotated[
@@ -22,7 +23,7 @@ def create_prompts_for_generating_samples(
 
     step_context = context or zenml.get_step_context()
     step_context.add_output_metadata(
-        output_name="sample_generation_prompts", metadata={"num_prompts": len(prompts)}
+        output_name="generate_sample_prompts", metadata={"num_prompts": len(prompts)}
     )
 
     return prompts

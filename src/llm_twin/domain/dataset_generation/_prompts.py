@@ -41,11 +41,23 @@ ResponseFormatT = InstructSampleList | PreferenceSampleList
 
 class GenerateSamplePrompt(Prompt):
     document: chunking.Chunk
-    response_format: type[ResponseFormatT]
+    dataset_type: _datasets.DatasetType
 
     @property
     def input_data_category(self) -> vector_storage.DataCategory:
         return self.document.category()
+
+    @property
+    def response_format(self) -> type[ResponseFormatT]:
+        match self.dataset_type:
+            case _datasets.DatasetType.INSTRUCT:
+                return InstructSampleList
+            case _datasets.DatasetType.PREFERENCE:
+                return PreferenceSampleList
+            case _:
+                raise ValueError(
+                    f"No response format for {self.dataset_type.value} dataset type."
+                )
 
 
 class GenerateSamplePromptFactory:
@@ -57,26 +69,26 @@ class GenerateSamplePromptFactory:
         self._registry: dict[_datasets.DatasetType, _GenerateSamplePromptFactory] = {
             _datasets.DatasetType.INSTRUCT: _GenerateSamplePromptFactory(
                 prompt_template=INSTRUCT_PROMPT_TEMPLATE,
-                response_format=InstructSampleList,
+                dataset_type=_datasets.DatasetType.INSTRUCT,
                 dataset_format="instruction-answer pairs",
             ),
             _datasets.DatasetType.PREFERENCE: _GenerateSamplePromptFactory(
                 prompt_template=PREFERENCE_PROMPT_TEMPLATE,
-                response_format=PreferenceSampleList,
+                dataset_type=_datasets.DatasetType.PREFERENCE,
                 dataset_format="instruction-answer triples",
             ),
         }
 
     def create_prompts_for_generating_samples(
-        self, *, dataset_type: _datasets.DatasetType, documents: list[chunking.Chunk]
-    ) -> list[GenerateSamplePrompt]:
-        factory = self._registry[dataset_type]
-        return [factory.get_prompt(document=document) for document in documents]
-
         self,
         *,
         dataset_type: _datasets.DatasetType,
         documents: typing.Sequence[chunking.Chunk],
+    ) -> list[GenerateSamplePrompt]:
+        factory = self._registry[dataset_type]
+        return [factory.get_prompt(document=document) for document in documents]
+
+    def get_system_prompt(self, *, dataset_type: _datasets.DatasetType):
         factory = self._registry[dataset_type]
         return factory.get_system_prompt()
 
@@ -87,16 +99,16 @@ class _GenerateSamplePromptFactory:
     Create prompts for generating particular sample dataset type.
     """
 
+    dataset_type: _datasets.DatasetType
     dataset_format: str
     prompt_template: str
-    response_format: type[ResponseFormatT]
 
     def get_prompt(self, *, document: chunking.Chunk) -> GenerateSamplePrompt:
         variables = {"extract": document.content}
         return GenerateSamplePrompt(
+            dataset_type=self.dataset_type,
             template=self.prompt_template,
             variables=variables,
-            response_format=self.response_format,
             document=document,
         )
 

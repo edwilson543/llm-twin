@@ -6,6 +6,10 @@ from llm_twin.infrastructure.db import mongo, qdrant
 from ._settings import settings
 
 
+class ConfigurationError(Exception):
+    pass
+
+
 # Databases.
 
 
@@ -49,6 +53,9 @@ def get_embedding_model() -> models.EmbeddingModel:
 
 
 def get_language_model() -> models.LanguageModel:
+    if not (settings.OPENAI_API_KEY and settings.OPENAI_MODEL_TAG):
+        raise ConfigurationError("Language model settings are not set.")
+
     return models.OpenAILanguageModel(
         api_key=settings.OPENAI_API_KEY, model=settings.OPENAI_MODEL_TAG
     )

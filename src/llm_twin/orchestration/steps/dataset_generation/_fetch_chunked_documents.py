@@ -23,7 +23,7 @@ def fetch_chunked_documents(
 
     step_context = context or zenml.get_step_context()
     step_context.add_output_metadata(
-        output_name="fetch_chunked_documents",
+        output_name="chunked_documents",
         metadata={"num_chunks": len(chunked_documents)},
     )
 

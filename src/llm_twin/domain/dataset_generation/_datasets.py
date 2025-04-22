@@ -65,3 +65,7 @@ class TrainTestSplit(vector_storage.Vector):
     @property
     def test_size(self) -> float:
         return self.test.num_samples / (self.train.num_samples + self.test.num_samples)
+
+    @property
+    def all_samples(self) -> list[SampleT]:
+        return self.train.samples + self.test.samples

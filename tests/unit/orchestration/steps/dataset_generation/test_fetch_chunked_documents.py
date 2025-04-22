@@ -21,4 +21,4 @@ def test_fetches_chunked_documents_from_database():
         )
 
     assert chunks == vector_db.vectors
-    assert context.output_metadata["fetch_chunked_documents"]["num_chunks"] == 3
+    assert context.output_metadata["chunked_documents"]["num_chunks"] == 3

@@ -5,13 +5,13 @@ from llm_twin.orchestration.steps import dataset_generation as dataset_generatio
 
 
 @zenml.pipeline
-def generate_sample_datasets(
-    *, dataset_type: dataset_generation.DatasetType, test_split_size: float
+def generate_sample_dataset(
+    *, dataset_type: dataset_generation.DatasetType, test_size: float
 ) -> None:
     chunks = dataset_generation_steps.fetch_chunked_documents()
     prompts = dataset_generation_steps.create_prompts_for_generating_samples(
         documents=chunks, dataset_type=dataset_type
     )
     dataset_generation_steps.generate_sample_dataset(
-        prompts=prompts, test_split_size=test_split_size
+        dataset_type=dataset_type, prompts=prompts, test_size=test_size
     )

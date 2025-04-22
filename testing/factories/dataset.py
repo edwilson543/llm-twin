@@ -22,11 +22,11 @@ class _GenerateSamplePrompt(Prompt):
 
 
 class GenerateInstructSamplePrompt(_GenerateSamplePrompt):
-    response_format = dataset_generation.InstructSampleList
+    dataset_type = dataset_generation.DatasetType.INSTRUCT
 
 
 class GeneratePreferenceSamplePrompt(_GenerateSamplePrompt):
-    response_format = dataset_generation.PreferenceSampleList
+    dataset_type = dataset_generation.DatasetType.PREFERENCE
 
 
 class InstructSample(_base.Factory):

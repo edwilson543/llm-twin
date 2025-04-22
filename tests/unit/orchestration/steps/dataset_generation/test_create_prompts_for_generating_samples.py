@@ -34,4 +34,4 @@ def test_creates_prompts_for_generating_instruct_samples(
     for prompt in prompts:
         assert prompt.render()
 
-    assert context.output_metadata["sample_generation_prompts"]["num_prompts"] == 3
+    assert context.output_metadata["generate_sample_prompts"]["num_prompts"] == 3
