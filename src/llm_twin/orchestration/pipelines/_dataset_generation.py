@@ -6,9 +6,14 @@ from llm_twin.orchestration.steps import dataset_generation as dataset_generatio
 
 @zenml.pipeline
 def generate_sample_dataset(
-    *, dataset_type: dataset_generation.DatasetType, test_size: float
+    *,
+    author_full_name: str,
+    dataset_type: dataset_generation.DatasetType,
+    test_size: float,
 ) -> None:
-    chunks = dataset_generation_steps.fetch_chunked_documents()
+    chunks = dataset_generation_steps.fetch_chunked_documents(
+        author_full_name=author_full_name
+    )
     prompts = dataset_generation_steps.create_prompts_for_generating_samples(
         documents=chunks, dataset_type=dataset_type
     )
@@ -19,5 +24,7 @@ def generate_sample_dataset(
 
 if __name__ == "__main__":
     generate_sample_dataset.with_options(enable_cache=False)(
-        dataset_type=dataset_generation.DatasetType.INSTRUCT, test_size=0.2
+        author_full_name="Ed Wilson",
+        dataset_type=dataset_generation.DatasetType.INSTRUCT,
+        test_size=0.2,
     )

@@ -5,22 +5,31 @@ import pytest
 from llm_twin.config._settings import settings
 from llm_twin.domain import dataset_generation
 from llm_twin.orchestration.pipelines import _dataset_generation
+from testing.factories import documents as document_factories
 from testing.factories import vectors as vector_factories
 from testing.helpers import config as config_helpers
 from testing.helpers import zenml as zenml_helpers
 
 
 def test_generates_sample_dataset_using_fake_language_model():
-    vector_factories.ArticleChunk.create()
-    vector_factories.ArticleChunk.create()
-    vector_factories.RepositoryChunk.create()
+    author = document_factories.Author.create()
+
+    vector_factories.ArticleChunk.create(author=author)
+    vector_factories.ArticleChunk.create(author=author)
+    vector_factories.RepositoryChunk.create(author=author)
+
+    # Create an article chunk by some other author, that samples shouldn't be generated from.
+    other_author = document_factories.Author.create()
+    vector_factories.ArticleChunk.create(author=other_author)
 
     pipeline = _dataset_generation.generate_sample_dataset.with_options(
         enable_cache=False
     )
     with config_helpers.install_fake_language_model():
         pipeline.entrypoint(
-            dataset_type=dataset_generation.DatasetType.PREFERENCE, test_size=0.2
+            author_full_name=author.full_name,
+            dataset_type=dataset_generation.DatasetType.PREFERENCE,
+            test_size=0.2,
         )
 
     sample_dataset = zenml_helpers.load_artifact_from_most_recent_pipeline_run(
@@ -44,13 +53,17 @@ def test_generates_sample_dataset_using_fake_language_model():
     reason="Is slow and requires OpenAI API call",
 )
 def test_generates_sample_dataset_using_gpt():
-    vector_factories.ArticleChunk.create(content="King Gizzard & the Lizard Wizard.")
+    chunk = vector_factories.ArticleChunk.create(
+        content="King Gizzard & the Lizard Wizard."
+    )
 
     pipeline = _dataset_generation.generate_sample_dataset.with_options(
         enable_cache=False
     )
     pipeline.entrypoint(
-        dataset_type=dataset_generation.DatasetType.INSTRUCT, test_size=0.2
+        author_full_name=chunk.author_full_name,
+        dataset_type=dataset_generation.DatasetType.INSTRUCT,
+        test_size=0.2,
     )
 
     sample_dataset = zenml_helpers.load_artifact_from_most_recent_pipeline_run(
