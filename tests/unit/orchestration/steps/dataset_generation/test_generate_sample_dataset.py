@@ -2,14 +2,14 @@ from llm_twin.domain import dataset_generation
 from llm_twin.orchestration.steps.dataset_generation import _generate_sample_dataset
 from testing.factories import dataset as dataset_factories
 from testing.helpers import config as config_helpers
-from testing.helpers import context as context_helpers
+from testing.helpers import zenml as zenml_helpers
 
 
 def test_generates_and_splits_instruct_sample_dataset():
     prompt = dataset_factories.GenerateInstructSamplePrompt()
     other_prompt = dataset_factories.GenerateInstructSamplePrompt()
 
-    context = context_helpers.FakeContext()
+    context = zenml_helpers.FakeContext()
 
     with config_helpers.install_fake_language_model():
         dataset = _generate_sample_dataset.generate_sample_dataset.entrypoint(
@@ -36,7 +36,7 @@ def test_generates_and_splits_instruct_sample_dataset():
 def test_generates_and_splits_preference_sample_dataset():
     prompts = [dataset_factories.GeneratePreferenceSamplePrompt() for _ in range(4)]
 
-    context = context_helpers.FakeContext()
+    context = zenml_helpers.FakeContext()
 
     with config_helpers.install_fake_language_model():
         dataset = _generate_sample_dataset.generate_sample_dataset.entrypoint(

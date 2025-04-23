@@ -3,12 +3,12 @@ from unittest import mock
 from llm_twin.orchestration.steps.etl import _crawl_links
 from testing.factories import documents as document_factories
 from testing.helpers import config as config_helpers
-from testing.helpers import context as context_helpers
+from testing.helpers import zenml as zenml_helpers
 
 
 def test_crawls_links_for_fake_domain_successfully():
     author = document_factories.Author()
-    context = context_helpers.FakeContext()
+    context = zenml_helpers.FakeContext()
 
     links = [
         "https://fake.com/edwilson543/post-1/",
@@ -40,7 +40,7 @@ def test_crawls_links_for_fake_domain_successfully():
 
 def test_continues_after_failing_to_crawl_broken_link():
     author = document_factories.Author()
-    context = context_helpers.FakeContext()
+    context = zenml_helpers.FakeContext()
 
     links = [
         "https://broken.com/edwilson543/post-1/",

@@ -1,8 +1,8 @@
 from llm_twin.orchestration.steps.feature_engineering import _fetch_raw_documents
 from testing.factories import documents as document_factories
 from testing.helpers import config as config_helpers
-from testing.helpers import context as context_helpers
 from testing.helpers import storage as storage_helpers
+from testing.helpers import zenml as zenml_helpers
 
 
 def test_gets_all_raw_documents_for_specified_authors():
@@ -31,7 +31,7 @@ def test_gets_all_raw_documents_for_specified_authors():
     ]
     db = storage_helpers.InMemoryDocumentDatabase(documents=all_documents)
 
-    context = context_helpers.FakeContext()
+    context = zenml_helpers.FakeContext()
 
     author_full_names = [author.full_name, other_author.full_name]
     with config_helpers.install_in_memory_document_db(db=db):
@@ -60,7 +60,7 @@ def test_gets_no_raw_documents_for_author_that_does_not_exist():
         documents=[author, other_author_article]
     )
 
-    context = context_helpers.FakeContext()
+    context = zenml_helpers.FakeContext()
 
     with config_helpers.install_in_memory_document_db(db=db):
         documents = _fetch_raw_documents.fetch_raw_documents.entrypoint(
