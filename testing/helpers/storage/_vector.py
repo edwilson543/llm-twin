@@ -1,5 +1,6 @@
 import dataclasses
 import typing
+import uuid
 
 from llm_twin.domain.storage import vector as vector_storage
 from llm_twin.infrastructure.db import qdrant
@@ -15,9 +16,13 @@ class InMemoryVectorDatabase(vector_storage.VectorDatabase):
         vector_class: type[vector_storage.VectorT],
         limit: int,
         offset: str | None = None,
+        **filter_options: bool | int | str,
     ) -> tuple[list[vector_storage.VectorT], str | None]:
         vectors = [
-            vector for vector in self.vectors if isinstance(vector, vector_class)
+            vector
+            for vector in self.vectors
+            if isinstance(vector, vector_class)
+            and self._vector_matches_filter_options(vector, **filter_options)
         ]
         return vectors[:limit], None
 
@@ -31,6 +36,15 @@ class InMemoryVectorDatabase(vector_storage.VectorDatabase):
     @property
     def vector_ids(self) -> list[str]:
         return list(self.vectors_by_id.keys())
+
+    @staticmethod
+    def _vector_matches_filter_options(
+        vector: vector_storage.Vector, **filter_options: object
+    ) -> bool:
+        return all(
+            getattr(vector, filter_key, uuid.uuid4()) == filter_value
+            for filter_key, filter_value in filter_options.items()
+        )
 
 
 @dataclasses.dataclass(frozen=True)

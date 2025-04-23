@@ -55,8 +55,18 @@ class QdrantDatabase(vector_storage.VectorDatabase):
         vector_class: type[vector_storage.VectorT],
         limit: int,
         offset: str | None = None,
+        **filter_options: bool | int | str,
     ) -> tuple[list[vector_storage.VectorT], str | None]:
         collection = self._maybe_create_collection(vector_class=vector_class)
+
+        scroll_filter = qdrant_models.Filter(
+            must=[
+                qdrant_models.FieldCondition(
+                    key=key, match=qdrant_models.MatchValue(value=value)
+                )
+                for key, value in filter_options.items()
+            ]
+        )
 
         try:
             records, next_offset = self._connector.client.scroll(
@@ -65,6 +75,7 @@ class QdrantDatabase(vector_storage.VectorDatabase):
                 with_payload=True,
                 with_vectors=True,
                 offset=offset,
+                scroll_filter=scroll_filter,
             )
         except qdrant_exceptions.UnexpectedResponse:
             loguru.logger.exception(
