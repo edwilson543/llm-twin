@@ -2,8 +2,8 @@ import contextlib
 import typing
 from unittest import mock
 
-from llm_twin import settings
-from testing.helpers import embeddings as embeddings_helpers
+from llm_twin import config
+from testing.helpers import models as models_helpers
 from testing.helpers import storage as storage_helpers
 
 
@@ -18,7 +18,7 @@ def install_in_memory_document_db(
     Helper to install an in memory database for unit tests.
     """
     db = db or storage_helpers.InMemoryDocumentDatabase()
-    with mock.patch.object(settings, "get_document_database", return_value=db):
+    with mock.patch.object(config, "get_document_database", return_value=db):
         yield db
 
 
@@ -30,7 +30,7 @@ def install_in_memory_vector_db(
     Helper to install an in memory database for unit tests.
     """
     db = db or storage_helpers.InMemoryVectorDatabase()
-    with mock.patch.object(settings, "get_vector_database", return_value=db):
+    with mock.patch.object(config, "get_vector_database", return_value=db):
         yield db
 
 
@@ -39,13 +39,27 @@ def install_in_memory_vector_db(
 
 @contextlib.contextmanager
 def install_fake_embedding_model() -> typing.Generator[
-    embeddings_helpers.FakeEmbeddingModel, None, None
+    models_helpers.FakeEmbeddingModel, None, None
 ]:
     """
     Helper that overrides the settings module to install a fake embedding model.
     """
-    fake_embedding_model = embeddings_helpers.get_fake_embedding_model()
+    fake_embedding_model = models_helpers.get_fake_embedding_model()
     with mock.patch.object(
-        settings, "get_embedding_model", return_value=fake_embedding_model
+        config, "get_embedding_model", return_value=fake_embedding_model
     ):
         yield fake_embedding_model
+
+
+@contextlib.contextmanager
+def install_fake_language_model() -> typing.Generator[
+    models_helpers.FakeLanguageModel, None, None
+]:
+    """
+    Helper that overrides the settings module to install a fake language model.
+    """
+    fake_language_model = models_helpers.FakeLanguageModel()
+    with mock.patch.object(
+        config, "get_language_model", return_value=fake_language_model
+    ):
+        yield fake_language_model

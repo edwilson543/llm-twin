@@ -3,17 +3,17 @@ from llm_twin.orchestration.steps.feature_engineering import (
     _chunk_cleaned_documents,
 )
 from testing.factories import vectors as vector_factories
-from testing.helpers import context as context_helpers
-from testing.helpers import settings as settings_helpers
+from testing.helpers import config as config_helpers
+from testing.helpers import zenml as zenml_helpers
 
 
 def test_chunks_article_documents():
     max_length = 2000
     article = vector_factories.CleanedArticle(content="A? " * max_length * 5)
 
-    context = context_helpers.FakeContext()
+    context = zenml_helpers.FakeContext()
 
-    with settings_helpers.install_fake_embedding_model():
+    with config_helpers.install_fake_embedding_model():
         chunks = _chunk_cleaned_documents.chunk_cleaned_documents.entrypoint(
             cleaned_documents=[article], context=context
         )
@@ -32,9 +32,9 @@ def test_chunks_repository_documents():
     other_repository = vector_factories.CleanedRepository(content="def")
     cleaned_documents = [repository, other_repository]
 
-    context = context_helpers.FakeContext()
+    context = zenml_helpers.FakeContext()
 
-    with settings_helpers.install_fake_embedding_model():
+    with config_helpers.install_fake_embedding_model():
         chunks = _chunk_cleaned_documents.chunk_cleaned_documents.entrypoint(
             cleaned_documents=cleaned_documents, context=context
         )

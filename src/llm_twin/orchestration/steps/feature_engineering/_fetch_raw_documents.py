@@ -3,21 +3,20 @@ import typing
 import loguru
 import zenml
 
-from llm_twin import settings, utils
+from llm_twin import config, utils
 from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
 from llm_twin.domain.storage import document as document_storage
 from llm_twin.orchestration.steps import context
-
-from . import _types
+from llm_twin.orchestration.steps import types as step_types
 
 
 @zenml.step
 def fetch_raw_documents(
     author_full_names: list[str],
     context: context.StepContext | None = None,
-) -> _types.RawDocumentsOutputT:
-    db = settings.get_document_database()
+) -> step_types.RawDocumentsOutputT:
+    db = config.get_document_database()
 
     documents = []
 
@@ -35,7 +34,7 @@ def fetch_raw_documents(
 
 def _fetch_raw_documents_for_author(
     *, db: document_storage.DocumentDatabase, author_full_name: str
-) -> _types.RawDocumentsOutputT:
+) -> step_types.RawDocumentsOutputT:
     loguru.logger.info(f"Fetching raw documents for '{author_full_name}'.")
     name = utils.Name.from_full_name(author_full_name)
     author = db.get_or_create(
@@ -52,7 +51,7 @@ def _fetch_raw_documents_for_author(
     return [*articles, *repositories]
 
 
-def _get_metadata(*, documents: _types.RawDocumentsOutputT) -> dict:
+def _get_metadata(*, documents: step_types.RawDocumentsOutputT) -> dict:
     metadata: dict[str, typing.Any] = {"num_documents": len(documents)}
 
     for document in documents:

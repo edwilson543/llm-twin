@@ -3,14 +3,14 @@ import pytest
 from llm_twin.domain.feature_engineering.embedding import _dispatcher, _documents
 from llm_twin.domain.storage import vector as vector_storage
 from testing.factories import vectors as vector_factories
-from testing.helpers import embeddings as embeddings_helpers
+from testing.helpers import models as models_helpers
 
 
 class TestEmbedChunk:
     def test_embeds_article_chunk(self):
         article = vector_factories.ArticleChunk()
 
-        embedding_model = embeddings_helpers.get_fake_embedding_model()
+        embedding_model = models_helpers.get_fake_embedding_model()
         dispatcher = _dispatcher.EmbedderDispatcher(embedding_model=embedding_model)
 
         embedded_article = dispatcher.embed_chunk(chunk=article)
@@ -23,7 +23,7 @@ class TestEmbedChunk:
     def test_embeds_repository_chunk(self):
         repository = vector_factories.RepositoryChunk()
 
-        embedding_model = embeddings_helpers.get_fake_embedding_model()
+        embedding_model = models_helpers.get_fake_embedding_model()
         dispatcher = _dispatcher.EmbedderDispatcher(embedding_model=embedding_model)
 
         embedded_repository = dispatcher.embed_chunk(chunk=repository)
@@ -36,7 +36,7 @@ class TestEmbedChunk:
     def test_raises_when_no_embedder_is_registered_for_data_category(self):
         some_chunk = vector_factories.Vector()
 
-        embedding_model = embeddings_helpers.get_fake_embedding_model()
+        embedding_model = models_helpers.get_fake_embedding_model()
         dispatcher = _dispatcher.EmbedderDispatcher(embedding_model=embedding_model)
 
         with pytest.raises(_dispatcher.NoChunkEmbedderRegistered) as exc:

@@ -1,4 +1,4 @@
-from llm_twin import settings
+from llm_twin import config
 from testing.factories import vectors as vector_factories
 
 
@@ -7,7 +7,7 @@ class TestBulkInsertBulkFindVectors:
         vector_a = vector_factories.Vector.build(name="a")
         vector_b = vector_factories.Vector.build(name="b")
 
-        qdrant_db = settings.get_vector_database()
+        qdrant_db = config.get_vector_database()
         qdrant_db.bulk_insert(vectors=[vector_a, vector_b])
 
         vectors, next_offset = qdrant_db.bulk_find(vector_class=type(vector_a), limit=2)
@@ -20,7 +20,7 @@ class TestBulkInsertBulkFindVectors:
         vector = vector_factories.Vector.build(name="a")
         other_vector = vector_factories.Vector.build(name="b")
 
-        qdrant_db = settings.get_vector_database()
+        qdrant_db = config.get_vector_database()
         qdrant_db.bulk_insert(vectors=[vector, other_vector])
 
         first_vectors, next_offset = qdrant_db.bulk_find(
@@ -38,13 +38,27 @@ class TestBulkInsertBulkFindVectors:
         assert next_vectors == [vector] or next_vectors == [other_vector]
         assert next_offset is None
 
+    def test_can_bulk_insert_and_then_bulk_find_vectors_with_filter(self):
+        vector_a = vector_factories.Vector.build(name="a")
+        vector_b = vector_factories.Vector.build(name="b")
+
+        qdrant_db = config.get_vector_database()
+        qdrant_db.bulk_insert(vectors=[vector_a, vector_b])
+
+        vectors, next_offset = qdrant_db.bulk_find(
+            vector_class=type(vector_a), limit=2, name=vector_a.name
+        )
+
+        assert vectors == [vector_a]
+        assert next_offset is None
+
 
 class TestBulkInsertBulkFindVectorEmbeddings:
     def test_can_bulk_insert_and_then_bulk_find_vector_embeddings(self):
-        qdrant_db = settings.get_vector_database()
+        qdrant_db = config.get_vector_database()
+        embedding_model = config.get_embedding_model()
 
-        embedding_model_config = settings._get_embedding_model_config()
-        embedding = [1.0] + [0.0] * (embedding_model_config.embedding_size - 1)
+        embedding = [1.0] + [0.0] * (embedding_model.embedding_size - 1)
 
         vector_a = vector_factories.VectorEmbedding.build(name="a", embedding=embedding)
         vector_b = vector_factories.VectorEmbedding.build(name="b", embedding=embedding)

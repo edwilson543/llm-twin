@@ -3,8 +3,8 @@ from llm_twin.orchestration.steps.feature_engineering import (
     _embed_chunked_documents,
 )
 from testing.factories import vectors as vector_factories
-from testing.helpers import context as context_helpers
-from testing.helpers import settings as settings_helpers
+from testing.helpers import config as config_helpers
+from testing.helpers import zenml as zenml_helpers
 
 
 def test_embeds_article_and_repository_documents():
@@ -15,11 +15,11 @@ def test_embeds_article_and_repository_documents():
     repository_chunk = vector_factories.RepositoryChunk()
     chunked_documents = [article_chunk, other_article_chunk, repository_chunk]
 
-    context = context_helpers.FakeContext()
+    context = zenml_helpers.FakeContext()
 
     with (
-        settings_helpers.install_fake_embedding_model() as embedding_model,
-        settings_helpers.install_in_memory_vector_db() as vector_db,
+        config_helpers.install_fake_embedding_model() as embedding_model,
+        config_helpers.install_in_memory_vector_db() as vector_db,
     ):
         embedded_chunks = _embed_chunked_documents.embed_chunked_documents.entrypoint(
             batch_size=2, chunked_documents=chunked_documents, context=context

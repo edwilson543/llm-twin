@@ -20,7 +20,12 @@ class VectorDatabase(abc.ABC):
 
     @abc.abstractmethod
     def bulk_find(
-        self, *, vector_class: type[VectorT], limit: int, offset: str | None = None
+        self,
+        *,
+        vector_class: type[VectorT],
+        limit: int,
+        offset: str | None = None,
+        **filter_options: bool | int | str,
     ) -> tuple[list[VectorT], str | None]:
         """
         Find all vectors in the collection matching the filter options.

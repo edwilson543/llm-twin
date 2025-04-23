@@ -3,7 +3,7 @@ import typing
 import loguru
 import zenml
 
-from llm_twin import settings, utils
+from llm_twin import config, utils
 from llm_twin.domain import authors
 from llm_twin.orchestration.steps import context
 
@@ -14,7 +14,7 @@ def get_or_create_author(
     context: context.StepContext | None = None,
 ) -> typing.Annotated[authors.Author, "author"]:
     loguru.logger.info(f"Getting or creating author: {full_name}")
-    db = settings.get_document_database()
+    db = config.get_document_database()
 
     name = utils.Name.from_full_name(full_name)
     author = db.get_or_create(

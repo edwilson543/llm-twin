@@ -1,32 +1,14 @@
-from __future__ import annotations
-
-import pydantic_settings
-
 from llm_twin.domain import models
 from llm_twin.domain.storage import document as document_storage
 from llm_twin.domain.storage import vector as vector_storage
 from llm_twin.infrastructure.db import mongo, qdrant
 
-
-class Settings(pydantic_settings.BaseSettings):
-    # Mongo.
-    MONGO_DATABASE_HOST: str = "mongodb://mongo_user:mongo_password@127.0.0.1:27017"
-    MONGO_DATABASE_NAME: str = "llm-twin"
-
-    # Qdrant.
-    QDRANT_DATABASE_HOST: str = "localhost"
-    QDRANT_DATABASE_PORT: int = 6333
-
-    # Embeddings.
-    EMBEDDING_MODEL_NAME: str = models.EmbeddingModelName.MINILM.value
-    MODEL_CACHE_DIR: str | None = None
-
-    @classmethod
-    def load_settings(cls) -> Settings:
-        return cls()
+from ._settings import settings
 
 
-settings = Settings.load_settings()
+class ConfigurationError(Exception):
+    pass
+
 
 # Databases.
 
@@ -68,3 +50,12 @@ def _get_embedding_model_config() -> models.EmbeddingModelConfig:
 def get_embedding_model() -> models.EmbeddingModel:
     config = _get_embedding_model_config()
     return models.SentenceTransformerEmbeddingModel(config=config)
+
+
+def get_language_model() -> models.LanguageModel:
+    if not (settings.OPENAI_API_KEY and settings.OPENAI_MODEL_TAG):
+        raise ConfigurationError("Language model settings are not set.")
+
+    return models.OpenAILanguageModel(
+        api_key=settings.OPENAI_API_KEY, model=settings.OPENAI_MODEL_TAG
+    )

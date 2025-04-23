@@ -8,7 +8,7 @@ import pydantic
 from llm_twin.domain.storage import _ids
 
 
-class Collection(enum.Enum):
+class Collection(enum.StrEnum):
     ARTICLES = "articles"
     POSTS = "posts"
     REPOSITORIES = "repositories"

@@ -2,14 +2,14 @@ import uuid
 
 import pytest
 
-from llm_twin import settings
+from llm_twin import config
 from llm_twin.domain.storage import document as document_storage
 from llm_twin.infrastructure.db import mongo
 from testing.factories import documents as document_factories
 
 
 def _get_mongo_db() -> mongo.MongoDatabase:
-    db = settings.get_document_database()
+    db = config.get_document_database()
     assert isinstance(db, mongo.MongoDatabase)
     return db
 
