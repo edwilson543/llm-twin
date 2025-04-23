@@ -15,3 +15,9 @@ def generate_sample_dataset(
     dataset_generation_steps.generate_sample_dataset(
         dataset_type=dataset_type, prompts=prompts, test_size=test_size
     )
+
+
+if __name__ == "__main__":
+    generate_sample_dataset.with_options(enable_cache=False)(
+        dataset_type=dataset_generation.DatasetType.INSTRUCT, test_size=0.2
+    )
