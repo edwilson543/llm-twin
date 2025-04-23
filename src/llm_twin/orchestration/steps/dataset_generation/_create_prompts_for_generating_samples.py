@@ -4,13 +4,12 @@ import zenml
 
 from llm_twin.domain import dataset_generation
 from llm_twin.orchestration.steps import context
-
-from . import _types
+from llm_twin.orchestration.steps import types as step_types
 
 
 @zenml.step
 def create_prompts_for_generating_samples(
-    documents: _types.ChunkedDocumentsInputT,
+    documents: step_types.ChunkedDocumentsInputT,
     dataset_type: typing.Annotated[dataset_generation.DatasetType, "dataset_type"],
     context: context.StepContext | None = None,
 ) -> typing.Annotated[
