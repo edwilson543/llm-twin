@@ -1,4 +1,4 @@
-from llm_twin.domain import models
+from llm_twin.domain import models, training
 from llm_twin.domain.storage import document as document_storage
 from llm_twin.domain.storage import vector as vector_storage
 from llm_twin.infrastructure.db import mongo, qdrant
@@ -58,4 +58,17 @@ def get_language_model() -> models.LanguageModel:
 
     return models.OpenAILanguageModel(
         api_key=settings.OPENAI_API_KEY, model=settings.OPENAI_MODEL_TAG
+    )
+
+
+# Training.
+
+
+def get_trainer() -> training.Trainer:
+    return training.SageMaker(
+        _aws_role_arn=settings.AWS_SAGEMAKER_ROLE_ARN,
+        _comet_api_key=settings.COMET_API_KEY,
+        _comet_project_name=settings.COMET_PROJECT_NAME,
+        _hugging_face_access_token=settings.HUGGINGFACE_ACCESS_TOKEN,
+        _huggingface_dataset_workspace=settings.HUGGINGFACE_DATASET_WORKSPACE,
     )

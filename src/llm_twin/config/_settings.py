@@ -28,6 +28,14 @@ class Settings(pydantic_settings.BaseSettings):
     MODEL_CACHE_DIR: str | None = None
 
     # Vendors.
+    AWS_SAGEMAKER_ROLE_ARN: str = ""
+
+    COMET_API_KEY: str = ""
+    COMET_PROJECT_NAME: str = ""
+
+    HUGGINGFACE_ACCESS_TOKEN: str = ""
+    HUGGINGFACE_DATASET_WORKSPACE: str = ""
+
     OPENAI_API_KEY: str = ""
     OPENAI_MODEL_TAG: str = "gpt-4o-mini"
 

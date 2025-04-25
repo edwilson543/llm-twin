@@ -34,6 +34,9 @@ dependencies = [
     "openai>=1.75.0",
     "langchain-community>=0.3.21",
     "html2text>=2025.4.15",
+    "datasets>=3.5.0",
+    "trl>=0.17.0",
+    "sagemaker>=2.92.0",
 ]
 
 [dependency-groups]
@@ -56,6 +59,7 @@ ci = [
 pythonpath = "./src/llm_twin"
 filterwarnings = [
     "ignore:pkg_resources:DeprecationWarning:zenml",
+    "ignore::DeprecationWarning:sagemaker",
     "ignore:The `schema` method is deprecated; use `model_json_schema` instead:pydantic.PydanticDeprecatedSince20:pydantic.main"
 ]
 # Only allow connecting to:
@@ -67,6 +71,8 @@ filterwarnings = [
 MONGO_DATABASE_HOST = "mongodb://test_user:test_password@127.0.0.1:27018"
 MONGO_DATABASE_NAME = "llm-twin-test"
 QDRANT_DATABASE_PORT = 6335
+# Sagemaker SDK complains without this.
+PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION = "python"
 
 [tool.mypy]
 ignore_missing_imports = true
@@ -98,6 +104,7 @@ name = "Domain layer"
 type = "layers"
 containers = "llm_twin.domain"
 layers = [
+    "training",
     "dataset_generation",
     "feature_engineering",
     "etl",
