@@ -49,7 +49,6 @@ def _run_supervised_fine_tuning(*, args: argparse.Namespace) -> None:
 
     data_loader = _data_loader.HuggingFaceDataLoader(
         dataset_path="mlabonne/FineTome-Alpaca-100k",
-        eos_token="",  # ABC.
     )
 
     tuner = _fine_tuning_strategy.SupervisedFineTuning(

@@ -37,8 +37,8 @@ SampleT = InstructSample | PreferenceSample
 # Datasets.
 
 
-class SampleDataset(vector_storage.Vector):
-    samples: list[SampleT]
+class SampleDataset[_SampleT: SampleT = SampleT](vector_storage.Vector):
+    samples: list[_SampleT]
 
     def train_test_split(
         self,
@@ -58,14 +58,14 @@ class SampleDataset(vector_storage.Vector):
         return len(self.samples)
 
 
-class TrainTestSplit(vector_storage.Vector):
-    train: SampleDataset
-    test: SampleDataset
+class TrainTestSplit[_SampleT: SampleT = SampleT](vector_storage.Vector):
+    train: SampleDataset[_SampleT]
+    test: SampleDataset[_SampleT]
 
     @property
     def test_size(self) -> float:
         return self.test.num_samples / (self.train.num_samples + self.test.num_samples)
 
     @property
-    def all_samples(self) -> list[SampleT]:
+    def all_samples(self) -> list[_SampleT]:
         return self.train.samples + self.test.samples

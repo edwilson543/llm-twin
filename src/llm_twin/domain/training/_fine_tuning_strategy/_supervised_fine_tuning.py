@@ -42,7 +42,7 @@ class SupervisedFineTuning(_base.FineTuningStrategy):
     )
 
     def fine_tune(self) -> None:
-        dataset = self.data_loader.load()
+        dataset = self.data_loader.load_instruct_dataset()
         model, tokenizer = self._get_model_and_tokenizer()
 
         trainer = self._get_trainer(model=model, dataset=dataset)
@@ -67,7 +67,10 @@ class SupervisedFineTuning(_base.FineTuningStrategy):
         return model, tokenizer
 
     def _get_trainer(
-        self, *, model: peft.PeftModel, dataset: dataset_generation.TrainTestSplit
+        self,
+        *,
+        model: peft.PeftModel,
+        dataset: dataset_generation.TrainTestSplit[dataset_generation.InstructSample],
     ) -> trl.SFTTrainer:
         training_args = trl.SFTConfig(
             # Data preprocessing parameters.

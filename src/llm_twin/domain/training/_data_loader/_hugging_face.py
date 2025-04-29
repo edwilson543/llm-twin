@@ -10,8 +10,9 @@ from . import _base
 @dataclasses.dataclass(frozen=True)
 class HuggingFaceDataLoader(_base.DataLoader):
     dataset_path: str
-    eos_token: str
 
-    def load(self) -> dataset_generation.TrainTestSplit:
+    def load_instruct_dataset(
+        self,
+    ) -> dataset_generation.TrainTestSplit[dataset_generation.InstructSample]:
         dataset = datasets.load_dataset(self.dataset_path, split="train")
         return dataset_generation.TrainTestSplit.model_validate(dataset)
