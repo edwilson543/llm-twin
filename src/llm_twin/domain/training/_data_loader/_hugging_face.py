@@ -1,18 +1,12 @@
-import abc
 import dataclasses
 
 import datasets
 
-
-@dataclasses.dataclass(frozen=True)
-class DataLoader(abc.ABC):
-    @abc.abstractmethod
-    def load(self) -> dict:
-        raise NotImplementedError
+from . import _base
 
 
 @dataclasses.dataclass(frozen=True)
-class HuggingFaceDataLoader(DataLoader):
+class HuggingFaceDataLoader(_base.DataLoader):
     dataset_path: str
     eos_token: str
 
