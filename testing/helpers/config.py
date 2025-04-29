@@ -5,7 +5,6 @@ from unittest import mock
 from llm_twin import config
 from testing.helpers import models as models_helpers
 from testing.helpers import storage as storage_helpers
-from testing.helpers import training as training_helpers
 
 
 # Databases.
@@ -64,14 +63,3 @@ def install_fake_language_model() -> typing.Generator[
         config, "get_language_model", return_value=fake_language_model
     ):
         yield fake_language_model
-
-
-# Training.
-
-
-@contextlib.contextmanager
-def install_fake_trainer() -> typing.Generator[None, None, None]:
-    fake_trainer = training_helpers.FakeTrainer()
-
-    with mock.patch.object(config, "get_trainer", return_value=fake_trainer):
-        yield
