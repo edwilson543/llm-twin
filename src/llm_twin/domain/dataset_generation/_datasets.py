@@ -44,7 +44,7 @@ class SampleDataset[_SampleT: SampleT = SampleT](vector_storage.Vector):
         self,
         test_size: float,
         random_state: int = 42,
-    ) -> TrainTestSplit:
+    ) -> TrainTestSplit[_SampleT]:
         train_samples, test_samples = train_test_split(
             self.samples, test_size=test_size, random_state=random_state
         )

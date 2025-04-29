@@ -1,1 +1,2 @@
+from ._direct_preference_optimisation import DirectPreferenceOptimisation
 from ._supervised_fine_tuning import SupervisedFineTuning
