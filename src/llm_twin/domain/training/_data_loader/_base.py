@@ -11,3 +11,9 @@ class DataLoader(abc.ABC):
         self,
     ) -> dataset_generation.TrainTestSplit[dataset_generation.InstructSample]:
         raise NotImplementedError
+
+    @abc.abstractmethod
+    def load_preference_dataset(
+        self,
+    ) -> dataset_generation.TrainTestSplit[dataset_generation.PreferenceSample]:
+        raise NotImplementedError
