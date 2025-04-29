@@ -1,19 +1,15 @@
-from llm_twin.domain import training
+from llm_twin.domain import training, dataset_generation
 from testing.factories import dataset as dataset_factories
 
 
 class FakeInstructDatasetLoader(training.DataLoader):
-    def load(self) -> dict:
+    def load(self) -> dataset_generation.TrainTestSplit:
         samples = [
             dataset_factories.InstructSample(),
             dataset_factories.InstructSample(),
         ]
         dataset = dataset_factories.SampleDataset(samples=samples)
-        split_dataset = dataset.train_test_split(test_size=0.5)
-        return {
-            "train": split_dataset.train.serialize_for_hugging_face(),
-            "test": split_dataset.train.serialize_for_hugging_face(),
-        }
+        return dataset.train_test_split(test_size=0.5)
 
 
 class FakeTrainer(training.Trainer):

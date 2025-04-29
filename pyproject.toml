@@ -37,6 +37,7 @@ dependencies = [
     "datasets>=3.5.0",
     "trl>=0.17.0",
     "sagemaker>=2.92.0",
+    "peft>=0.15.2",
 ]
 
 [dependency-groups]

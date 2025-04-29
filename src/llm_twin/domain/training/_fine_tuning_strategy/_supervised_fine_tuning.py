@@ -1,42 +1,34 @@
 import dataclasses
 import pathlib
 
+import datasets
+import peft
 import transformers
 import trl
+
+from llm_twin.domain import dataset_generation
 
 from . import _base
 
 
-class UnslothNotSupportOnMacOs(ImportError):
-    pass
-
-
-try:
-    import unsloth
-    from unsloth import chat_templates as unsloth_chat_templates
-except ImportError as exc:
-    raise UnslothNotSupportOnMacOs from exc
-
-
 @dataclasses.dataclass
 class SupervisedFineTuning(_base.FineTuningStrategy):
-    # I/O.
-    output_dir: pathlib.Path
-    dataset_huggingface_workspace: str
-    export_repo_id: str
     model_name: str
 
+    # I/O.
+    output_dir: pathlib.Path
+    report_to: str | None = "comet_ml"
+
     # ML.
+    dataset_text_field: str = "text"
     learning_rate: float = 3e-4
     num_train_epochs: int = 3
+    optimizer: str = "adamw_8bit"
     per_device_train_batch_size: int = 2
     gradient_accumulation_steps: int = 8
-    max_seq_length: int = 2048
-    load_in_4bit: bool = False
     lora_rank: int = 32
     lora_alpha: int = 32
     lora_dropout: float = 0.0
-    chat_template: str = "chatml"
     target_modules: list[str] = dataclasses.field(
         default_factory=lambda: [
             "q_proj",
@@ -51,66 +43,87 @@ class SupervisedFineTuning(_base.FineTuningStrategy):
 
     def fine_tune(self) -> None:
         dataset = self.data_loader.load()
+        model, tokenizer = self._get_model_and_tokenizer()
 
-        self._load_model()
-
-        trainer = trl.SFTTrainer(
-            model=self._model,
-            tokenizer=self._tokenizer,
-            train_dataset=dataset["train"],
-            eval_dataset=dataset["test"],
-            dataset_text_field="text",
-            max_seq_length=self.max_seq_length,
-            dataset_num_proc=2,
-            packing=True,
-            args=self._training_args(),
-        )
+        trainer = self._get_trainer(model=model, dataset=dataset)
         trainer.train()
 
-        self._export_model()
+        self._export_model(model=model)
 
-    def _load_model(self) -> None:
-        model, tokenizer = unsloth.FastLanguageModel.from_pretrained(
-            model_name=self.model_name,
-            max_seq_length=self.max_seq_length,
-            load_in_4bit=self.load_in_4bit,
-        )
+    def _get_model_and_tokenizer(
+        self,
+    ) -> tuple[peft.PeftModel, transformers.AutoTokenizer]:
+        base_model = transformers.AutoModelForCausalLM.from_pretrained(self.model_name)
+        tokenizer = transformers.AutoTokenizer.from_pretrained(self.model_name)
 
-        self._model = unsloth.FastLanguageModel.get_peft_model(
-            model,
-            r=self.lora_rank,
+        peft_config = peft.LoraConfig(
+            task_type=peft.TaskType.CAUSAL_LM,
             lora_alpha=self.lora_alpha,
             lora_dropout=self.lora_dropout,
             target_modules=self.target_modules,
         )
+        model = peft.get_peft_model(model=base_model, peft_config=peft_config)
 
-        self._tokenizer = unsloth_chat_templates.get_chat_template(
-            tokenizer, chat_template=self.chat_template
-        )
+        return model, tokenizer
 
-    def _export_model(self):
-        self._model.save_pretrained_merged(
-            self.output_dir, self._tokenizer, save_method="merged_16bit"
-        )
-        self._model.push_to_hub_merged(
-            self.export_repo_id, self._tokenizer, save_method="merged_16bit"
-        )
-
-    def _training_args(self) -> transformers.TrainingArguments:
-        return transformers.TrainingArguments(
+    def _get_trainer(
+        self, *, model: peft.PeftModel, dataset: dataset_generation.TrainTestSplit
+    ) -> trl.SFTTrainer:
+        training_args = trl.SFTConfig(
+            # Data preprocessing parameters.
+            dataset_text_field=self.dataset_text_field,
+            dataset_num_proc=2,
+            packing=True,
+            # Training parameters.
             learning_rate=self.learning_rate,
             num_train_epochs=self.num_train_epochs,
             per_device_train_batch_size=self.per_device_train_batch_size,
             gradient_accumulation_steps=self.gradient_accumulation_steps,
-            fp16=not unsloth.is_bfloat16_supported(),
-            bf16=unsloth.is_bfloat16_supported(),
             logging_steps=1,
-            optim="adamw_8bit",
+            optim=self.optimizer,
             weight_decay=0.01,
             lr_scheduler_type="linear",
             per_device_eval_batch_size=self.per_device_train_batch_size,
             warmup_steps=10,
-            output_dir=self.output_dir,
-            report_to="comet_ml",
+            output_dir=str(self.output_dir),
+            report_to=self.report_to,
             seed=0,
         )
+
+        train_dataset = self._format_samples(samples=dataset.train.samples)
+        eval_dataset = self._format_samples(samples=dataset.test.samples)
+
+        return trl.SFTTrainer(
+            model=model,
+            train_dataset=train_dataset,
+            eval_dataset=eval_dataset,
+            args=training_args,
+        )
+
+    def _export_model(self, *, model: peft.PeftModel) -> None:
+        model.save_pretrained(save_directory=str(self.output_dir))
+
+    def _format_samples(
+        self, *, samples: list[dataset_generation.InstructSample]
+    ) -> datasets.Dataset:
+        def _format_sample(sample: dataset_generation.InstructSample) -> str:
+            return (
+                ALPACA_TEMPLATE.format(sample.instruction, sample.answer)
+                + self._eos_token
+            )
+
+        data = {self.dataset_text_field: [_format_sample(sample) for sample in samples]}
+        return datasets.Dataset.from_dict(data)
+
+    @property
+    def _eos_token(self) -> str:
+        return "ABCDEF"  # TODO TODO TODO -> EOS TOKEN.
+
+
+ALPACA_TEMPLATE = """Below is an instruction that describes a task. Write a response that appropriately completes the request.
+
+### Instruction:
+{}
+
+### Response:
+{}"""
