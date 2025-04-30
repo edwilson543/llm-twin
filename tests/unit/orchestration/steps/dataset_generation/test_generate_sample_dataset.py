@@ -11,7 +11,10 @@ def test_generates_and_splits_instruct_sample_dataset():
 
     context = zenml_helpers.FakeContext()
 
-    with config_helpers.install_fake_language_model():
+    with (
+        config_helpers.install_in_memory_vector_db() as db,
+        config_helpers.install_fake_language_model(),
+    ):
         dataset = _generate_sample_dataset.generate_sample_dataset.entrypoint(
             dataset_type=dataset_generation.DatasetType.INSTRUCT,
             prompts=[prompt, other_prompt],
@@ -19,6 +22,7 @@ def test_generates_and_splits_instruct_sample_dataset():
             context=context,
         )
 
+    assert db.vectors == [dataset]
     assert dataset.dataset_type == dataset_generation.DatasetType.INSTRUCT
 
     assert len(dataset.train.samples) == 1 * dataset_factories.SAMPLES_PER_PROMPT
@@ -40,7 +44,10 @@ def test_generates_and_splits_preference_sample_dataset():
 
     context = zenml_helpers.FakeContext()
 
-    with config_helpers.install_fake_language_model():
+    with (
+        config_helpers.install_in_memory_vector_db() as db,
+        config_helpers.install_fake_language_model()
+    ):
         dataset = _generate_sample_dataset.generate_sample_dataset.entrypoint(
             dataset_type=dataset_generation.DatasetType.PREFERENCE,
             prompts=prompts,
@@ -48,6 +55,7 @@ def test_generates_and_splits_preference_sample_dataset():
             context=context,
         )
 
+    assert db.vectors == [dataset]
     assert dataset.dataset_type == dataset_generation.DatasetType.PREFERENCE
 
     assert len(dataset.train.samples) == 3 * dataset_factories.SAMPLES_PER_PROMPT

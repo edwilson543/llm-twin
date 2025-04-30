@@ -27,6 +27,10 @@ def generate_sample_dataset(
         prompts=prompts,
         dataset_type=dataset_type,
     )
+    split_dataset = dataset.train_test_split(test_size=test_size)
+
+    db = config.get_vector_database()
+    db.bulk_insert(vectors=[split_dataset])
 
     step_context = context or zenml.get_step_context()
     step_context.add_output_metadata(
@@ -37,4 +41,4 @@ def generate_sample_dataset(
         },
     )
 
-    return dataset.train_test_split(test_size=test_size)
+    return split_dataset

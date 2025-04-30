@@ -5,6 +5,11 @@ from llm_twin.domain import dataset_generation
 
 
 @dataclasses.dataclass(frozen=True)
+class UnableToLoadDataset(Exception):
+    dataset_type: dataset_generation.DatasetType
+
+
+@dataclasses.dataclass(frozen=True)
 class DataLoader(abc.ABC):
     @abc.abstractmethod
     def load_instruct_dataset(

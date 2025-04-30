@@ -13,7 +13,7 @@ def run_direct_preference_optimisation(
     num_train_epochs: int,
     output_dir: pathlib.Path,
     report_to: str | None,
-) -> typing.Annotated[pathlib.Path, "dpo_model_path"]:
+) -> typing.Annotated[str, "dpo_model_path"]:
     db = config.get_vector_database()
     data_loader = training.VectorDBDataLoader(db=db)
 
@@ -28,4 +28,4 @@ def run_direct_preference_optimisation(
 
     strategy.fine_tune()
 
-    return output_dir / model_name_or_path
+    return str(output_dir)

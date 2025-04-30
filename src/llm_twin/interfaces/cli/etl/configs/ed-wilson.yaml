@@ -6,13 +6,13 @@ parameters:
     - https://ed-wilson.org/posts/a-parameterless-call-to-python-int-builtin-returns-zero/
     - https://ed-wilson.org/posts/how-to-use-semaphores-to-test-database-locking-scenarios/
     # GitHub
-    - https://github.com/edwilson543/llm-twin
-    - https://github.com/edwilson543/llm-cli
-    - https://github.com/edwilson543/rusty-chess
-    - https://github.com/edwilson543/sudoku
-    - https://github.com/edwilson543/nutrimise
-    - https://github.com/edwilson543/timetable-solutions
-    - https://github.com/edwilson543/noughts-and-crosses
-    - https://github.com/edwilson543/reciply-backend
-    - https://github.com/edwilson543/reciply-mobile
-    - https://github.com/edwilson543/casino
+#    - https://github.com/edwilson543/llm-twin
+#    - https://github.com/edwilson543/llm-cli
+#    - https://github.com/edwilson543/rusty-chess
+#    - https://github.com/edwilson543/sudoku
+#    - https://github.com/edwilson543/nutrimise
+#    - https://github.com/edwilson543/timetable-solutions
+#    - https://github.com/edwilson543/noughts-and-crosses
+#    - https://github.com/edwilson543/reciply-backend
+#    - https://github.com/edwilson543/reciply-mobile
+#    - https://github.com/edwilson543/casino

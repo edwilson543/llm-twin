@@ -18,7 +18,13 @@ class VectorDBDataLoader(_base.DataLoader):
             limit=1,
             dataset_type=dataset_generation.DatasetType.INSTRUCT.value,
         )
-        return results[0]
+
+        try:
+            return results[0]
+        except IndexError as exc:
+            raise _base.UnableToLoadDataset(
+                dataset_type=dataset_generation.DatasetType.INSTRUCT
+            ) from exc
 
     def load_preference_dataset(
         self,
@@ -28,4 +34,10 @@ class VectorDBDataLoader(_base.DataLoader):
             limit=1,
             dataset_type=dataset_generation.DatasetType.PREFERENCE.value,
         )
-        return results[0]
+
+        try:
+            return results[0]
+        except IndexError as exc:
+            raise _base.UnableToLoadDataset(
+                dataset_type=dataset_generation.DatasetType.PREFERENCE
+            ) from exc

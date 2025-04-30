@@ -1,4 +1,5 @@
 import pathlib
+import typing
 
 import zenml
 
@@ -12,7 +13,7 @@ def run_supervised_fine_tuning(
     num_train_epochs: int,
     output_dir: pathlib.Path,
     report_to: str | None,
-) -> None:
+) -> typing.Annotated[str, "sft_model_path"]:
     db = config.get_vector_database()
     data_loader = training.VectorDBDataLoader(db=db)
 
@@ -26,3 +27,5 @@ def run_supervised_fine_tuning(
     )
 
     strategy.fine_tune()
+
+    return str(output_dir)

@@ -28,3 +28,8 @@ if __name__ == "__main__":
         dataset_type=dataset_generation.DatasetType.INSTRUCT,
         test_size=0.2,
     )
+    generate_sample_dataset.with_options(enable_cache=False)(
+        author_full_name="Ed Wilson",
+        dataset_type=dataset_generation.DatasetType.PREFERENCE,
+        test_size=0.2,
+    )
