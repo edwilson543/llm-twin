@@ -19,6 +19,8 @@ def test_generates_and_splits_instruct_sample_dataset():
             context=context,
         )
 
+    assert dataset.dataset_type == dataset_generation.DatasetType.INSTRUCT
+
     assert len(dataset.train.samples) == 1 * dataset_factories.SAMPLES_PER_PROMPT
     train_sample = dataset.train.samples[0]
     assert isinstance(train_sample, dataset_generation.InstructSample)
@@ -45,6 +47,8 @@ def test_generates_and_splits_preference_sample_dataset():
             test_size=0.25,
             context=context,
         )
+
+    assert dataset.dataset_type == dataset_generation.DatasetType.PREFERENCE
 
     assert len(dataset.train.samples) == 3 * dataset_factories.SAMPLES_PER_PROMPT
     for train_sample in dataset.train.samples:

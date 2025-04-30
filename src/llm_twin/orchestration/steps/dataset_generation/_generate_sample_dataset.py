@@ -25,6 +25,7 @@ def generate_sample_dataset(
         language_model=language_model,
         system_prompt=system_prompt,
         prompts=prompts,
+        dataset_type=dataset_type,
     )
 
     step_context = context or zenml.get_step_context()

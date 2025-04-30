@@ -1,4 +1,3 @@
-from llm_twin.domain.dataset_generation import _datasets
 from testing.factories import dataset as dataset_factories
 
 
@@ -7,7 +6,7 @@ class TestDataset:
         sample = dataset_factories.InstructSample()
         other_sample = dataset_factories.InstructSample()
 
-        dataset = _datasets.SampleDataset(
+        dataset = dataset_factories.InstructSampleDataset(
             samples=[sample, other_sample],
         )
 

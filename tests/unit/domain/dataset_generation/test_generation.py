@@ -12,11 +12,13 @@ class TestGenerateSampleDataset:
         other_prompt = dataset_factories.GenerateInstructSamplePrompt()
 
         dataset = _generation.generate_sample_dataset(
+            dataset_type=_datasets.DatasetType.INSTRUCT,
             language_model=language_model,
             system_prompt=system_prompt,
             prompts=[prompt, other_prompt],
         )
 
+        assert dataset.dataset_type == _datasets.DatasetType.INSTRUCT
         assert dataset.num_samples == 2 * dataset_factories.SAMPLES_PER_PROMPT
         assert all(
             isinstance(sample, _datasets.InstructSample) for sample in dataset.samples
@@ -29,9 +31,13 @@ class TestGenerateSampleDataset:
         prompt = dataset_factories.GeneratePreferenceSamplePrompt()
 
         dataset = _generation.generate_sample_dataset(
-            language_model=language_model, system_prompt=system_prompt, prompts=[prompt]
+            dataset_type=_datasets.DatasetType.PREFERENCE,
+            language_model=language_model,
+            system_prompt=system_prompt,
+            prompts=[prompt],
         )
 
+        assert dataset.dataset_type == _datasets.DatasetType.PREFERENCE
         assert dataset.num_samples == 1 * dataset_factories.SAMPLES_PER_PROMPT
         assert all(
             isinstance(sample, _datasets.PreferenceSample) for sample in dataset.samples

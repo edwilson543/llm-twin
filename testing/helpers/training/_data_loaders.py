@@ -10,7 +10,7 @@ class FakeDatasetLoader(training.DataLoader):
             dataset_factories.InstructSample(),
             dataset_factories.InstructSample(),
         ]
-        dataset = dataset_factories.SampleDataset.build(samples=samples)
+        dataset = dataset_factories.PreferenceSampleDataset.build(samples=samples)
         return dataset.train_test_split(test_size=0.5)
 
     def load_preference_dataset(
@@ -20,5 +20,5 @@ class FakeDatasetLoader(training.DataLoader):
             dataset_factories.PreferenceSample(),
             dataset_factories.PreferenceSample(),
         ]
-        dataset = dataset_factories.SampleDataset.build(samples=samples)
+        dataset = dataset_factories.InstructSampleDataset.build(samples=samples)
         return dataset.train_test_split(test_size=0.5)

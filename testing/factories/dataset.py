@@ -67,8 +67,16 @@ class PreferenceSample(_base.Factory):
         model = dataset_generation.PreferenceSample
 
 
-class SampleDataset(_base.Factory):
+class _SampleDataset(_base.Factory):
     samples = factory.LazyFunction(list)
 
     class Meta:
         model = dataset_generation.SampleDataset
+
+
+class PreferenceSampleDataset(_SampleDataset):
+    dataset_type = dataset_generation.DatasetType.PREFERENCE
+
+
+class InstructSampleDataset(_SampleDataset):
+    dataset_type = dataset_generation.DatasetType.INSTRUCT
