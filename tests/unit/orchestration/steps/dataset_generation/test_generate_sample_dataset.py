@@ -46,7 +46,7 @@ def test_generates_and_splits_preference_sample_dataset():
 
     with (
         config_helpers.install_in_memory_vector_db() as db,
-        config_helpers.install_fake_language_model()
+        config_helpers.install_fake_language_model(),
     ):
         dataset = _generate_sample_dataset.generate_sample_dataset.entrypoint(
             dataset_type=dataset_generation.DatasetType.PREFERENCE,

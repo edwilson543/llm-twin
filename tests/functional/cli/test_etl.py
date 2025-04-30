@@ -5,15 +5,15 @@ from zenml import client as zenml_client
 from llm_twin import config
 from llm_twin.domain import authors
 from llm_twin.domain.etl import raw_documents
-from llm_twin.interfaces.cli import exceptions as cli_exceptions
-from llm_twin.interfaces.cli.etl.run import run
+from llm_twin.interfaces.cli import _exceptions as cli_exceptions
+from llm_twin.interfaces.cli import etl
 
 
 def test_runs_etl_pipeline_and_persists_outcome():
     args = ["--config-filename", "jackof-alltrades.yaml", "--disable-cache"]
     command_runner = click_testing.CliRunner()
 
-    result = command_runner.invoke(run, args)
+    result = command_runner.invoke(etl, args, prog_name="etl-test")
 
     assert result.exit_code == 0
 
@@ -49,6 +49,6 @@ def test_raises_when_config_file_does_not_exist():
     command_runner = click_testing.CliRunner()
 
     with pytest.raises(cli_exceptions.ConfigFileDoesNotExist) as exc:
-        command_runner.invoke(run, args, catch_exceptions=False)
+        command_runner.invoke(etl, args, catch_exceptions=False, prog_name="etl-test")
 
     assert "does-not-exist.yaml" in str(exc.value.filepath)

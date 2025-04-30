@@ -34,5 +34,5 @@ if __name__ == "__main__":
         base_model_name="llamafactory/tiny-random-Llama-3",
         output_dir=pathlib.Path("/tmp/llm-twin/"),
         num_train_epochs=3,
-        report_to=None
+        report_to=None,
     )
