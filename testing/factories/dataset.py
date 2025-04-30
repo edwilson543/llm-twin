@@ -67,16 +67,39 @@ class PreferenceSample(_base.Factory):
         model = dataset_generation.PreferenceSample
 
 
-class _SampleDataset(_base.Factory):
-    samples = factory.LazyFunction(list)
+# Datasets.
 
+
+class _SampleDataset(_base.Factory):
     class Meta:
         model = dataset_generation.SampleDataset
 
 
-class PreferenceSampleDataset(_SampleDataset):
-    dataset_type = dataset_generation.DatasetType.PREFERENCE
-
-
 class InstructSampleDataset(_SampleDataset):
     dataset_type = dataset_generation.DatasetType.INSTRUCT
+    samples = factory.List([InstructSample.build() for _ in range(2)])
+
+
+class PreferenceSampleDataset(_SampleDataset):
+    dataset_type = dataset_generation.DatasetType.PREFERENCE
+    samples = factory.List([PreferenceSample.build() for _ in range(2)])
+
+
+# Split datasets.
+
+
+class _TrainTestSplit(_base.Factory):
+    class Meta:
+        model = dataset_generation.TrainTestSplit
+
+
+class InstructTrainTestSplit(_TrainTestSplit):
+    dataset_type = dataset_generation.DatasetType.INSTRUCT
+    train = factory.SubFactory(InstructSampleDataset)
+    test = factory.SubFactory(InstructSampleDataset)
+
+
+class PreferenceTrainTestSplit(_TrainTestSplit):
+    dataset_type = dataset_generation.DatasetType.PREFERENCE
+    train = factory.SubFactory(PreferenceSampleDataset)
+    test = factory.SubFactory(PreferenceSampleDataset)

@@ -13,7 +13,7 @@ class FineTuneType(enum.Enum):
 
 
 @dataclasses.dataclass(frozen=True)
-class Trainer(abc.ABC):
+class Runner(abc.ABC):
     @abc.abstractmethod
     def run_fine_tuning(
         self,

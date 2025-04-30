@@ -48,7 +48,8 @@ class SupervisedFineTuning(_base.FineTuningStrategy):
         trainer = self._get_trainer(model=model, dataset=dataset)
         trainer.train()
 
-        self._export_model(model=model)
+        model.save_pretrained(save_directory=str(self.output_dir))
+        tokenizer.save_pretrained(save_directory=str(self.output_dir))
 
     def _get_model_and_tokenizer(
         self,
@@ -102,9 +103,6 @@ class SupervisedFineTuning(_base.FineTuningStrategy):
             eval_dataset=eval_dataset,
             args=training_args,
         )
-
-    def _export_model(self, *, model: peft.PeftModel) -> None:
-        model.save_pretrained(save_directory=str(self.output_dir))
 
     def _format_samples(
         self, *, samples: list[dataset_generation.InstructSample]

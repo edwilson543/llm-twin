@@ -41,6 +41,9 @@ class SampleDataset[_SampleT: SampleT = SampleT](vector_storage.Vector):
     samples: list[_SampleT]
     dataset_type: DatasetType
 
+    class _Config(vector_storage.Config):
+        collection = vector_storage.Collection.SAMPLE_DATASET
+
     def train_test_split(
         self,
         test_size: float,
@@ -64,6 +67,9 @@ class TrainTestSplit[_SampleT: SampleT = SampleT](vector_storage.Vector):
     train: SampleDataset[_SampleT]
     test: SampleDataset[_SampleT]
     dataset_type: DatasetType
+
+    class _Config(vector_storage.Config):
+        collection = vector_storage.Collection.SAMPLE_DATASET_SPLIT
 
     @property
     def test_size(self) -> float:

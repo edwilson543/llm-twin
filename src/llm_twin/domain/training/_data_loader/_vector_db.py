@@ -16,7 +16,7 @@ class VectorDBDataLoader(_base.DataLoader):
         results, _ = self.db.bulk_find(
             vector_class=dataset_generation.TrainTestSplit,
             limit=1,
-            dataset_type=dataset_generation.DatasetType.INSTRUCT,
+            dataset_type=dataset_generation.DatasetType.INSTRUCT.value,
         )
         return results[0]
 
@@ -26,6 +26,6 @@ class VectorDBDataLoader(_base.DataLoader):
         results, _ = self.db.bulk_find(
             vector_class=dataset_generation.TrainTestSplit,
             limit=1,
-            dataset_type=dataset_generation.DatasetType.PREFERENCE,
+            dataset_type=dataset_generation.DatasetType.PREFERENCE.value,
         )
         return results[0]

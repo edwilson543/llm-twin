@@ -1,4 +1,7 @@
+import pathlib
+import shutil
 import typing
+import uuid
 from unittest import mock
 
 import pytest
@@ -35,3 +38,17 @@ def _tear_down_qdrant_db(
         finally:
             if isinstance(db, storage_helpers.QdrantDatabaseWithTearDown):
                 db.tear_down()
+
+
+@pytest.fixture
+def output_dir() -> typing.Generator[pathlib.Path, None, None]:
+    """
+    Create a directory and delete it at the end of the test.
+    """
+    output_dir = pathlib.Path(__file__).parent / "outputs" / str(uuid.uuid4())
+    output_dir.mkdir(parents=True, exist_ok=False)
+
+    try:
+        yield output_dir
+    finally:
+        shutil.rmtree(output_dir)

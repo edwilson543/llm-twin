@@ -13,7 +13,7 @@ finetuning_requirements_path = finetuning_dir / "requirements.txt"
 
 
 @dataclasses.dataclass(frozen=True)
-class SageMaker(_base.Trainer):
+class SageMaker(_base.Runner):
     """
     Run fine-tuning on AWS SageMaker.
     """

@@ -16,6 +16,9 @@ class Collection(enum.StrEnum):
     EMBEDDED_ARTICLES = "embedded_articles"
     EMBEDDED_REPOSITORIES = "embedded_repositories"
 
+    SAMPLE_DATASET = "sample_dataset"
+    SAMPLE_DATASET_SPLIT = "sample_dataset_split"
+
     # Testing.
     TESTING_VECTORS = "testing_vectors"
     TESTING_VECTOR_EMBEDDINGS = "testing_vector_embeddings"
@@ -27,10 +30,7 @@ class DataCategory(enum.StrEnum):
     REPOSITORIES = "repositories"
     TESTING = "testing"
 
-    INSTRUCT_DATASET = "instruct_dataset"
     INSTRUCT_SAMPLE = "instruct_sample"
-
-    PREFERENCE_DATASET = "preference_dataset"
     PREFERENCE_SAMPLE = "preference_sample"
 
     PROMPT = "prompt"
