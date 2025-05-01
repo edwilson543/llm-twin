@@ -9,6 +9,7 @@ from llm_twin.orchestration.steps import context
 
 @zenml.step
 def generate_sample_dataset(
+    author_id: str,
     dataset_type: typing.Annotated[dataset_generation.DatasetType, "dataset_type"],
     prompts: typing.Annotated[
         list[dataset_generation.GenerateSamplePrompt], "generate_sample_prompts"
@@ -22,6 +23,7 @@ def generate_sample_dataset(
     language_model = config.get_language_model()
 
     dataset = dataset_generation.generate_sample_dataset(
+        author_id=author_id,
         language_model=language_model,
         system_prompt=system_prompt,
         prompts=prompts,
@@ -36,6 +38,7 @@ def generate_sample_dataset(
     step_context.add_output_metadata(
         output_name="sample_dataset",
         metadata={
+            "author_id": author_id,
             "dataset_type": dataset_type.value,
             "num_samples": dataset.num_samples,
         },

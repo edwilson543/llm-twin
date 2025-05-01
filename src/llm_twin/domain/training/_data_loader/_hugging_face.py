@@ -12,13 +12,13 @@ class HuggingFaceDataLoader(_base.DataLoader):
     dataset_path: str
 
     def load_instruct_dataset(
-        self,
+        self, *, author_id: str
     ) -> dataset_generation.TrainTestSplit[dataset_generation.InstructSample]:
         dataset = datasets.load_dataset(self.dataset_path, split="train")
         return dataset_generation.TrainTestSplit.model_validate(dataset)
 
     def load_preference_dataset(
-        self,
+        self, *, author_id: str
     ) -> dataset_generation.TrainTestSplit[dataset_generation.PreferenceSample]:
         dataset = datasets.load_dataset(self.dataset_path, split="train")
         return dataset_generation.TrainTestSplit.model_validate(dataset)

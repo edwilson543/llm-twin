@@ -71,6 +71,8 @@ class PreferenceSample(_base.Factory):
 
 
 class _SampleDataset(_base.Factory):
+    author_id = factory.Sequence(lambda n: f"author-{n}")
+
     class Meta:
         model = dataset_generation.SampleDataset
 
@@ -89,6 +91,8 @@ class PreferenceSampleDataset(_SampleDataset):
 
 
 class _TrainTestSplit(_base.Factory):
+    author_id = factory.Sequence(lambda n: f"author-{n}")
+
     class Meta:
         model = dataset_generation.TrainTestSplit
 

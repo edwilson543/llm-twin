@@ -8,18 +8,18 @@ from llm_twin.orchestration.steps import types as step_types
 
 @zenml.step
 def fetch_chunked_documents(
-    author_full_name: str,
+    author_id: str,
     batch_size: int = 1000,
     context: context.StepContext | None = None,
 ) -> step_types.ChunkedDocumentsOutputT:
     chunked_documents = [
         *_fetch_chunked_documents(
-            author_full_name=author_full_name,
+            author_id=author_id,
             vector_class=chunking.ArticleChunk,
             batch_size=batch_size,
         ),
         *_fetch_chunked_documents(
-            author_full_name=author_full_name,
+            author_id=author_id,
             vector_class=chunking.RepositoryChunk,
             batch_size=batch_size,
         ),
@@ -28,14 +28,14 @@ def fetch_chunked_documents(
     step_context = context or zenml.get_step_context()
     step_context.add_output_metadata(
         output_name="chunked_documents",
-        metadata={"num_chunks": len(chunked_documents), "author": author_full_name},
+        metadata={"num_chunks": len(chunked_documents), "author_id": author_id},
     )
 
     return chunked_documents
 
 
 def _fetch_chunked_documents(
-    author_full_name: str, vector_class: type[chunking.Chunk], batch_size: int
+    author_id: str, vector_class: type[chunking.Chunk], batch_size: int
 ) -> step_types.ChunkedDocumentsOutputT:
     db = config.get_vector_database()
 
@@ -48,7 +48,7 @@ def _fetch_chunked_documents(
             vector_class=vector_class,
             limit=batch_size,
             offset=next_offset,
-            author_full_name=author_full_name,
+            author_id=author_id,
         )
         chunked_documents.extend(extra_documents)
 

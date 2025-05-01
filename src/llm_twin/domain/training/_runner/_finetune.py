@@ -50,14 +50,15 @@ def _run_supervised_fine_tuning(*, args: argparse.Namespace) -> None:
     data_loader = _data_loader.HuggingFaceDataLoader(
         dataset_path="mlabonne/FineTome-Alpaca-100k",
     )
+    dataset = data_loader.load_instruct_dataset(author_id="")  # TODO
 
     tuner = _fine_tuning_strategy.SupervisedFineTuning(
-        data_loader=data_loader,
         output_dir=output_dir_sft,
         model_name=base_model_name,
+        report_to="comet_ml",
     )
 
-    tuner.fine_tune()
+    tuner.fine_tune(dataset=dataset)
 
 
 if __name__ == "__main__":

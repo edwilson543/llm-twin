@@ -3,15 +3,18 @@ import transformers
 
 from llm_twin.orchestration.pipelines import _train
 from testing.factories import dataset as dataset_factories
+from testing.factories import documents as document_factories
 
 
 def test_trains_model_using_sft_then_dpo(output_dir):
+    author = document_factories.Author.build()  # In memory is fine here.
+    dataset_factories.InstructTrainTestSplit.create(author_id=author.id)
+    dataset_factories.PreferenceTrainTestSplit.create(author_id=author.id)
+
     base_model_name = "llamafactory/tiny-random-Llama-3"
 
-    dataset_factories.InstructTrainTestSplit.create()
-    dataset_factories.PreferenceTrainTestSplit.create()
-
     _train.train.entrypoint(
+        author_id=author.id,
         base_model_name=base_model_name,
         output_dir=output_dir,
         num_train_epochs=2,

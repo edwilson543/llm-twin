@@ -11,11 +11,12 @@ class VectorDBDataLoader(_base.DataLoader):
     db: vector_storage.VectorDatabase
 
     def load_instruct_dataset(
-        self,
+        self, *, author_id: str
     ) -> dataset_generation.TrainTestSplit[dataset_generation.InstructSample]:
         results, _ = self.db.bulk_find(
             vector_class=dataset_generation.TrainTestSplit,
             limit=1,
+            author_id=author_id,
             dataset_type=dataset_generation.DatasetType.INSTRUCT.value,
         )
 
@@ -27,11 +28,12 @@ class VectorDBDataLoader(_base.DataLoader):
             ) from exc
 
     def load_preference_dataset(
-        self,
+        self, *, author_id: str
     ) -> dataset_generation.TrainTestSplit[dataset_generation.PreferenceSample]:
         results, _ = self.db.bulk_find(
             vector_class=dataset_generation.TrainTestSplit,
             limit=1,
+            author_id=author_id,
             dataset_type=dataset_generation.DatasetType.PREFERENCE.value,
         )
 

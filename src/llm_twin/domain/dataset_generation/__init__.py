@@ -3,6 +3,7 @@ from ._datasets import (
     InstructSample,
     PreferenceSample,
     SampleDataset,
+    SampleT,
     TrainTestSplit,
 )
 from ._generation import generate_sample_dataset

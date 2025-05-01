@@ -11,16 +11,20 @@ from . import _base
 
 
 @dataclasses.dataclass
-class SupervisedFineTuning(_base.FineTuningStrategy):
+class SupervisedFineTuning(_base.FineTuningStrategy[dataset_generation.InstructSample]):
     dataset_text_field: str = "text"
 
-    def fine_tune(self) -> None:
-        dataset = self.data_loader.load_instruct_dataset()
+    def fine_tune(
+        self,
+        *,
+        dataset: dataset_generation.TrainTestSplit[dataset_generation.InstructSample],
+    ) -> None:
         model, tokenizer = self._get_model_and_tokenizer()
 
         trainer = self._get_trainer(model=model, dataset=dataset)
         trainer.train()
 
+        model.merge_and_unload()
         model.save_pretrained(save_directory=str(self.output_dir))
         tokenizer.save_pretrained(save_directory=str(self.output_dir))
 

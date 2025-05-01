@@ -2,17 +2,16 @@ import abc
 import dataclasses
 import pathlib
 
-from llm_twin.domain.training import _data_loader
+from llm_twin.domain import dataset_generation
 
 
 @dataclasses.dataclass
-class FineTuningStrategy(abc.ABC):
+class FineTuningStrategy[_SampleT: dataset_generation.SampleT](abc.ABC):
     model_name: str
 
     # I/O.
-    data_loader: _data_loader.DataLoader
+    report_to: str | None
     output_dir: pathlib.Path
-    report_to: str | None = "comet_ml"
 
     # ML.
     learning_rate: float = 3e-4
@@ -36,5 +35,7 @@ class FineTuningStrategy(abc.ABC):
     )
 
     @abc.abstractmethod
-    def fine_tune(self) -> None:
+    def fine_tune(
+        self, *, dataset: dataset_generation.TrainTestSplit[_SampleT]
+    ) -> None:
         raise NotImplementedError

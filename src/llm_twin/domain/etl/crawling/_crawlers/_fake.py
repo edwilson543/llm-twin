@@ -10,7 +10,7 @@ class FakeCrawler(_base.Crawler):
     def _extract(self, *, link: str, author: authors.Author) -> raw_documents.Article:
         return raw_documents.Article(
             platform="fake",
-            content={"foo": "bar"},
+            content={"foo": "bar. " * 1000},
             link=link,
             author_id=author.id,
             author_full_name=author.full_name,

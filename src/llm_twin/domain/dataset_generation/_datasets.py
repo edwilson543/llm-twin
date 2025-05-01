@@ -38,8 +38,9 @@ SampleT = InstructSample | PreferenceSample
 
 
 class SampleDataset[_SampleT: SampleT = SampleT](vector_storage.Vector):
-    samples: list[_SampleT]
+    author_id: str
     dataset_type: DatasetType
+    samples: list[_SampleT]
 
     class _Config(vector_storage.Config):
         collection = vector_storage.Collection.SAMPLE_DATASET
@@ -53,20 +54,27 @@ class SampleDataset[_SampleT: SampleT = SampleT](vector_storage.Vector):
             self.samples, test_size=test_size, random_state=random_state
         )
         return TrainTestSplit(
-            train=SampleDataset(samples=train_samples, dataset_type=self.dataset_type),
-            test=SampleDataset(samples=test_samples, dataset_type=self.dataset_type),
+            train=self._split(samples=train_samples),
+            test=self._split(samples=test_samples),
             dataset_type=self.dataset_type,
+            author_id=self.author_id,
         )
 
     @property
     def num_samples(self) -> int:
         return len(self.samples)
 
+    def _split(self, samples: list[_SampleT]) -> SampleDataset[_SampleT]:
+        return SampleDataset(
+            samples=samples, dataset_type=self.dataset_type, author_id=self.author_id
+        )
+
 
 class TrainTestSplit[_SampleT: SampleT = SampleT](vector_storage.Vector):
     train: SampleDataset[_SampleT]
     test: SampleDataset[_SampleT]
     dataset_type: DatasetType
+    author_id: str
 
     class _Config(vector_storage.Config):
         collection = vector_storage.Collection.SAMPLE_DATASET_SPLIT

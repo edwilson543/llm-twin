@@ -50,13 +50,13 @@ mongosh_test:
 	docker exec -it llm-twin-mongo-testing mongosh "mongodb://test_user:test_password@127.0.0.1:27017" --username test_user --authenticationDatabase admin
 
 # CLI
-.PHONY:etl_ed
-etl_ed:
-	python src/llm_twin/interfaces/cli/etl.py --config-filename=ed-wilson.yaml --disable-cache
+.PHONY:run_ed
+run_ed:
+	python src/llm_twin/interfaces/cli/run.py --author=ed-wilson --disable-cache
 
-.PHONY:etl_jack
-etl_jack:
-	python src/llm_twin/interfaces/cli/etl.py --config-filename=jackof-alltrades.yaml --disable-cache
+.PHONY:run_jack
+run_jack:
+	python src/llm_twin/interfaces/cli/run.py --author=jackof-alltrades --disable-cache
 
 # CI checks
 

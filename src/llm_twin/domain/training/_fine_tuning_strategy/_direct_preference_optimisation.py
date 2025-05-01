@@ -11,11 +11,16 @@ from . import _base
 
 
 @dataclasses.dataclass
-class DirectPreferenceOptimisation(_base.FineTuningStrategy):
+class DirectPreferenceOptimisation(
+    _base.FineTuningStrategy[dataset_generation.PreferenceSample]
+):
     beta: float = 0.5
 
-    def fine_tune(self) -> None:
-        dataset = self.data_loader.load_preference_dataset()
+    def fine_tune(
+        self,
+        *,
+        dataset: dataset_generation.TrainTestSplit[dataset_generation.PreferenceSample],
+    ) -> None:
         model, tokenizer = self._get_model_and_tokenizer()
 
         trainer = self._get_trainer(model=model, tokenizer=tokenizer, dataset=dataset)
@@ -80,6 +85,7 @@ class DirectPreferenceOptimisation(_base.FineTuningStrategy):
         )
 
     def _export_model(self, *, model: peft.PeftModel) -> None:
+        model.merge_and_unload()
         model.save_pretrained(save_directory=str(self.output_dir))
 
     def _format_samples(

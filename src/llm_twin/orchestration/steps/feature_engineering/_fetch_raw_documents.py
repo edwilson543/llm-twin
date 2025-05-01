@@ -1,3 +1,4 @@
+import itertools
 import typing
 
 import loguru
@@ -11,20 +12,22 @@ from llm_twin.orchestration.steps import context
 from llm_twin.orchestration.steps import types as step_types
 
 
+class NoDocumentsFound(Exception):
+    pass
+
+
 @zenml.step
 def fetch_raw_documents(
-    author_full_names: list[str],
+    author_full_name: str,
     context: context.StepContext | None = None,
 ) -> step_types.RawDocumentsOutputT:
     db = config.get_document_database()
 
-    documents = []
-
-    for author_full_name in author_full_names:
-        author_documents = _fetch_raw_documents_for_author(
-            db=db, author_full_name=author_full_name
-        )
-        documents.extend(author_documents)
+    documents = _fetch_raw_documents_for_author(
+        db=db, author_full_name=author_full_name
+    )
+    if not documents:
+        raise NoDocumentsFound
 
     step_context = context or zenml.get_step_context()
     metadata = _get_metadata(documents=documents)
@@ -54,15 +57,11 @@ def _fetch_raw_documents_for_author(
 def _get_metadata(*, documents: step_types.RawDocumentsOutputT) -> dict:
     metadata: dict[str, typing.Any] = {"num_documents": len(documents)}
 
-    for document in documents:
-        if (collection := document.get_collection_name().value) not in metadata:
-            metadata[collection] = {"num_documents": 0, "authors": []}
-
-        metadata[collection]["num_documents"] += 1
-        metadata[collection]["authors"].append(document.author_full_name)
-
-    for value in metadata.values():
-        if isinstance(value, dict) and "authors" in value:
-            value["authors"] = list(set(value["authors"]))
+    grouped_documents = itertools.groupby(
+        documents, lambda document: document.get_collection_name()
+    )
+    metadata["num_documents_by_type"] = {
+        collection: len(list(group)) for collection, group in grouped_documents
+    }
 
     return metadata

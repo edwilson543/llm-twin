@@ -16,7 +16,7 @@ def test_processes_raw_article_for_given_author_into_features():
     pipeline = _feature_engineering.process_raw_documents_into_features.with_options(
         enable_cache=False
     )
-    pipeline(author_full_names=[author.full_name])
+    pipeline(author_full_name=author.full_name)
 
     db = config.get_vector_database()
     embedded_articles, next_offset = db.bulk_find(
@@ -41,7 +41,7 @@ def test_processes_raw_repository_for_given_author_into_features():
     pipeline = _feature_engineering.process_raw_documents_into_features.with_options(
         enable_cache=False
     )
-    pipeline.entrypoint(author_full_names=[author.full_name])
+    pipeline(author_full_name=author.full_name)
 
     db = config.get_vector_database()
     embedded_repository_chunks, next_offset = db.bulk_find(
