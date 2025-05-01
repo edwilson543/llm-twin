@@ -4,4 +4,5 @@ from ._dependencies import (
     get_language_model,
     # get_training_runner,
     get_vector_database,
+    login_to_comet_ml,
 )

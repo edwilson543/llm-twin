@@ -38,6 +38,7 @@ dependencies = [
     "trl>=0.17.0",
     "sagemaker>=2.92.0",
     "peft>=0.15.2",
+    "comet-ml>=3.49.9",
 ]
 
 [dependency-groups]

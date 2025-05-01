@@ -6,6 +6,8 @@ import zenml
 from llm_twin import config
 from llm_twin.domain import training
 
+from . import _reporting
+
 
 @zenml.step
 def run_direct_preference_optimisation(
@@ -26,6 +28,7 @@ def run_direct_preference_optimisation(
         optimizer="adamw_torch",
     )
 
-    strategy.fine_tune()
+    with _reporting.create_training_report(name="dpo", report_to=report_to):
+        strategy.fine_tune()
 
     return str(output_dir)

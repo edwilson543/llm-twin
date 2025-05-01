@@ -31,7 +31,7 @@ class Settings(pydantic_settings.BaseSettings):
     AWS_SAGEMAKER_ROLE_ARN: str = ""
 
     COMET_API_KEY: str = ""
-    COMET_PROJECT_NAME: str = ""
+    COMET_PROJECT_NAME: str = "llm-twin"
 
     HUGGINGFACE_ACCESS_TOKEN: str = ""
     HUGGINGFACE_DATASET_WORKSPACE: str = ""

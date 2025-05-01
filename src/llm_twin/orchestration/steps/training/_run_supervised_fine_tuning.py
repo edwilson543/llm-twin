@@ -6,6 +6,8 @@ import zenml
 from llm_twin import config
 from llm_twin.domain import training
 
+from . import _reporting
+
 
 @zenml.step
 def run_supervised_fine_tuning(
@@ -26,6 +28,7 @@ def run_supervised_fine_tuning(
         optimizer="adamw_torch",
     )
 
-    strategy.fine_tune()
+    with _reporting.create_training_report(name="sft", report_to=report_to):
+        strategy.fine_tune()
 
     return str(output_dir)

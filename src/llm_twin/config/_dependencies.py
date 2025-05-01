@@ -64,6 +64,14 @@ def get_language_model() -> models.LanguageModel:
 # Training.
 
 
+def login_to_comet_ml() -> None:
+    import comet_ml
+
+    comet_ml.login(
+        api_key=settings.COMET_API_KEY, project_name=settings.COMET_PROJECT_NAME
+    )
+
+
 # def get_training_runner() -> training.Runner:
 #     return training.SageMaker(
 #         _aws_role_arn=settings.AWS_SAGEMAKER_ROLE_ARN,
