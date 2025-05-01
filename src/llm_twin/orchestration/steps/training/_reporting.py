@@ -9,13 +9,10 @@ def create_training_report(
     *, name: str, report_to: str | None
 ) -> typing.Generator[None]:
     """
-    Create a report
+    Create a report and upload it to CometML.
     """
 
-    if report_to is None:
-        yield
-
-    elif report_to == "comet_ml":
+    if report_to == "comet_ml":
         import comet_ml
 
         config.login_to_comet_ml()
@@ -29,3 +26,6 @@ def create_training_report(
         yield
 
         comet_experiment.end()
+
+    else:
+        yield

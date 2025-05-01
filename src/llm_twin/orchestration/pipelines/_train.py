@@ -13,8 +13,9 @@ def train(
     report_to: str | None,
 ) -> None:
     sft_model_path = output_dir / "sft"
-    sft_tuned_model_name = training_steps.run_supervised_fine_tuning(
-        model_name_or_path=base_model_name,
+    training_steps.run_supervised_fine_tuning(
+        base_model_name=base_model_name,
+        load_model_from=base_model_name,
         output_dir=sft_model_path,
         num_train_epochs=num_train_epochs,
         report_to=report_to,
@@ -22,7 +23,8 @@ def train(
 
     dpo_model_path = output_dir / "dpo"
     training_steps.run_direct_preference_optimisation(
-        model_name_or_path=sft_tuned_model_name,
+        base_model_name=base_model_name,
+        load_model_from=str(sft_model_path),
         output_dir=dpo_model_path,
         num_train_epochs=num_train_epochs,
         report_to=report_to,
