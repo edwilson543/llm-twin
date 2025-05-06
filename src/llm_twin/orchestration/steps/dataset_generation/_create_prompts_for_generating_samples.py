@@ -2,6 +2,7 @@ import typing
 
 import zenml
 
+from llm_twin import config
 from llm_twin.domain import dataset_generation
 from llm_twin.orchestration.steps import context
 from llm_twin.orchestration.steps import types as step_types
@@ -19,6 +20,9 @@ def create_prompts_for_generating_samples(
     prompts = prompt_factory.create_prompts_for_generating_samples(
         dataset_type=dataset_type, documents=documents
     )
+
+    db = config.get_vector_database()
+    db.bulk_insert(vectors=prompts)
 
     step_context = context or zenml.get_step_context()
     step_context.add_output_metadata(

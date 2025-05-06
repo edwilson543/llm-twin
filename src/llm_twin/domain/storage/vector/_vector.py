@@ -16,6 +16,7 @@ class Collection(enum.StrEnum):
     EMBEDDED_ARTICLES = "embedded_articles"
     EMBEDDED_REPOSITORIES = "embedded_repositories"
 
+    GENERATE_SAMPLE_PROMPT = "generate_sample_prompt"
     SAMPLE_DATASET = "sample_dataset"
     SAMPLE_DATASET_SPLIT = "sample_dataset_split"
 

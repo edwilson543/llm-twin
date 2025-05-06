@@ -43,6 +43,9 @@ class GenerateSamplePrompt(Prompt):
     document: chunking.Chunk
     dataset_type: _datasets.DatasetType
 
+    class _Config(vector_storage.Config):
+        collection = vector_storage.Collection.GENERATE_SAMPLE_PROMPT
+
     @property
     def input_data_category(self) -> vector_storage.DataCategory:
         return self.document.category()
