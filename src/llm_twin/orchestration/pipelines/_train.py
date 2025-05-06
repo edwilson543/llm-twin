@@ -14,7 +14,7 @@ def train(
     report_to: str | None,
 ) -> None:
     sft_model_path = output_dir / "sft"
-    sft_output = training_steps.run_supervised_fine_tuning(
+    training_steps.run_supervised_fine_tuning(
         author_id=author_id,
         base_model_name=base_model_name,
         load_model_from=base_model_name,
@@ -25,7 +25,7 @@ def train(
 
     dpo_model_path = output_dir / "dpo"
     training_steps.run_direct_preference_optimisation(
-        after=[sft_output],
+        after="run_supervised_fine_tuning",
         author_id=author_id,
         base_model_name=base_model_name,
         load_model_from=str(sft_model_path),
