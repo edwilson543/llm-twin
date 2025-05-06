@@ -15,6 +15,19 @@ class TestPrompt__Render:
 
         assert rendered == "A: 123, B: xyz"
 
+    @pytest.mark.parametrize(
+        "template",
+        [_prompts.INSTRUCT_PROMPT_TEMPLATE, _prompts.PREFERENCE_PROMPT_TEMPLATE],
+    )
+    def test_instruct_and_preference_prompt_templates_are_valid(self, template: str):
+        extract = "Some copy definitely not in the template."
+        variables = {"extract": extract}
+        prompt = dataset_factories.Prompt.build(template=template, variables=variables)
+
+        rendered = prompt.render()
+
+        assert extract in rendered
+
     def test_raises_when_prompt_template_variable_is_missing(self):
         template = "A: {a}, B: {b}"
         variables = {"a": 123}
