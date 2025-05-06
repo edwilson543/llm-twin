@@ -1,0 +1,27 @@
+import torch
+import transformers
+
+from llm_twin.domain.training._fine_tuning_strategy import _supervised_fine_tuning
+from testing.factories import dataset as dataset_factories
+
+
+class TestFineTune:
+    def test_can_fine_tune_tiny_random_llama_on_fake_dataset(self, output_dir):
+        dataset = dataset_factories.InstructTrainTestSplit()
+
+        model_name = "llamafactory/tiny-random-Llama-3"
+        strategy = _supervised_fine_tuning.SupervisedFineTuning(
+            model_name=model_name,
+            output_dir=output_dir,
+            num_train_epochs=1,
+            report_to=None,  # Don't report training data anywhere.
+            optimizer="adamw_torch",  # `adamw_8bit` not available on MacOS.
+        )
+
+        strategy.fine_tune(dataset=dataset)
+
+        # Load the tuned model, and use it to generate some dummy outputs.
+        model = transformers.AutoModelForCausalLM.from_pretrained(output_dir)
+
+        dummy_output_tokens = model.generate(max_length=2, top_k=1)
+        assert dummy_output_tokens.equal(torch.tensor([[128000, 28510]]))

@@ -7,6 +7,8 @@ from . import _datasets, _prompts
 
 def generate_sample_dataset(
     *,
+    author_id: str,
+    dataset_type: _datasets.DatasetType,
     language_model: models.LanguageModel,
     system_prompt: _prompts.Prompt,
     prompts: list[_prompts.GenerateSamplePrompt],
@@ -24,4 +26,8 @@ def generate_sample_dataset(
         )
         samples.extend(response.samples)
 
-    return _datasets.SampleDataset(samples=samples)
+    return _datasets.SampleDataset(
+        author_id=author_id,
+        dataset_type=dataset_type,
+        samples=samples,
+    )

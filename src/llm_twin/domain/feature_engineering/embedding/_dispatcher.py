@@ -1,5 +1,5 @@
-import collections
 import dataclasses
+import itertools
 import typing
 
 from llm_twin.domain import models
@@ -36,10 +36,8 @@ class EmbedderDispatcher:
     def embed_chunks(
         self, *, chunks: typing.Sequence[chunking.Chunk]
     ) -> list[_documents.EmbeddedChunk]:
-        grouped_chunks = collections.defaultdict(list)
-        for chunk in chunks:
-            data_category = chunk.category()
-            grouped_chunks[data_category].append(chunk)
+        grouping = itertools.groupby(chunks, lambda chunk: chunk.category())
+        grouped_chunks = {category: list(documents) for category, documents in grouping}
 
         embedded_chunks: list[_documents.EmbeddedChunk] = []
 

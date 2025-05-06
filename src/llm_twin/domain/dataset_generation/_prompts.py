@@ -43,6 +43,9 @@ class GenerateSamplePrompt(Prompt):
     document: chunking.Chunk
     dataset_type: _datasets.DatasetType
 
+    class _Config(vector_storage.Config):
+        collection = vector_storage.Collection.GENERATE_SAMPLE_PROMPT
+
     @property
     def input_data_category(self) -> vector_storage.DataCategory:
         return self.document.category()
@@ -132,7 +135,7 @@ It's designed to write just like you by incorporating these elements into a lang
 The idea is to create a digital replica of your writing habits using advanced AI techniques.
 
 Extract:
-{{extract}}
+{extract}
 """
 
 PREFERENCE_PROMPT_TEMPLATE = """Based on the following extract, generate five instruction-answer triples. Each triple should consist of:
@@ -148,5 +151,5 @@ Important:
 - If the relevant text is not continuous, use two separate sentences from the context instead of skipping text.
 
 Extract:
-{{extract}}
+{extract}
 """

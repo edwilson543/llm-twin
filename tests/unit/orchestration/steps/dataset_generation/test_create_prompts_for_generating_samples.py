@@ -5,6 +5,7 @@ from llm_twin.orchestration.steps.dataset_generation import (
     _create_prompts_for_generating_samples,
 )
 from testing.factories import vectors as vector_factories
+from testing.helpers import config as config_helpers
 from testing.helpers import zenml as zenml_helpers
 
 
@@ -24,11 +25,14 @@ def test_creates_prompts_for_generating_instruct_samples(
 
     context = zenml_helpers.FakeContext()
 
-    prompts = _create_prompts_for_generating_samples.create_prompts_for_generating_samples.entrypoint(
-        documents=[article, other_article, repository],
-        dataset_type=dataset_type,
-        context=context,
-    )
+    with config_helpers.install_in_memory_vector_db() as db:
+        prompts = _create_prompts_for_generating_samples.create_prompts_for_generating_samples.entrypoint(
+            documents=[article, other_article, repository],
+            dataset_type=dataset_type,
+            context=context,
+        )
+
+    assert db.vectors == prompts
 
     assert len(prompts) == 3
     for prompt in prompts:

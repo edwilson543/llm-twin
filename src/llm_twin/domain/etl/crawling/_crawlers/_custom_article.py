@@ -16,7 +16,7 @@ class CustomArticleCrawler(_base.Crawler):
         super().__init__()
 
     def _extract(self, *, link: str, author: authors.Author) -> raw_documents.Article:
-        html_loader = AsyncHtmlLoader([link])
+        html_loader = AsyncHtmlLoader(link, verify_ssl=False)
         html_documents = html_loader.load()
 
         html_parser = Html2TextTransformer()

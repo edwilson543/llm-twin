@@ -27,7 +27,7 @@ def test_generates_sample_dataset_using_fake_language_model():
     )
     with config_helpers.install_fake_language_model():
         pipeline.entrypoint(
-            author_full_name=author.full_name,
+            author_id=author.id,
             dataset_type=dataset_generation.DatasetType.PREFERENCE,
             test_size=0.2,
         )
@@ -61,7 +61,7 @@ def test_generates_sample_dataset_using_gpt():
         enable_cache=False
     )
     pipeline.entrypoint(
-        author_full_name=chunk.author_full_name,
+        author_id=chunk.author_id,
         dataset_type=dataset_generation.DatasetType.INSTRUCT,
         test_size=0.2,
     )

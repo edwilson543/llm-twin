@@ -23,9 +23,9 @@ def test_fetches_chunked_documents_from_database():
 
     with config_helpers.install_in_memory_vector_db(db=vector_db):
         chunks = _fetch_chunked_documents.fetch_chunked_documents.entrypoint(
-            author_full_name=author.full_name, batch_size=2, context=context
+            author_id=author.id, batch_size=2, context=context
         )
 
     assert chunks == [article_chunk, other_article_chunk, repository_chunk]
     assert context.output_metadata["chunked_documents"]["num_chunks"] == 3
-    assert context.output_metadata["chunked_documents"]["author"] == author.full_name
+    assert context.output_metadata["chunked_documents"]["author_id"] == author.id

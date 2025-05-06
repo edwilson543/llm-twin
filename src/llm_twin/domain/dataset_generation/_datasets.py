@@ -37,35 +37,52 @@ SampleT = InstructSample | PreferenceSample
 # Datasets.
 
 
-class SampleDataset(vector_storage.Vector):
-    samples: list[SampleT]
+class SampleDataset[_SampleT: SampleT = SampleT](vector_storage.Vector):
+    author_id: str
+    dataset_type: DatasetType
+    samples: list[_SampleT]
+
+    class _Config(vector_storage.Config):
+        collection = vector_storage.Collection.SAMPLE_DATASET
 
     def train_test_split(
         self,
         test_size: float,
         random_state: int = 42,
-    ) -> TrainTestSplit:
+    ) -> TrainTestSplit[_SampleT]:
         train_samples, test_samples = train_test_split(
             self.samples, test_size=test_size, random_state=random_state
         )
         return TrainTestSplit(
-            train=SampleDataset(samples=train_samples),
-            test=SampleDataset(samples=test_samples),
+            train=self._split(samples=train_samples),
+            test=self._split(samples=test_samples),
+            dataset_type=self.dataset_type,
+            author_id=self.author_id,
         )
 
     @property
     def num_samples(self) -> int:
         return len(self.samples)
 
+    def _split(self, samples: list[_SampleT]) -> SampleDataset[_SampleT]:
+        return SampleDataset(
+            samples=samples, dataset_type=self.dataset_type, author_id=self.author_id
+        )
 
-class TrainTestSplit(vector_storage.Vector):
-    train: SampleDataset
-    test: SampleDataset
+
+class TrainTestSplit[_SampleT: SampleT = SampleT](vector_storage.Vector):
+    train: SampleDataset[_SampleT]
+    test: SampleDataset[_SampleT]
+    dataset_type: DatasetType
+    author_id: str
+
+    class _Config(vector_storage.Config):
+        collection = vector_storage.Collection.SAMPLE_DATASET_SPLIT
 
     @property
     def test_size(self) -> float:
         return self.test.num_samples / (self.train.num_samples + self.test.num_samples)
 
     @property
-    def all_samples(self) -> list[SampleT]:
+    def all_samples(self) -> list[_SampleT]:
         return self.train.samples + self.test.samples

@@ -6,18 +6,27 @@ from testing.helpers import zenml as zenml_helpers
 
 
 def test_generates_and_splits_instruct_sample_dataset():
+    author_id = "edwilson543"
     prompt = dataset_factories.GenerateInstructSamplePrompt()
     other_prompt = dataset_factories.GenerateInstructSamplePrompt()
 
     context = zenml_helpers.FakeContext()
 
-    with config_helpers.install_fake_language_model():
+    with (
+        config_helpers.install_in_memory_vector_db() as db,
+        config_helpers.install_fake_language_model(),
+    ):
         dataset = _generate_sample_dataset.generate_sample_dataset.entrypoint(
+            author_id=author_id,
             dataset_type=dataset_generation.DatasetType.INSTRUCT,
             prompts=[prompt, other_prompt],
             test_size=0.5,
             context=context,
         )
+
+    assert db.vectors == [dataset]
+    assert dataset.author_id == author_id
+    assert dataset.dataset_type == dataset_generation.DatasetType.INSTRUCT
 
     assert len(dataset.train.samples) == 1 * dataset_factories.SAMPLES_PER_PROMPT
     train_sample = dataset.train.samples[0]
@@ -28,23 +37,33 @@ def test_generates_and_splits_instruct_sample_dataset():
     assert isinstance(test_sample, dataset_generation.InstructSample)
 
     assert context.output_metadata["sample_dataset"] == {
+        "author_id": author_id,
         "dataset_type": "INSTRUCT",
         "num_samples": 10,
     }
 
 
 def test_generates_and_splits_preference_sample_dataset():
+    author_id = "edwilson543"
     prompts = [dataset_factories.GeneratePreferenceSamplePrompt() for _ in range(4)]
 
     context = zenml_helpers.FakeContext()
 
-    with config_helpers.install_fake_language_model():
+    with (
+        config_helpers.install_in_memory_vector_db() as db,
+        config_helpers.install_fake_language_model(),
+    ):
         dataset = _generate_sample_dataset.generate_sample_dataset.entrypoint(
+            author_id=author_id,
             dataset_type=dataset_generation.DatasetType.PREFERENCE,
             prompts=prompts,
             test_size=0.25,
             context=context,
         )
+
+    assert db.vectors == [dataset]
+    assert dataset.author_id == author_id
+    assert dataset.dataset_type == dataset_generation.DatasetType.PREFERENCE
 
     assert len(dataset.train.samples) == 3 * dataset_factories.SAMPLES_PER_PROMPT
     for train_sample in dataset.train.samples:
@@ -55,6 +74,7 @@ def test_generates_and_splits_preference_sample_dataset():
     assert isinstance(test_sample, dataset_generation.PreferenceSample)
 
     assert context.output_metadata["sample_dataset"] == {
+        "author_id": author_id,
         "dataset_type": "PREFERENCE",
         "num_samples": 20,
     }
