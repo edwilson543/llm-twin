@@ -21,7 +21,7 @@ class SupervisedFineTuning(_base.FineTuningStrategy[dataset_generation.InstructS
     ) -> None:
         model, tokenizer = self._get_model_and_tokenizer()
 
-        trainer = self._get_trainer(model=model, dataset=dataset)
+        trainer = self._get_trainer(model=model, tokenizer=tokenizer, dataset=dataset)
         trainer.train()
 
         model.merge_and_unload()
@@ -48,6 +48,7 @@ class SupervisedFineTuning(_base.FineTuningStrategy[dataset_generation.InstructS
         self,
         *,
         model: peft.PeftModel,
+        tokenizer: transformers.AutoTokenizer,
         dataset: dataset_generation.TrainTestSplit[dataset_generation.InstructSample],
     ) -> trl.SFTTrainer:
         training_args = trl.SFTConfig(
@@ -71,8 +72,12 @@ class SupervisedFineTuning(_base.FineTuningStrategy[dataset_generation.InstructS
             seed=0,
         )
 
-        train_dataset = self._format_samples(samples=dataset.train.samples)
-        eval_dataset = self._format_samples(samples=dataset.test.samples)
+        train_dataset = self._format_samples(
+            samples=dataset.train.samples, eos_token=tokenizer.eos_token
+        )
+        eval_dataset = self._format_samples(
+            samples=dataset.test.samples, eos_token=tokenizer.eos_token
+        )
 
         return trl.SFTTrainer(
             model=model,
@@ -82,20 +87,13 @@ class SupervisedFineTuning(_base.FineTuningStrategy[dataset_generation.InstructS
         )
 
     def _format_samples(
-        self, *, samples: list[dataset_generation.InstructSample]
+        self, *, samples: list[dataset_generation.InstructSample], eos_token: str
     ) -> datasets.Dataset:
         def _format_sample(sample: dataset_generation.InstructSample) -> str:
-            return (
-                ALPACA_TEMPLATE.format(sample.instruction, sample.answer)
-                + self._eos_token
-            )
+            return ALPACA_TEMPLATE.format(sample.instruction, sample.answer) + eos_token
 
         data = {self.dataset_text_field: [_format_sample(sample) for sample in samples]}
         return datasets.Dataset.from_dict(data)
-
-    @property
-    def _eos_token(self) -> str:
-        return "ABCDEF"  # TODO TODO TODO -> EOS TOKEN.
 
 
 ALPACA_TEMPLATE = """Below is an instruction that describes a task. Write a response that appropriately completes the request.

@@ -73,8 +73,12 @@ class DirectPreferenceOptimisation(
             seed=0,
         )
 
-        train_dataset = self._format_samples(samples=dataset.train.samples)
-        eval_dataset = self._format_samples(samples=dataset.test.samples)
+        train_dataset = self._format_samples(
+            samples=dataset.train.samples, eos_token=tokenizer.eos_token
+        )
+        eval_dataset = self._format_samples(
+            samples=dataset.test.samples, eos_token=tokenizer.eos_token
+        )
 
         return trl.DPOTrainer(
             model=model,
@@ -88,24 +92,21 @@ class DirectPreferenceOptimisation(
         model.merge_and_unload()
         model.save_pretrained(save_directory=str(self.output_dir))
 
+    @staticmethod
     def _format_samples(
-        self, *, samples: list[dataset_generation.PreferenceSample]
+        *, samples: list[dataset_generation.PreferenceSample], eos_token: str
     ) -> datasets.Dataset:
         def _format_sample(
             sample: dataset_generation.PreferenceSample,
         ) -> dict[str, str]:
             return {
                 "prompt": ALPACA_TEMPLATE.format(sample.instruction, ""),
-                "chosen": sample.chosen + self._eos_token,
-                "rejected": sample.rejected + self._eos_token,
+                "chosen": sample.chosen + eos_token,
+                "rejected": sample.rejected + eos_token,
             }
 
         formatted_data = [_format_sample(sample) for sample in samples]
         return datasets.Dataset.from_list(formatted_data)
-
-    @property
-    def _eos_token(self) -> str:
-        return "ABCDEF"  # TODO TODO TODO -> EOS TOKEN.
 
 
 ALPACA_TEMPLATE = """Below is an instruction that describes a task. Write a response that appropriately completes the request.
