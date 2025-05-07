@@ -25,7 +25,9 @@ class EvaluationSummary(pydantic.BaseModel):
     @classmethod
     def mean(cls, evaluations: typing.Sequence[Evaluation]) -> typing.Self:
         def _mean(criteria: str) -> float:
-            total = sum(getattr(evaluation, criteria) for evaluation in evaluations)
+            total = sum(
+                getattr(evaluation, criteria).score for evaluation in evaluations
+            )
             return total / len(evaluations)
 
         return cls(accuracy=_mean("accuracy"), style=_mean("style"))
