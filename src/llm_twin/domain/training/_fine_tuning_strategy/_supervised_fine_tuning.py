@@ -76,6 +76,7 @@ class SupervisedFineTuning(_base.FineTuningStrategy[dataset_generation.InstructS
             samples=dataset.train.samples, eos_token=tokenizer.eos_token
         )
         eval_dataset = self._format_samples(
+            # TODO -> split out a separate validation set here instead of using test set.
             samples=dataset.test.samples, eos_token=tokenizer.eos_token
         )
 
