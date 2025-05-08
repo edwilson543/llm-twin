@@ -3,9 +3,9 @@ import typing
 import pydantic
 
 
-class InstructionAnswerPair(pydantic.BaseModel):
-    instruction: str
-    answer: str
+class Completion(pydantic.BaseModel):
+    prompt: str
+    response: str
 
 
 class EvaluationCriteria(pydantic.BaseModel):

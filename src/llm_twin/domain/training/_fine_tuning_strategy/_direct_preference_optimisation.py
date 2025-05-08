@@ -7,7 +7,7 @@ import trl
 
 from llm_twin.domain import dataset_generation
 
-from . import _base
+from . import _base, _constants
 
 
 @dataclasses.dataclass
@@ -78,7 +78,8 @@ class DirectPreferenceOptimisation(
         )
         eval_dataset = self._format_samples(
             # TODO -> split out a separate validation set here instead of using test set.
-            samples=dataset.test.samples, eos_token=tokenizer.eos_token
+            samples=dataset.test.samples,
+            eos_token=tokenizer.eos_token,
         )
 
         return trl.DPOTrainer(
@@ -101,19 +102,10 @@ class DirectPreferenceOptimisation(
             sample: dataset_generation.PreferenceSample,
         ) -> dict[str, str]:
             return {
-                "prompt": ALPACA_TEMPLATE.format(sample.instruction, ""),
+                "prompt": _constants.render_alpaca_template(sample.instruction),
                 "chosen": sample.chosen + eos_token,
                 "rejected": sample.rejected + eos_token,
             }
 
         formatted_data = [_format_sample(sample) for sample in samples]
         return datasets.Dataset.from_list(formatted_data)
-
-
-ALPACA_TEMPLATE = """Below is an instruction that describes a task. Write a response that appropriately completes the request.
-
-### Instruction:
-{}
-
-### Response:
-{}"""
