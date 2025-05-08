@@ -1,3 +1,4 @@
+from llm_twin.domain import training
 from llm_twin.orchestration.steps.evaluation import _generate_answers
 from testing.factories import dataset as dataset_factories
 from testing.factories import documents as document_factories
@@ -8,7 +9,7 @@ from testing.helpers import zenml as zenml_helpers
 
 def test_generates_answer_for_instruct_dataset_containing_single_sample():
     author = document_factories.Author()
-    sample = dataset_factories.InstructSample(instruction="a")
+    sample = dataset_factories.InstructSample(instruction="fixed")
     test_dataset = dataset_factories.InstructSampleDataset(samples=[sample])
     dataset = dataset_factories.InstructTrainTestSplit(
         author_id=author.id, test=test_dataset
@@ -18,16 +19,23 @@ def test_generates_answer_for_instruct_dataset_containing_single_sample():
     db = storage_helpers.InMemoryVectorDatabase(vectors=[dataset])
 
     with config_helpers.install_in_memory_vector_db(db=db):
-        pairs = _generate_answers.generate_answers.entrypoint(
+        completions = _generate_answers.generate_answers.entrypoint(
             author_id=author.id,
             load_model_from="llamafactory/tiny-random-Llama-3",
-            max_tokens=3,
+            max_tokens=30,
             context=context,
         )
 
-    assert len(dataset.test.samples) == len(pairs) == 1
-    pair = pairs[0]
-    assert pair.instruction == dataset.test.samples[0].instruction
-    assert pair.answer == "a Anchor" # Random but seeded.
+    assert len(dataset.test.samples) == len(completions) == 1
+    completion = completions[0]
+    expected_prompt = training.render_alpaca_template(
+        dataset.test.samples[0].instruction
+    )
+    assert completion.prompt == expected_prompt
+    # Random but seeded.
+    assert (
+        completion.response
+        == "Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\nfixed\n\n### Response:\n(CloneDispatchToProps Stitch"
+    )
 
-    assert context.output_metadata == {"answers": {"num_pairs": 1}}
+    assert context.output_metadata == {"answers": {"num_completions": 1}}

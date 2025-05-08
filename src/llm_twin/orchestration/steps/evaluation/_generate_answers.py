@@ -1,12 +1,12 @@
 import typing
 
+import loguru
 import transformers
 import zenml
 
 from llm_twin import config
 from llm_twin.domain import evaluation, training
 from llm_twin.orchestration.steps import context
-import loguru
 
 
 @zenml.step
@@ -16,7 +16,7 @@ def generate_answers(
     max_tokens: int = 4096,
     top_k: int = 1,
     context: context.StepContext | None = None,
-) -> typing.Annotated[list[evaluation.InstructionAnswerPair], "answers"]:
+) -> typing.Annotated[list[evaluation.Completion], "answers"]:
     db = config.get_vector_database()
     data_loader = training.VectorDBDataLoader(db=db)
     dataset = data_loader.load_instruct_dataset(author_id=author_id)
@@ -26,22 +26,22 @@ def generate_answers(
 
     loguru.logger.info(f"Loaded model and tokenizer from {load_model_from}")
 
-    pairs: list[evaluation.InstructionAnswerPair] = []
+    completions: list[evaluation.Completion] = []
     for sample in dataset.test.samples:
-        instruction_tokens = tokenizer.encode(sample.instruction, return_tensors="pt")
-        answer_tokens = model.generate(
-            instruction_tokens, max_length=max_tokens, top_k=top_k
-        )
-        answer = tokenizer.decode(answer_tokens[0], skip_special_tokens=True)
+        prompt = training.render_alpaca_template(sample.instruction)
+        prompt_tokens = tokenizer.encode(prompt, return_tensors="pt")
 
-        pair = evaluation.InstructionAnswerPair(
-            instruction=sample.instruction, answer=answer
+        response_tokens = model.generate(
+            prompt_tokens, max_length=max_tokens, top_k=top_k
         )
-        pairs.append(pair)
+        response = tokenizer.decode(response_tokens[0], skip_special_tokens=True)
+
+        completion = evaluation.Completion(prompt=prompt, response=response)
+        completions.append(completion)
 
     step_context = context or zenml.get_step_context()
     step_context.add_output_metadata(
-        output_name="answers", metadata={"num_pairs": len(pairs)}
+        output_name="answers", metadata={"num_completions": len(completions)}
     )
 
-    return pairs
+    return completions
