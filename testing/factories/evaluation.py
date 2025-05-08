@@ -25,3 +25,11 @@ class Evaluation(factory.Factory):
 
     class Meta:
         model = evaluation.Evaluation
+
+
+class Completion(factory.Factory):
+    prompt = factory.Sequence(lambda n: f"prompt-{n}")
+    response = factory.Sequence(lambda n: f"response-{n}")
+
+    class Meta:
+        model = evaluation.Completion
