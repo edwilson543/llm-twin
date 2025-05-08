@@ -10,15 +10,16 @@ class TestEvaluationSummary__Mean:
             for score in range(1, 4)
         ]
 
-        evaluation_summary = evaluation.EvaluationSummary.mean(
+        evaluation_aggregate = evaluation.EvaluationAggregate.mean(
             evaluations=[
                 evaluation_factories.Evaluation(accuracy=scores[0], style=scores[1]),
                 evaluation_factories.Evaluation(accuracy=scores[1], style=scores[2]),
             ]
         )
 
-        assert evaluation_summary.accuracy == 1.5
-        assert evaluation_summary.style == 2.5
+        assert evaluation_aggregate.aggregate == evaluation.Aggregate.MEAN
+        assert evaluation_aggregate.accuracy == 1.5
+        assert evaluation_aggregate.style == 2.5
 
 
 class TestCompletion__Evaluate:

@@ -1,3 +1,4 @@
+import enum
 import typing
 
 import pydantic
@@ -15,7 +16,12 @@ class Evaluation(pydantic.BaseModel):
     style: EvaluationCriteria
 
 
-class EvaluationSummary(pydantic.BaseModel):
+class Aggregate(enum.Enum):
+    MEAN = "mean"
+
+
+class EvaluationAggregate(pydantic.BaseModel):
+    aggregate: Aggregate
     accuracy: float
     style: float
 
@@ -27,7 +33,11 @@ class EvaluationSummary(pydantic.BaseModel):
             )
             return total / len(evaluations)
 
-        return cls(accuracy=_mean("accuracy"), style=_mean("style"))
+        return cls(
+            aggregate=Aggregate.MEAN,
+            accuracy=_mean("accuracy"),
+            style=_mean("style"),
+        )
 
 
 class Completion(pydantic.BaseModel):

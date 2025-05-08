@@ -16,7 +16,7 @@ def generate_completions_for_test_samples(
     max_tokens: int = 4096,
     top_k: int = 1,
     context: context.StepContext | None = None,
-) -> typing.Annotated[list[evaluation.Completion], "answers"]:
+) -> typing.Annotated[list[evaluation.Completion], "completions"]:
     db = config.get_vector_database()
     data_loader = training.VectorDBDataLoader(db=db)
     dataset = data_loader.load_instruct_dataset(author_id=author_id)
@@ -41,7 +41,7 @@ def generate_completions_for_test_samples(
 
     step_context = context or zenml.get_step_context()
     step_context.add_output_metadata(
-        output_name="answers", metadata={"num_completions": len(completions)}
+        output_name="completions", metadata={"num_completions": len(completions)}
     )
 
     return completions

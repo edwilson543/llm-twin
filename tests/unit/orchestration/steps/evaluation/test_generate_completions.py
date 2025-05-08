@@ -40,4 +40,4 @@ def test_generates_completions_for_instruct_dataset_containing_single_sample():
         == "Below is an instruction that describes a task. Write a response that appropriately completes the request.\n\n### Instruction:\nfixed\n\n### Response:\n(CloneDispatchToProps Stitch"
     )
 
-    assert context.output_metadata == {"answers": {"num_completions": 1}}
+    assert context.output_metadata == {"completions": {"num_completions": 1}}
