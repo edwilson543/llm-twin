@@ -1,2 +1,2 @@
-from ._evaluate_answers import evaluate_answers
-from ._generate_answers import generate_answers
+from ._evaluate_completions import evaluate_completions
+from ._generate_completions import generate_completions_for_test_samples

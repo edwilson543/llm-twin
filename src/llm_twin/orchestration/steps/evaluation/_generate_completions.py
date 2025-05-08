@@ -10,7 +10,7 @@ from llm_twin.orchestration.steps import context
 
 
 @zenml.step
-def generate_answers(
+def generate_completions_for_test_samples(
     author_id: str,
     load_model_from: str,
     max_tokens: int = 4096,

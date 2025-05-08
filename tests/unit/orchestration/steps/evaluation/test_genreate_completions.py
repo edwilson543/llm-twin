@@ -1,5 +1,5 @@
 from llm_twin.domain import training
-from llm_twin.orchestration.steps.evaluation import _generate_answers
+from llm_twin.orchestration.steps.evaluation import _generate_completions
 from testing.factories import dataset as dataset_factories
 from testing.factories import documents as document_factories
 from testing.helpers import config as config_helpers
@@ -7,7 +7,7 @@ from testing.helpers import storage as storage_helpers
 from testing.helpers import zenml as zenml_helpers
 
 
-def test_generates_answer_for_instruct_dataset_containing_single_sample():
+def test_generates_completions_for_instruct_dataset_containing_single_sample():
     author = document_factories.Author()
     sample = dataset_factories.InstructSample(instruction="fixed")
     test_dataset = dataset_factories.InstructSampleDataset(samples=[sample])
@@ -19,11 +19,13 @@ def test_generates_answer_for_instruct_dataset_containing_single_sample():
     db = storage_helpers.InMemoryVectorDatabase(vectors=[dataset])
 
     with config_helpers.install_in_memory_vector_db(db=db):
-        completions = _generate_answers.generate_answers.entrypoint(
-            author_id=author.id,
-            load_model_from="llamafactory/tiny-random-Llama-3",
-            max_tokens=30,
-            context=context,
+        completions = (
+            _generate_completions.generate_completions_for_test_samples.entrypoint(
+                author_id=author.id,
+                load_model_from="llamafactory/tiny-random-Llama-3",
+                max_tokens=30,
+                context=context,
+            )
         )
 
     assert len(dataset.test.samples) == len(completions) == 1
