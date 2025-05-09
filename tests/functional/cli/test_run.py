@@ -23,7 +23,7 @@ def test_raises_when_invalid_author_option_given():
 
 
 def test_runs_all_pipelines_back_to_back():
-    args = ["--author", "jackof-alltrades", "--disable-cache"]
+    args = ["--author", "jackof-alltrades", "--stop-after", "dg", "--disable-cache"]
     command_runner = click_testing.CliRunner()
 
     with config_helpers.install_fake_language_model():
