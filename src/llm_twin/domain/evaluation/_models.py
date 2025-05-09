@@ -7,7 +7,7 @@ from llm_twin.domain import models
 
 
 class EvaluationCriteria(pydantic.BaseModel):
-    score: int = pydantic.Field(ge=1, le=3)
+    score: int
     analysis: str
 
 
@@ -16,7 +16,7 @@ class Evaluation(pydantic.BaseModel):
     style: EvaluationCriteria
 
 
-class Aggregate(enum.Enum):
+class Aggregate(enum.StrEnum):
     MEAN = "mean"
 
 

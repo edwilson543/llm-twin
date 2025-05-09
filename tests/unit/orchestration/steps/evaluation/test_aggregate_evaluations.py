@@ -19,9 +19,6 @@ def test_aggregates_evaluations_into_useful_measures():
     assert mean.style > 0
 
     assert context.output_metadata["evaluation_aggregates"] == {
-        "mean": {
-            "aggregate": evaluation.Aggregate.MEAN,
-            "accuracy": mean.accuracy,
-            "style": mean.style,
-        }
+        "num_evaluations": len(evaluations),
+        "mean": {"accuracy": mean.accuracy, "style": mean.style},
     }

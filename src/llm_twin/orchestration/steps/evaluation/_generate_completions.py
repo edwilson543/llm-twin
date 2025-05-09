@@ -13,7 +13,7 @@ from llm_twin.orchestration.steps import context
 def generate_completions_for_test_samples(
     author_id: str,
     load_model_from: str,
-    max_tokens: int = 4096,
+    max_tokens: int,
     top_k: int = 1,
     context: context.StepContext | None = None,
 ) -> typing.Annotated[list[evaluation.Completion], "completions"]:
