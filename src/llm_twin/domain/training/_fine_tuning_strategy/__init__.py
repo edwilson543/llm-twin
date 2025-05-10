@@ -1,2 +1,3 @@
+from ._constants import render_alpaca_template
 from ._direct_preference_optimisation import DirectPreferenceOptimisation
 from ._supervised_fine_tuning import SupervisedFineTuning

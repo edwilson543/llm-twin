@@ -1,6 +1,7 @@
 import torch
 import transformers
 
+from llm_twin.domain import training
 from llm_twin.orchestration.pipelines import _train
 from testing.factories import dataset as dataset_factories
 from testing.factories import documents as document_factories
@@ -11,11 +12,9 @@ def test_trains_model_using_sft_then_dpo(output_dir):
     dataset_factories.InstructTrainTestSplit.create(author_id=author.id)
     dataset_factories.PreferenceTrainTestSplit.create(author_id=author.id)
 
-    base_model_name = "llamafactory/tiny-random-Llama-3"
-
     _train.train.entrypoint(
         author_id=author.id,
-        base_model_name=base_model_name,
+        base_model_name=training.BaseModelName.TINY_RANDOM,
         output_dir=output_dir,
         num_train_epochs=2,
         report_to=None,

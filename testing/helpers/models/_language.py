@@ -1,7 +1,8 @@
 import dataclasses
 
-from llm_twin.domain import dataset_generation, models
+from llm_twin.domain import dataset_generation, evaluation, models
 from testing.factories import dataset as dataset_factories
+from testing.factories import evaluation as evaluation_factories
 
 
 @dataclasses.dataclass(frozen=True)
@@ -15,6 +16,7 @@ class FakeLanguageModel(models.LanguageModel):
         response_factories = {
             dataset_generation.InstructSampleList: dataset_factories.InstructSampleList,
             dataset_generation.PreferenceSampleList: dataset_factories.PreferenceSampleList,
+            evaluation.Evaluation: evaluation_factories.Evaluation,
         }
 
         response = response_factories[response_format]()

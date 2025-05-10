@@ -7,7 +7,7 @@ import trl
 
 from llm_twin.domain import dataset_generation
 
-from . import _base
+from . import _base, _constants
 
 
 @dataclasses.dataclass
@@ -26,7 +26,9 @@ class DirectPreferenceOptimisation(
         trainer = self._get_trainer(model=model, tokenizer=tokenizer, dataset=dataset)
         trainer.train()
 
-        self._export_model(model=model)
+        model.merge_and_unload()
+        model.save_pretrained(save_directory=str(self.output_dir))
+        tokenizer.save_pretrained(save_directory=str(self.output_dir))
 
     def _get_model_and_tokenizer(
         self,
@@ -77,7 +79,9 @@ class DirectPreferenceOptimisation(
             samples=dataset.train.samples, eos_token=tokenizer.eos_token
         )
         eval_dataset = self._format_samples(
-            samples=dataset.test.samples, eos_token=tokenizer.eos_token
+            # TODO -> split out a separate validation set here instead of using test set.
+            samples=dataset.test.samples,
+            eos_token=tokenizer.eos_token,
         )
 
         return trl.DPOTrainer(
@@ -88,10 +92,6 @@ class DirectPreferenceOptimisation(
             args=training_args,
         )
 
-    def _export_model(self, *, model: peft.PeftModel) -> None:
-        model.merge_and_unload()
-        model.save_pretrained(save_directory=str(self.output_dir))
-
     @staticmethod
     def _format_samples(
         *, samples: list[dataset_generation.PreferenceSample], eos_token: str
@@ -100,19 +100,10 @@ class DirectPreferenceOptimisation(
             sample: dataset_generation.PreferenceSample,
         ) -> dict[str, str]:
             return {
-                "prompt": ALPACA_TEMPLATE.format(sample.instruction, ""),
+                "prompt": _constants.render_alpaca_template(sample.instruction),
                 "chosen": sample.chosen + eos_token,
                 "rejected": sample.rejected + eos_token,
             }
 
         formatted_data = [_format_sample(sample) for sample in samples]
         return datasets.Dataset.from_list(formatted_data)
-
-
-ALPACA_TEMPLATE = """Below is an instruction that describes a task. Write a response that appropriately completes the request.
-
-### Instruction:
-{}
-
-### Response:
-{}"""

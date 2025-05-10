@@ -2,13 +2,14 @@ import pathlib
 
 import zenml
 
+from llm_twin.domain import training
 from llm_twin.orchestration.steps import training as training_steps
 
 
 @zenml.pipeline
 def train(
     author_id: str,
-    base_model_name: str,
+    base_model_name: training.BaseModelName,
     output_dir: pathlib.Path,
     num_train_epochs: int,
     report_to: str | None,
@@ -36,7 +37,7 @@ def train(
 
 
 if __name__ == "__main__":
-    base_model_name = "llamafactory/tiny-random-Llama-3"
+    base_model_name = training.BaseModelName.TINY_RANDOM.value
 
     train.with_options(enable_cache=False)(
         author_id="29eec0df-0405-45a9-a3ef-40c314e15789",

@@ -106,7 +106,7 @@ name = "Domain layer"
 type = "layers"
 containers = "llm_twin.domain"
 layers = [
-    "training",
+    "training | evaluation",
     "dataset_generation",
     "feature_engineering",
     "etl",

@@ -52,11 +52,11 @@ mongosh_test:
 # CLI
 .PHONY:run_ed
 run_ed:
-	python src/llm_twin/interfaces/cli/run.py --author=ed-wilson --disable-cache
+	python src/llm_twin/interfaces/cli/run.py --author=ed-wilson
 
 .PHONY:run_jack
 run_jack:
-	python src/llm_twin/interfaces/cli/run.py --author=jackof-alltrades --disable-cache
+	python src/llm_twin/interfaces/cli/run.py --author=jackof-alltrades
 
 # CI checks
 

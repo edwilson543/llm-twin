@@ -7,7 +7,7 @@ import trl
 
 from llm_twin.domain import dataset_generation
 
-from . import _base
+from . import _base, _constants
 
 
 @dataclasses.dataclass
@@ -76,7 +76,9 @@ class SupervisedFineTuning(_base.FineTuningStrategy[dataset_generation.InstructS
             samples=dataset.train.samples, eos_token=tokenizer.eos_token
         )
         eval_dataset = self._format_samples(
-            samples=dataset.test.samples, eos_token=tokenizer.eos_token
+            # TODO -> split out a separate validation set here instead of using test set.
+            samples=dataset.test.samples,
+            eos_token=tokenizer.eos_token,
         )
 
         return trl.SFTTrainer(
@@ -90,16 +92,10 @@ class SupervisedFineTuning(_base.FineTuningStrategy[dataset_generation.InstructS
         self, *, samples: list[dataset_generation.InstructSample], eos_token: str
     ) -> datasets.Dataset:
         def _format_sample(sample: dataset_generation.InstructSample) -> str:
-            return ALPACA_TEMPLATE.format(sample.instruction, sample.answer) + eos_token
+            return (
+                _constants.render_alpaca_template(sample.instruction, sample.answer)
+                + eos_token
+            )
 
         data = {self.dataset_text_field: [_format_sample(sample) for sample in samples]}
         return datasets.Dataset.from_dict(data)
-
-
-ALPACA_TEMPLATE = """Below is an instruction that describes a task. Write a response that appropriately completes the request.
-
-### Instruction:
-{}
-
-### Response:
-{}"""

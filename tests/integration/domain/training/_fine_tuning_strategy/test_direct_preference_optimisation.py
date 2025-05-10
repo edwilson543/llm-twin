@@ -1,9 +1,7 @@
 import torch
 import transformers
 
-from llm_twin.domain.training._fine_tuning_strategy import (
-    _direct_preference_optimisation,
-)
+from llm_twin.domain import training
 from testing.factories import dataset as dataset_factories
 
 
@@ -11,9 +9,9 @@ class TestFineTune:
     def test_can_fine_tune_tiny_random_llama_on_fake_dataset(self, output_dir):
         dataset = dataset_factories.PreferenceTrainTestSplit()
 
-        model_name = "llamafactory/tiny-random-Llama-3"
-        strategy = _direct_preference_optimisation.DirectPreferenceOptimisation(
-            model_name=model_name,
+        model_name = training.BaseModelName.TINY_RANDOM
+        strategy = training.DirectPreferenceOptimisation(
+            model_name=model_name.value,
             output_dir=output_dir,
             report_to=None,  # Don't report training data anywhere.
             num_train_epochs=1,
