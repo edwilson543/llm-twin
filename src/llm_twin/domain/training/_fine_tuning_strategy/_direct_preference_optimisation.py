@@ -26,7 +26,9 @@ class DirectPreferenceOptimisation(
         trainer = self._get_trainer(model=model, tokenizer=tokenizer, dataset=dataset)
         trainer.train()
 
-        self._export_model(model=model)
+        model.merge_and_unload()
+        model.save_pretrained(save_directory=str(self.output_dir))
+        tokenizer.save_pretrained(save_directory=str(self.output_dir))
 
     def _get_model_and_tokenizer(
         self,
@@ -89,10 +91,6 @@ class DirectPreferenceOptimisation(
             eval_dataset=eval_dataset,
             args=training_args,
         )
-
-    def _export_model(self, *, model: peft.PeftModel) -> None:
-        model.merge_and_unload()
-        model.save_pretrained(save_directory=str(self.output_dir))
 
     @staticmethod
     def _format_samples(

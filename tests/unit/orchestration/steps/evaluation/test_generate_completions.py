@@ -22,7 +22,7 @@ def test_generates_completions_for_instruct_dataset_containing_single_sample():
         completions = (
             _generate_completions.generate_completions_for_test_samples.entrypoint(
                 author_id=author.id,
-                load_model_from="llamafactory/tiny-random-Llama-3",
+                load_model_from=training.BaseModelName.TINY_RANDOM.value,
                 max_tokens=30,
                 context=context,
             )

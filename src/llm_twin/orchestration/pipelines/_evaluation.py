@@ -1,5 +1,6 @@
 import zenml
 
+from llm_twin.domain import training
 from llm_twin.orchestration.steps import evaluation as evaluation_steps
 
 
@@ -15,10 +16,10 @@ def evaluate_model(
 
 
 if __name__ == "__main__":
-    base_model_name = "llamafactory/tiny-random-Llama-3"
+    base_model_name = training.BaseModelName.TINY_RANDOM
 
     evaluate_model.with_options(enable_cache=True)(
         author_id="29eec0df-0405-45a9-a3ef-40c314e15789",
-        load_model_from=base_model_name,
+        load_model_from=base_model_name.value,
         max_tokens=50,
     )
