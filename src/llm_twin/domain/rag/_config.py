@@ -1,15 +1,17 @@
-import pydantic
+import dataclasses
 
 from llm_twin.domain import models
 from llm_twin.domain.storage import vector as vector_storage
 
 
-class RAGConfig(pydantic.BaseModel):
+@dataclasses.dataclass(frozen=True)
+class RAGConfig:
     # Databases.
     db: vector_storage.VectorDatabase
 
     # Third party models.
     language_model: models.LanguageModel
+    embedding_model: models.EmbeddingModel
     cross_encoder_model: models.CrossEncoderModel
 
     # Parameters.

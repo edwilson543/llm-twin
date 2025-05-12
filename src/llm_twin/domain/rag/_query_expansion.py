@@ -21,7 +21,15 @@ def expand_query(
     """
     Create multiple wordings of the query, to better capture nuances during context retrieval.
     """
-    raise NotImplementedError
+    prompt = PROMPT_TEMPLATE.format(
+        number_of_query_expansions=number_of_query_expansions, query=query
+    )
+
+    message = models.Message.user(content=prompt)
+    return language_model.get_response(
+        messages=[message],
+        response_format=Expansion,
+    )
 
 
 PROMPT_TEMPLATE = """Generate {number_of_query_expansions} different versions of the given query question. 

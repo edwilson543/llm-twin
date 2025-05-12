@@ -41,6 +41,7 @@ def _search_vector_db(
     """
     Search the vector database for the context chunks most relevant to the query.
     """
+    # TODO -> implement.
     raise NotImplementedError
 
 
