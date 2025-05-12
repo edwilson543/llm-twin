@@ -1,3 +1,8 @@
+from ._cross_encoder import (
+    CrossEncoderModel,
+    CrossEncoderModelName,
+    SentenceTransformerCrossEncoder,
+)
 from ._embedding import (
     EmbeddingModel,
     EmbeddingModelConfig,
