@@ -3,6 +3,7 @@ import typing
 import uuid
 
 from llm_twin.domain.storage import vector as vector_storage
+from llm_twin.domain.storage.vector import VectorT
 from llm_twin.infrastructure.db import qdrant
 
 
@@ -25,6 +26,15 @@ class InMemoryVectorDatabase(vector_storage.VectorDatabase):
             and self._vector_matches_filter_options(vector, **filter_options)
         ]
         return vectors[:limit], None
+
+    def vector_search(
+        self,
+        *,
+        vector_class: type[VectorT],
+        query_vector: list[float],
+        limit: int,
+    ) -> list[VectorT]:
+        return self.bulk_find(vector_class=vector_class, limit=limit)[0]
 
     def bulk_insert(self, *, vectors: typing.Sequence[vector_storage.Vector]) -> None:
         self.vectors.extend(vectors)

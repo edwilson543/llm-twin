@@ -70,3 +70,40 @@ class TestBulkInsertBulkFindVectorEmbeddings:
         sorted_result = sorted(vectors, key=lambda vector: vector.name)
         assert sorted_result == [vector_a, vector_b]
         assert next_offset is None
+
+
+class TestVectorSearch:
+    def test_can_bulk_insert_and_then_search_for_vectors_by_embedding(self):
+        qdrant_db = config.get_vector_database()
+        embedding_model = config.get_embedding_model()
+
+        embedding = [1.0] + [0.0] * (embedding_model.embedding_size - 1)
+        vector = vector_factories.VectorEmbedding.build(embedding=embedding)
+
+        other_embedding = [0.0] * (embedding_model.embedding_size - 1) + [1.0]
+        other_vector = vector_factories.VectorEmbedding.build(embedding=other_embedding)
+
+        qdrant_db.bulk_insert(vectors=[vector, other_vector])
+
+        vectors = qdrant_db.vector_search(
+            vector_class=vector_factories._VectorEmbedding,
+            query_vector=other_embedding,
+            limit=1,
+        )
+
+        assert len(vectors) == 1
+        assert vectors[0] == other_vector
+
+    def test_vector_search_returns_empty_list_when_collection_does_not_exist(self):
+        qdrant_db = config.get_vector_database()
+        embedding_model = config.get_embedding_model()
+
+        query_vector = [1.0] * embedding_model.embedding_size
+
+        vectors = qdrant_db.vector_search(
+            vector_class=vector_factories._VectorEmbedding,
+            query_vector=query_vector,
+            limit=1,
+        )
+
+        assert vectors == []

@@ -36,6 +36,19 @@ class VectorDatabase(abc.ABC):
         """
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def vector_search(
+        self,
+        *,
+        vector_class: type[VectorT],
+        query_vector: list[float],
+        limit: int,
+    ) -> list[VectorT]:
+        """
+        Find all vectors in the collection matching the filter options.
+        """
+        raise NotImplementedError
+
     # Write operations.
 
     @abc.abstractmethod
