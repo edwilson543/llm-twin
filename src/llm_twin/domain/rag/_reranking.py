@@ -12,7 +12,9 @@ def filter_most_relevant_context(
     """
     Use the cross encoder to filter out the context chunks least relevant to the query.
     """
-    if len(chunks) <= max_chunks:
-        return chunks
-
-    raise NotImplementedError
+    # TODO -> implement.
+    return chunks
+    # if len(chunks) <= max_chunks:
+    #     return chunks
+    #
+    # raise NotImplementedError

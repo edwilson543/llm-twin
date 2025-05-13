@@ -1,5 +1,4 @@
 from llm_twin.domain.feature_engineering import embedding
-from llm_twin.domain.storage import vector as vector_storage
 
 from . import _config, _query_expansion, _reranking
 
@@ -16,11 +15,22 @@ def retrieve_context_for_query(
         language_model=config.language_model,
     )
 
+    query_vectors = config.embedding_model.generate_embeddings(
+        input_text=expansion.all_queries
+    )
+    query_classes: list[type[embedding.EmbeddedChunk]] = [
+        embedding.EmbeddedArticleChunk,
+        embedding.EmbeddedRepositoryChunk,
+    ]
+
     all_chunks = [
-        _search_vector_db(
-            query=query, max_chunks=config.max_chunks_per_query, db=config.db
+        config.db.vector_search(
+            vector_class=klass,
+            query_vector=query_vector,
+            limit=config.max_chunks_per_query,
         )
-        for query in expansion.all_queries
+        for query_vector in query_vectors
+        for klass in query_classes
     ]
     unique_chunks = _get_unique_chunks(chunks=all_chunks)
 
@@ -32,21 +42,15 @@ def retrieve_context_for_query(
     )
 
 
-def _search_vector_db(
-    *,
-    query: str,
-    max_chunks: int,
-    db: vector_storage.VectorDatabase,
-) -> list[embedding.EmbeddedChunk]:
-    """
-    Search the vector database for the context chunks most relevant to the query.
-    """
-    # TODO -> implement.
-    raise NotImplementedError
-
-
 def _get_unique_chunks(
     *,
     chunks: list[list[embedding.EmbeddedChunk]],
 ) -> list[embedding.EmbeddedChunk]:
-    raise NotImplementedError
+    unique_chunks: dict[str, embedding.EmbeddedChunk] = {}
+
+    for chunk_list in chunks:
+        for chunk in chunk_list:
+            if chunk.id not in unique_chunks.keys():
+                unique_chunks[chunk.id] = chunk
+
+    return list(unique_chunks.values())
