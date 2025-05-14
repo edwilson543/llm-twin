@@ -1,3 +1,8 @@
+from ._cross_encoder import (
+    CrossEncoderModel,
+    CrossEncoderModelName,
+    SentenceTransformerCrossEncoder,
+)
 from ._embedding import (
     EmbeddingModel,
     EmbeddingModelConfig,
@@ -12,3 +17,4 @@ from ._language import (
     ResponseFormatT,
     UnableToGetResponse,
 )
+from ._singleton import SingletonMeta

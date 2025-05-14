@@ -1,8 +1,10 @@
 import dataclasses
 
 from llm_twin.domain import dataset_generation, evaluation, models
+from llm_twin.domain.rag._retrieval import _query_expansion
 from testing.factories import dataset as dataset_factories
 from testing.factories import evaluation as evaluation_factories
+from testing.factories import rag as rag_factories
 
 
 @dataclasses.dataclass(frozen=True)
@@ -17,6 +19,7 @@ class FakeLanguageModel(models.LanguageModel):
             dataset_generation.InstructSampleList: dataset_factories.InstructSampleList,
             dataset_generation.PreferenceSampleList: dataset_factories.PreferenceSampleList,
             evaluation.Evaluation: evaluation_factories.Evaluation,
+            _query_expansion.Expansion: rag_factories.Expansion,
         }
 
         response = response_factories[response_format]()

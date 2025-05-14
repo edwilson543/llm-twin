@@ -1,4 +1,6 @@
-from llm_twin.domain import models
+import pathlib
+
+from llm_twin.domain import inference, models, rag
 from llm_twin.domain.storage import document as document_storage
 from llm_twin.domain.storage import vector as vector_storage
 from llm_twin.infrastructure.db import mongo, qdrant
@@ -36,15 +38,14 @@ def get_vector_database() -> vector_storage.VectorDatabase:
 def _get_embedding_model_config() -> models.EmbeddingModelConfig:
     configs: dict[models.EmbeddingModelName, models.EmbeddingModelConfig] = {
         models.EmbeddingModelName.MINILM: models.EmbeddingModelConfig(
-            model_name=models.EmbeddingModelName.MINILM,
-            embedding_size=384,
-            max_input_length=256,
-            cache_dir=settings.MODEL_CACHE_DIR,
+            model_name=settings.EMBEDDING_MODEL_NAME,
+            embedding_size=settings.EMBEDDING_SIZE,
+            max_input_length=settings.EMBEDDING_MODEL_MAX_INPUT_LENGTH,
+            cache_dir=settings.EMBEDDING_MODEL_CACHE_DIR,
         )
     }
 
-    model_name = models.EmbeddingModelName(settings.EMBEDDING_MODEL_NAME)
-    return configs[model_name]
+    return configs[settings.EMBEDDING_MODEL_NAME]
 
 
 def get_embedding_model() -> models.EmbeddingModel:
@@ -61,7 +62,31 @@ def get_language_model() -> models.LanguageModel:
     )
 
 
+def get_cross_encoder_model() -> models.CrossEncoderModel:
+    return models.SentenceTransformerCrossEncoder(
+        model_name=settings.RETRIEVAL_CROSS_ENCODER_MODEL_NAME
+    )
+
+
+# RAG.
+
+
+def get_retrieval_config() -> rag.RetrievalConfig:
+    return rag.RetrievalConfig(
+        db=get_vector_database(),
+        language_model=get_language_model(),
+        embedding_model=get_embedding_model(),
+        cross_encoder_model=get_cross_encoder_model(),
+        max_documents_per_query=settings.RETRIEVAL_MAX_DOCUMENTS_PER_QUERY,
+        number_of_query_expansions=settings.RETRIEVAL_NUMBER_OF_QUERY_EXPANSIONS,
+    )
+
+
 # Training.
+
+
+def get_training_output_dir() -> pathlib.Path:
+    return pathlib.Path(settings.TRAINING_OUTPUT_DIR)
 
 
 def login_to_comet_ml() -> None:
@@ -70,6 +95,11 @@ def login_to_comet_ml() -> None:
     comet_ml.login(
         api_key=settings.COMET_API_KEY, project_name=settings.COMET_PROJECT_NAME
     )
+
+
+def get_llm_twin() -> inference.LLMTwinModelBase:
+    load_model_from = get_training_output_dir() / "dpo"
+    return inference.LLMTwinModel(load_model_from=load_model_from)
 
 
 # def get_training_runner() -> training.Runner:

@@ -24,8 +24,20 @@ class Settings(pydantic_settings.BaseSettings):
     QDRANT_DATABASE_PORT: int = 6333
 
     # Embeddings.
-    EMBEDDING_MODEL_NAME: str = models.EmbeddingModelName.MINILM.value
-    MODEL_CACHE_DIR: str | None = None
+    EMBEDDING_MODEL_NAME: models.EmbeddingModelName = models.EmbeddingModelName.MINILM
+    EMBEDDING_MODEL_MAX_INPUT_LENGTH: int = 256
+    EMBEDDING_MODEL_CACHE_DIR: str | None = None
+    EMBEDDING_SIZE: int = 384
+
+    # Retrieval.
+    RETRIEVAL_CROSS_ENCODER_MODEL_NAME: models.CrossEncoderModelName = (
+        models.CrossEncoderModelName.TINY_BERT
+    )
+    RETRIEVAL_NUMBER_OF_QUERY_EXPANSIONS: int = 3
+    RETRIEVAL_MAX_DOCUMENTS_PER_QUERY: int = 3
+
+    # Training.
+    TRAINING_OUTPUT_DIR: str = "/tmp/llm-twin/"
 
     # Vendors.
     AWS_SAGEMAKER_ROLE_ARN: str = ""

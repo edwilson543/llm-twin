@@ -90,6 +90,34 @@ class QdrantDatabase(vector_storage.VectorDatabase):
         next_offset = str(next_offset) if next_offset else None
         return documents, next_offset
 
+    def vector_search(
+        self,
+        *,
+        vector_class: type[vector_storage.VectorT],
+        query_vector: list[float],
+        limit: int,
+    ) -> list[vector_storage.VectorT]:
+        collection = vector_class.collection()
+
+        try:
+            scored_points = self._connector.client.search(
+                collection_name=collection.value,
+                query_vector=query_vector,
+                limit=limit,
+                with_vectors=True,
+                with_payload=True,
+            )
+        except qdrant_exceptions.UnexpectedResponse as exc:
+            if exc.status_code == 404:
+                return []  # Collection does not exist.
+            else:
+                raise
+
+        return [
+            _get_vector_from_scored_point(point=point, vector_class=vector_class)
+            for point in scored_points
+        ]
+
     def bulk_insert(self, *, vectors: typing.Sequence[vector_storage.Vector]) -> None:
         grouped_vectors: dict[
             type[vector_storage.Vector], list[qdrant_models.PointStruct]
@@ -135,7 +163,7 @@ class QdrantDatabase(vector_storage.VectorDatabase):
         )
 
 
-# Serialization.
+# Serialization / Deserialization.
 
 
 def _get_vector_from_record(
@@ -144,6 +172,15 @@ def _get_vector_from_record(
     attributes = {"id": record.id, **(record.payload or {})}
     if issubclass(vector_class, vector_storage.VectorEmbedding):
         attributes.update({"embedding": record.vector})
+    return vector_class(**attributes)
+
+
+def _get_vector_from_scored_point(
+    *, point: qdrant_models.ScoredPoint, vector_class: type[vector_storage.VectorT]
+) -> vector_storage.VectorT:
+    attributes = {"id": point.id, **(point.payload or {})}
+    if issubclass(vector_class, vector_storage.VectorEmbedding):
+        attributes.update({"embedding": point.vector})
     return vector_class(**attributes)
 
 

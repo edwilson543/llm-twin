@@ -1,6 +1,6 @@
 import factory
 
-from llm_twin.domain.feature_engineering import chunking, cleaning
+from llm_twin.domain.feature_engineering import chunking, cleaning, embedding
 from llm_twin.domain.storage import vector as vector_storage
 
 from . import _base, _mixins, documents
@@ -78,3 +78,20 @@ class ArticleChunk(_Chunk, _mixins.ArticleMixin):
 class RepositoryChunk(_Chunk, _mixins.RepositoryMixin):
     class Meta:
         model = chunking.RepositoryChunk
+
+
+# Embedding.
+
+
+class _Embedding(_Chunk):
+    embedding = factory.LazyFunction(lambda: [1.0] + [0.0] * 383)
+
+
+class EmbeddedArticleChunk(_Embedding, _mixins.ArticleMixin):
+    class Meta:
+        model = embedding.EmbeddedArticleChunk
+
+
+class EmbeddedRepositoryChunk(_Embedding, _mixins.RepositoryMixin):
+    class Meta:
+        model = embedding.EmbeddedRepositoryChunk

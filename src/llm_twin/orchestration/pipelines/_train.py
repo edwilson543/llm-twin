@@ -2,6 +2,7 @@ import pathlib
 
 import zenml
 
+from llm_twin import config
 from llm_twin.domain import training
 from llm_twin.orchestration.steps import training as training_steps
 
@@ -10,10 +11,12 @@ from llm_twin.orchestration.steps import training as training_steps
 def train(
     author_id: str,
     base_model_name: training.BaseModelName,
-    output_dir: pathlib.Path,
     num_train_epochs: int,
     report_to: str | None,
+    output_dir: pathlib.Path | None = None,
 ) -> None:
+    output_dir = output_dir or config.get_training_output_dir()
+
     sft_model_path = output_dir / "sft"
     training_steps.run_supervised_fine_tuning(
         author_id=author_id,

@@ -25,7 +25,7 @@ dependencies = [
     "pydantic-settings>=2.8.1",
     "pymongo>=4.11.2",
     "qdrant-client>=1.13.3",
-    "sentence-transformers>=4.0.2",
+    "sentence-transformers>=4.0.0",
     #  transformers>=4.5.1 currently breaking on MacOS.
     # TODO: remove once resolved. https://github.com/huggingface/transformers/issues/37326.
     "transformers<=4.50.3",
@@ -85,7 +85,16 @@ module = "tests.*"
 allow_untyped_defs = true
 
 [tool.importlinter]
-root_package = "llm_twin"
+root_packages = ["llm_twin", "testing", "tests"]
+
+[[tool.importlinter.contracts]]
+name = "Root packagess"
+type = "layers"
+layers = [
+    "tests",
+    "testing",
+    "llm_twin",
+]
 
 [[tool.importlinter.contracts]]
 name = "Top level layers"
@@ -106,7 +115,8 @@ name = "Domain layer"
 type = "layers"
 containers = "llm_twin.domain"
 layers = [
-    "training | evaluation",
+    "inference | evaluation | rag",
+    "training",
     "dataset_generation",
     "feature_engineering",
     "etl",
@@ -161,6 +171,25 @@ modules = [
     "llm_twin.orchestration.steps.etl",
     "llm_twin.orchestration.steps.feature_engineering",
 ]
+
+[[tool.importlinter.contracts]]
+name = "Testing package layers"
+type = "layers"
+containers = "testing"
+layers = [
+    "helpers",
+    "factories",
+]
+exhaustive = true
+
+[[tool.importlinter.contracts]]
+name = "Tests package layers"
+type = "layers"
+containers = "tests"
+layers = [
+    "functional | integration | unit | conftest"
+]
+exhaustive = true
 
 [tool.ruff]
 

@@ -1,5 +1,4 @@
 import abc
-import typing
 
 import pydantic
 
@@ -14,19 +13,11 @@ class EmbeddedChunk(vector_storage.VectorEmbedding, abc.ABC):
     author_full_name: str
     metadata: dict = pydantic.Field(default_factory=dict)
 
-    @classmethod
-    def to_context(cls, chunks: list[typing.Self]) -> str:
-        context = ""
-        for i, chunk in enumerate(chunks):
-            context += f"""
-            Chunk {i + 1}:
-            Type: {chunk.__class__.__name__}
-            Platform: {chunk.platform}
-            Author: {chunk.author_full_name}
-            Content: {chunk.content}\n
-            """
-
-        return context
+    def to_context(self) -> str:
+        return f"""Category: {self.category().value}
+            Platform: {self.platform}
+            Author: {self.author_full_name}
+            Content: {self.content}"""
 
 
 class EmbeddedArticleChunk(EmbeddedChunk):
