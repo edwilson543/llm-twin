@@ -3,6 +3,7 @@ import typing
 from unittest import mock
 
 from llm_twin import config
+from llm_twin.config import _dependencies
 from llm_twin.domain import rag
 from testing.helpers import inference as inference_helpers
 from testing.helpers import models as models_helpers
@@ -61,13 +62,19 @@ def install_fake_language_model() -> typing.Generator[
     Helper that overrides the settings module to install a fake language model.
     """
     fake_language_model = models_helpers.FakeLanguageModel()
-    with mock.patch.object(
-        config, "get_language_model", return_value=fake_language_model
+    with (
+        mock.patch.object(
+            config, "get_language_model", return_value=fake_language_model
+        ),
+        mock.patch.object(
+            _dependencies, "get_language_model", return_value=fake_language_model
+        ),
     ):
         yield fake_language_model
 
 
 # RAG.
+
 
 def get_retrieval_config(
     db: storage_helpers.InMemoryVectorDatabase | None = None,
