@@ -1,7 +1,4 @@
-import torch
-import transformers
-
-from llm_twin.domain import training
+from llm_twin.domain import inference, training
 from testing.factories import dataset as dataset_factories
 
 
@@ -20,8 +17,9 @@ class TestFineTune:
 
         strategy.fine_tune(dataset=dataset)
 
-        # Load the tuned model, and use it to generate some dummy outputs.
-        model = transformers.AutoModelForCausalLM.from_pretrained(output_dir)
-
-        dummy_output_tokens = model.generate(max_length=2, top_k=1)
-        assert dummy_output_tokens.equal(torch.tensor([[128000, 28510]]))
+        # Load the tuned model, and use it to generate a dummy response.
+        model = inference.LLMTwinModel(load_model_from=output_dir)
+        _, dummy_output = model.get_response(
+            instruction="Hello?", max_tokens=30, top_k=1
+        )
+        assert dummy_output.endswith("(CloneDispatchToProps Stitch")

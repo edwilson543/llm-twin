@@ -1,12 +1,15 @@
-from . import _config, _retrieval
+import typing
+
+from llm_twin.domain.feature_engineering import embedding
 
 
-def augment_query(*, query: str, config: _config.RAGConfig) -> str:
+def augment_query(
+    *, query: str, documents: typing.Sequence[embedding.EmbeddedChunk]
+) -> str:
     """
     Augment a query with context retrieved from the database.
     """
-    chunks = _retrieval.retrieve_context_for_query(query=query, config=config)
-    context = "\n".join(chunk.to_context() for chunk in chunks)
+    context = "\n".join(document.to_context() for document in documents)
     return PROMPT_TEMPLATE.format(query=query, context=context)
 
 

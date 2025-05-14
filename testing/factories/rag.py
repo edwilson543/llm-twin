@@ -1,6 +1,6 @@
 import factory
 
-from llm_twin.domain.rag import _query_expansion
+from llm_twin.domain.rag._retrieval import _query_expansion
 
 
 class Expansion(factory.Factory):

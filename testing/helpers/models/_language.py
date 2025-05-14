@@ -1,7 +1,7 @@
 import dataclasses
 
 from llm_twin.domain import dataset_generation, evaluation, models
-from llm_twin.domain.rag import _query_expansion
+from llm_twin.domain.rag._retrieval import _query_expansion
 from testing.factories import dataset as dataset_factories
 from testing.factories import evaluation as evaluation_factories
 from testing.factories import rag as rag_factories

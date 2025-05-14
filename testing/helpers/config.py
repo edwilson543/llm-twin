@@ -4,6 +4,7 @@ from unittest import mock
 
 from llm_twin import config
 from llm_twin.domain import rag
+from testing.helpers import inference as inference_helpers
 from testing.helpers import models as models_helpers
 from testing.helpers import storage as storage_helpers
 
@@ -67,16 +68,29 @@ def install_fake_language_model() -> typing.Generator[
 
 
 # RAG.
-def get_rag_config(
+
+def get_retrieval_config(
     db: storage_helpers.InMemoryVectorDatabase | None = None,
     number_of_query_expansions: int = 1,
-    max_chunks_per_query: int = 1,
-) -> rag.RAGConfig:
-    return rag.RAGConfig(
+    max_documents_per_query: int = 1,
+) -> rag.RetrievalConfig:
+    return rag.RetrievalConfig(
         db=db or storage_helpers.InMemoryVectorDatabase(),
         language_model=models_helpers.FakeLanguageModel(),
         embedding_model=models_helpers.get_fake_embedding_model(),
         cross_encoder_model=models_helpers.FakeCrossEncoder(),
         number_of_query_expansions=number_of_query_expansions,
-        max_chunks_per_query=max_chunks_per_query,
+        max_documents_per_query=max_documents_per_query,
     )
+
+
+@contextlib.contextmanager
+def install_fake_llm_twin() -> typing.Generator[
+    inference_helpers.FakeLLMTwin, None, None
+]:
+    """
+    Helper that overrides the settings module to install a fake language model.
+    """
+    fake_llm_twin = inference_helpers.FakeLLMTwin()
+    with mock.patch.object(config, "get_llm_twin", return_value=fake_llm_twin):
+        yield fake_llm_twin

@@ -1,11 +1,11 @@
+import pathlib
 import typing
 
 import loguru
-import transformers
 import zenml
 
 from llm_twin import config
-from llm_twin.domain import evaluation, training
+from llm_twin.domain import evaluation, inference, training
 from llm_twin.orchestration.steps import context
 
 
@@ -21,20 +21,15 @@ def generate_completions_for_test_samples(
     data_loader = training.VectorDBDataLoader(db=db)
     dataset = data_loader.load_instruct_dataset(author_id=author_id)
 
-    model = transformers.AutoModelForCausalLM.from_pretrained(load_model_from)
-    tokenizer = transformers.AutoTokenizer.from_pretrained(load_model_from)
+    model = inference.LLMTwinModel(load_model_from=pathlib.Path(load_model_from))
 
     loguru.logger.info(f"Loaded model and tokenizer from {load_model_from}")
 
     completions: list[evaluation.Completion] = []
     for sample in dataset.test.samples:
-        prompt = training.render_alpaca_template(sample.instruction)
-        prompt_tokens = tokenizer.encode(prompt, return_tensors="pt")
-
-        response_tokens = model.generate(
-            prompt_tokens, max_length=max_tokens, top_k=top_k
+        prompt, response = model.get_response(
+            instruction=sample.instruction, max_tokens=max_tokens, top_k=top_k
         )
-        response = tokenizer.decode(response_tokens[0], skip_special_tokens=True)
 
         completion = evaluation.Completion(prompt=prompt, response=response)
         completions.append(completion)

@@ -17,3 +17,4 @@ from ._language import (
     ResponseFormatT,
     UnableToGetResponse,
 )
+from ._singleton import SingletonMeta
