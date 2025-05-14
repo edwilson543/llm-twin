@@ -85,7 +85,16 @@ module = "tests.*"
 allow_untyped_defs = true
 
 [tool.importlinter]
-root_package = "llm_twin"
+root_packages = ["llm_twin", "testing", "tests"]
+
+[[tool.importlinter.contracts]]
+name = "Root packagess"
+type = "layers"
+layers = [
+    "tests",
+    "testing",
+    "llm_twin",
+]
 
 [[tool.importlinter.contracts]]
 name = "Top level layers"
@@ -161,6 +170,25 @@ modules = [
     "llm_twin.orchestration.steps.etl",
     "llm_twin.orchestration.steps.feature_engineering",
 ]
+
+[[tool.importlinter.contracts]]
+name = "Testing package layers"
+type = "layers"
+containers = "testing"
+layers = [
+    "helpers",
+    "factories",
+]
+exhaustive = true
+
+[[tool.importlinter.contracts]]
+name = "Tests package layers"
+type = "layers"
+containers = "tests"
+layers = [
+    "functional | integration | unit | conftest"
+]
+exhaustive = true
 
 [tool.ruff]
 
