@@ -1,7 +1,8 @@
 from llm_twin.domain.rag import _retrieval
 from testing.factories import rag as rag_factories
-from testing.factories import vectors as vector_factories
 from testing.helpers import storage as storage_helpers
+from testing.helpers import storage as storage_helpers
+from testing.helpers import config as config_helpers
 
 
 class TestRetrieveContextForQuery:
@@ -14,7 +15,7 @@ class TestRetrieveContextForQuery:
         db = storage_helpers.InMemoryVectorDatabase(vectors=vectors)
 
         query = "some query"
-        config = rag_factories.RAGConfig(
+        config = config_helpers.get_rag_config(
             db=db, max_chunks_per_query=1, number_of_query_expansions=1
         )
 

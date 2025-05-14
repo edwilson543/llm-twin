@@ -63,3 +63,19 @@ def install_fake_language_model() -> typing.Generator[
         config, "get_language_model", return_value=fake_language_model
     ):
         yield fake_language_model
+
+
+# RAG.
+def get_rag_config(
+    db: storage_helpers.InMemoryVectorDatabase | None = None,
+    number_of_query_expansions: int = 1,
+    max_chunks_per_query: int = 1,
+) -> rag.RAGConfig:
+    return rag.RAGConfig(
+        db=db or storage_helpers.InMemoryVectorDatabase(),
+        language_model=models_helpers.FakeLanguageModel(),
+        embedding_model=models_helpers.get_fake_embedding_model(),
+        cross_encoder_model=models_helpers.FakeLanguageModel(),  # TODO
+        number_of_query_expansions=number_of_query_expansions,
+        max_chunks_per_query=max_chunks_per_query,
+    )
