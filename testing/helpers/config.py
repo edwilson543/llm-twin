@@ -3,6 +3,7 @@ import typing
 from unittest import mock
 
 from llm_twin import config
+from llm_twin.domain import rag
 from testing.helpers import models as models_helpers
 from testing.helpers import storage as storage_helpers
 
@@ -75,7 +76,7 @@ def get_rag_config(
         db=db or storage_helpers.InMemoryVectorDatabase(),
         language_model=models_helpers.FakeLanguageModel(),
         embedding_model=models_helpers.get_fake_embedding_model(),
-        cross_encoder_model=models_helpers.FakeLanguageModel(),  # TODO
+        cross_encoder_model=models_helpers.FakeCrossEncoder(),
         number_of_query_expansions=number_of_query_expansions,
         max_chunks_per_query=max_chunks_per_query,
     )

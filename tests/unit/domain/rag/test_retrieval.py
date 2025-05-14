@@ -1,8 +1,7 @@
 from llm_twin.domain.rag import _retrieval
-from testing.factories import rag as rag_factories
-from testing.helpers import storage as storage_helpers
-from testing.helpers import storage as storage_helpers
+from testing.factories import vectors as vector_factories
 from testing.helpers import config as config_helpers
+from testing.helpers import storage as storage_helpers
 
 
 class TestRetrieveContextForQuery:
