@@ -1223,7 +1223,7 @@ requires-dist = [
     { name = "pymongo", specifier = ">=4.11.2" },
     { name = "qdrant-client", specifier = ">=1.13.3" },
     { name = "sagemaker", specifier = ">=2.92.0" },
-    { name = "sentence-transformers", specifier = ">=4.0.2" },
+    { name = "sentence-transformers", specifier = ">=4.0.0" },
     { name = "tqdm", specifier = ">=4.67.1" },
     { name = "transformers", specifier = "<=4.50.3" },
     { name = "trl", specifier = ">=0.17.0" },
