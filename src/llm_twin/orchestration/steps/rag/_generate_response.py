@@ -16,7 +16,7 @@ def generate_response(
     context: context.StepContext | None = None,
 ) -> typing.Annotated[str, "response"]:
     instruction = rag.augment_query(query=query, documents=documents)
-    model = config.get_llm_twin()
+    model = config.get_inference_engine()
 
     step_context = context or zenml.get_step_context()
     step_context.add_output_metadata(

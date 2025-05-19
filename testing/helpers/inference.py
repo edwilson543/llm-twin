@@ -1,7 +1,7 @@
 from llm_twin.domain import inference
 
 
-class FakeLLMTwin(inference.LLMTwinModelBase):
+class FakeInferenceEngine(inference.InferenceEngine):
     def get_response(
         self, *, instruction: str, max_tokens: int, top_k: int | None = None
     ) -> tuple[str, str]:

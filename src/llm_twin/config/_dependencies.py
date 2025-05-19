@@ -97,9 +97,9 @@ def login_to_comet_ml() -> None:
     )
 
 
-def get_llm_twin() -> inference.LLMTwinModelBase:
+def get_inference_engine() -> inference.InferenceEngine:
     load_model_from = get_training_output_dir() / "dpo"
-    return inference.LLMTwinModel(load_model_from=load_model_from)
+    return inference.LocalInferenceEngine(load_model_from=load_model_from)
 
 
 # def get_training_runner() -> training.Runner:

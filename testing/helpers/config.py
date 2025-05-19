@@ -92,12 +92,11 @@ def get_retrieval_config(
 
 
 @contextlib.contextmanager
-def install_fake_llm_twin() -> typing.Generator[
-    inference_helpers.FakeLLMTwin, None, None
+def install_fake_inference_engine() -> typing.Generator[
+    inference_helpers.FakeInferenceEngine, None, None
 ]:
-    """
-    Helper that overrides the settings module to install a fake language model.
-    """
-    fake_llm_twin = inference_helpers.FakeLLMTwin()
-    with mock.patch.object(config, "get_llm_twin", return_value=fake_llm_twin):
-        yield fake_llm_twin
+    inference_engine = inference_helpers.FakeInferenceEngine()
+    with mock.patch.object(
+        config, "get_inference_engine", return_value=inference_engine
+    ):
+        yield inference_engine
