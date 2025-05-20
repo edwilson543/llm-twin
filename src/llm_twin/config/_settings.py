@@ -22,6 +22,7 @@ class Settings(pydantic_settings.BaseSettings):
     # Qdrant.
     QDRANT_DATABASE_HOST: str = "localhost"
     QDRANT_DATABASE_PORT: int = 6333
+    QDRANT_DATABASE_API_KEY: str = ""
 
     # Embeddings.
     EMBEDDING_MODEL_NAME: models.EmbeddingModelName = models.EmbeddingModelName.MINILM

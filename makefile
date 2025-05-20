@@ -49,6 +49,10 @@ mongosh:
 mongosh_test:
 	docker exec -it llm-twin-mongo-testing mongosh "mongodb://test_user:test_password@127.0.0.1:27017" --username test_user --authenticationDatabase admin
 
+.PHONY:docker_image
+docker_image:
+	docker build . -t llm-twin:latest
+
 # CLI
 .PHONY:run_ed
 run_ed:

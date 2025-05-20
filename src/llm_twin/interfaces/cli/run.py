@@ -53,10 +53,11 @@ def main(author: str, base_model: str, stop_after: str, disable_cache: bool) -> 
         config_path=_get_config_file(author=author, pipeline="etl"),
         enable_cache=not disable_cache,
     )
+    etl_pipeline_result = etl_pipeline()
+
     if stop_after_pipeline is Pipeline.ETL:
         return
 
-    etl_pipeline_result = etl_pipeline()
     assert etl_pipeline_result is not None
     author_document = (
         etl_pipeline_result.steps["get_or_create_author"].outputs["author"][0].load()

@@ -17,12 +17,20 @@ class _QdrantDatabaseConnector:
     _client: qdrant_client.QdrantClient
 
     def __new__(
-        cls, database_host: str, database_port: int, *args: object, **kwargs: object
+        cls,
+        database_host: str,
+        database_port: int,
+        api_key: str,
+        *args: object,
+        **kwargs: object,
     ) -> _QdrantDatabaseConnector:
         if not hasattr(cls, "_client"):
             uri = f"{database_host}:{database_port}"
             cls._client = qdrant_client.QdrantClient(
-                host=database_host, port=database_port
+                host=database_host,
+                port=database_port,
+                api_key=api_key,
+                https=bool(api_key),
             )
             loguru.logger.info(f"Connected to Qdrant DB at: {uri}")
 
@@ -44,9 +52,12 @@ class QdrantDatabase(vector_storage.VectorDatabase):
         *,
         host: str,
         port: int,
+        api_key: str,
         embedding_model_config: models.EmbeddingModelConfig,
     ) -> typing.Self:
-        connector = _QdrantDatabaseConnector(database_host=host, database_port=port)
+        connector = _QdrantDatabaseConnector(
+            database_host=host, database_port=port, api_key=api_key
+        )
         return cls(_connector=connector, _embedding_model_config=embedding_model_config)
 
     def bulk_find(

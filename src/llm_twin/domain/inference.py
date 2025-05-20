@@ -6,7 +6,7 @@ import transformers
 from llm_twin.domain import models, training
 
 
-class LLMTwinModelBase(abc.ABC):
+class InferenceEngine(abc.ABC):
     @abc.abstractmethod
     def get_response(
         self, *, instruction: str, max_tokens: int, top_k: int | None = None
@@ -14,7 +14,7 @@ class LLMTwinModelBase(abc.ABC):
         raise NotImplementedError
 
 
-class LLMTwinModel(LLMTwinModelBase, metaclass=models.SingletonMeta):
+class LocalInferenceEngine(InferenceEngine, metaclass=models.SingletonMeta):
     """
     A fine-tuned model produced by the pipelines in this repo.
     """
@@ -35,3 +35,7 @@ class LLMTwinModel(LLMTwinModelBase, metaclass=models.SingletonMeta):
         return prompt, self._tokenizer.decode(
             response_tokens[0], skip_special_tokens=True
         )
+
+
+class SageMakerInferenceEngine(InferenceEngine):
+    pass

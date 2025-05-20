@@ -9,7 +9,7 @@ def test_retrieves_relevant_context_and_uses_it_to_generate_response():
     vector_factories.EmbeddedRepositoryChunk.create()
 
     with (
-        config_helpers.install_fake_llm_twin() as fake_llm_twin,
+        config_helpers.install_fake_inference_engine() as fake_llm_twin,
         config_helpers.install_fake_language_model(),
     ):
         _rag.rag_inference.entrypoint(query="Some random query.", max_tokens=300)

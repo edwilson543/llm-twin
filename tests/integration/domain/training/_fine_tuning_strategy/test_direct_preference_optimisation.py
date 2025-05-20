@@ -18,7 +18,7 @@ class TestFineTune:
         strategy.fine_tune(dataset=dataset)
 
         # Load the tuned model, and use it to generate a dummy response.
-        model = inference.LLMTwinModel(load_model_from=output_dir)
+        model = inference.LocalInferenceEngine(load_model_from=output_dir)
         _, dummy_output = model.get_response(
             instruction="Hello?", max_tokens=30, top_k=1
         )

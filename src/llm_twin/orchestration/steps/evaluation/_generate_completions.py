@@ -21,7 +21,9 @@ def generate_completions_for_test_samples(
     data_loader = training.VectorDBDataLoader(db=db)
     dataset = data_loader.load_instruct_dataset(author_id=author_id)
 
-    model = inference.LLMTwinModel(load_model_from=pathlib.Path(load_model_from))
+    model = inference.LocalInferenceEngine(
+        load_model_from=pathlib.Path(load_model_from)
+    )
 
     loguru.logger.info(f"Loaded model and tokenizer from {load_model_from}")
 
