@@ -1,3 +1,8 @@
+settings:
+  docker:
+    parent_image: llm-twin:latestasa
+    skip_build: True
+
 parameters:
   author_full_name: Ed Wilson
   links:

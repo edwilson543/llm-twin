@@ -22,8 +22,6 @@ RUN --mount=type=cache,target=/app/.cache/uv \
 
 # Copy application code and entrypoint script
 COPY --chown=app:app src ./src
-COPY --chown=app:app entrypoint.sh ./
-RUN chmod +x ./entrypoint.sh
 
 # Install the project itself to ensure all dependencies are properly resolved
 RUN --mount=type=cache,target=/app/.cache/uv \
