@@ -9,8 +9,7 @@ wheels/
 
 # Virtual environments
 .venv
-
 # Specific files
-.env
+.env*
 TODO.txt
 repomix-output.xml
