@@ -28,6 +28,7 @@ def get_vector_database() -> vector_storage.VectorDatabase:
     return qdrant.QdrantDatabase.build(
         host=settings.QDRANT_DATABASE_HOST,
         port=settings.QDRANT_DATABASE_PORT,
+        api_key=settings.QDRANT_DATABASE_API_KEY,
         embedding_model_config=embedding_model_config,
     )
 
