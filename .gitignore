@@ -10,6 +10,7 @@ wheels/
 # Virtual environments
 .venv
 # Specific files
+llm-twin-3e6d2f9a63fc.json
 .env*
 TODO.txt
 repomix-output.xml
